@@ -1,10 +1,4 @@
 # some more ls aliases
-alias ls='lsd'
-alias l='ls -l'
-alias la='ls -a'
-alias lla='ls -la'
-alias lt='ls --tree'
-
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
@@ -22,5 +16,19 @@ if [ -x /usr/bin/dircolors ]; then
     alias egrep='egrep --color=auto'
 fi
 
-# dotfile-specific alias for git
-alias dotfiles='/usr/bin/git --git-dir=/home/w1n5t0n/.dotfiles --work-tree=/home/w1n5t0n'
+alias ls='lsd'
+alias l='ls -l'
+alias la='ls -a'
+alias lla='ls -la'
+alias lt='ls --tree'
+ 
+cdl() { cd "$@" && ls; }
+cdla() { cd "$@" && la; }
+
+lsg() { ls -a | grep "$@"; }
+
+
+alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles --work-tree=$HOME'
+
+alias notes='/usr/bin/git --git-dir=$HOME/.notes --work-tree=$HOME'
+
