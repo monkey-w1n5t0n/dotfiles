@@ -44,8 +44,8 @@ set $hibernate sudo -A systemctl suspend
 
 
 bar {
-	font pango:mono 10
-	status_command i3blocks
+	font pango:mono 12
+	status_command i3status
 	position top
 	mode dock
 	modifier None
@@ -62,7 +62,7 @@ set $bg-color #31363b
 set $bg-color-t #31363b00
 set $bg-color-2 #4d4d4d
 set $color-urgent #da4453
-set $color-border #3c5469
+set $color-border #ffa69e
 set $color-highlight #16a085
 set $color-highlight-2 #3daee9
 set $text-color #eff0f1
@@ -91,27 +91,15 @@ bindsym $mod+e exec dmenu_run
 
 # change focus
 bindsym $mod+h focus left
-bindsym $mod+t focus down
-bindsym $mod+n focus up
+bindsym $mod+t focus up
+bindsym $mod+n focus down
 bindsym $mod+s focus right
-
-# alternatively, you can use the cursor keys:
-bindsym $mod+Left focus left
-bindsym $mod+Down focus down
-bindsym $mod+Up focus up
-bindsym $mod+Right focus right
 
 # move focused window
 bindsym $mod+Shift+h move left
 bindsym $mod+Shift+t move down
 bindsym $mod+Shift+n move up
 bindsym $mod+Shift+s move right
-
-# alternatively, you can use the cursor keys:
-bindsym $mod+Shift+Left move left
-bindsym $mod+Shift+Down move down
-bindsym $mod+Shift+Up move up
-bindsym $mod+Shift+Right move right
 
 # split in horizontal orientation
 bindsym $mod+d split h
@@ -236,12 +224,10 @@ assign [class="Firefox"] $ws2
 assign [class="Emacs"] $ws1
 exec $term
 exec $editor
-
 exec --no-startup-id firefox
-#exec_always feh --bg-scale ~/Pictures/wallpapers/geometric.jpg
 exec_always feh --bg-scale ~/Pictures/wallpapers/geometric.jpg
-exec_always --no-startup-id compton
+exec --no-startup-id compton
 
 bindsym $mod+l exec scrot ~/Pictures/screenshots/%Y-%m-%d-%T.png
 
-exec_always setxkbmap -o caps:swapescape
+exec_always setxkbmap -option caps:swapescape
