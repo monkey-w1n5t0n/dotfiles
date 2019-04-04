@@ -91,8 +91,8 @@ bindsym $mod+e exec dmenu_run
 
 # change focus
 bindsym $mod+h focus left
-bindsym $mod+t focus up
-bindsym $mod+n focus down
+bindsym $mod+t focus down
+bindsym $mod+n focus up
 bindsym $mod+s focus right
 
 # move focused window
@@ -225,7 +225,7 @@ assign [class="Emacs"] $ws1
 exec $term
 exec $editor
 exec --no-startup-id firefox
-exec_always feh --bg-scale ~/Pictures/wallpapers/geometric.jpg
+exec_always feh --bg-scale ~/Pictures/wallpapers/orange_blue.png
 exec --no-startup-id compton
 
 bindsym $mod+l exec scrot ~/Pictures/screenshots/%Y-%m-%d-%T.png

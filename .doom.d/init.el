@@ -1,4 +1,3 @@
-;;; init.el -*- lexical-binding: t; -*-
 ;; Copy me to ~/.doom.d/init.el or ~/.config/doom/init.el, then edit me!
 
 (doom! :feature
@@ -50,9 +49,9 @@
 
        :emacs
        (dired            ; making dired pretty [functional]
-         +ranger         ; bringing the goodness of ranger to dired
-         +icons          ; colorful icons for dired-mode
-         )
+        +ranger         ; bringing the goodness of ranger to dired
+        +icons          ; colorful icons for dired-mode
+        )
        electric          ; smarter, keyword-based electric-indent
        ;;eshell            ; a consistent, cross-platform shell (WIP)
        imenu             ; an imenu sidebar and searchable code index
@@ -164,6 +163,7 @@
 (general-def
   :states '(normal visual motion)
   :keymaps 'override
+
   "h" 'evil-backward-char
   "H" 'evil-backward-word-begin
   "t" 'evil-next-visual-line
@@ -174,17 +174,32 @@
   "S" 'evil-forward-word-end
 
   "e" 'evil-delete
+  "a" 'evil-avy-goto-char
 
   ";" 'undo-tree-undo
   ":" 'undo-tree-redo
 
   "'" 'evil-ex
 
+  "cg" 'evil-snipe-F
+  "cG" 'evil-snipe-T
+  "cr" 'evil-snipe-f
+  "cR" 'evil-snipe-t
+  "cc" 'evil-snipe-repeat
+
   "gg" 'evil-beginning-of-visual-line
   "gr" 'evil-end-of-visual-line
   "gc" 'evil-goto-first-line
   "gt" 'evil-goto-line
+
+  "G" 'evil-scroll-down
+  "R" 'evil-scroll-up
   )
+
+(defun evil-paste-after-from-0 ()
+  (interactive)
+  (let ((evil-this-register ?0))
+    (call-interactively 'evil-paste-after)))
 
 (general-def
   :states 'normal
@@ -195,11 +210,22 @@
   "I" 'evil-append-line
 
 
+  "j" 'evil-change
+
+  "p" 'evil-paste-after-from-0
+
+
   "oe" 'evil-open-below
   "ou" 'evil-open-above
   "oc" '(evil-goto-line 0)
   "ok" 'evil-goto-max
+
+  "-" 'newline-and-indent
   )
+
+
+
+
 
 (global-hl-line-mode t)
 ;; TODO add timelines
@@ -211,8 +237,10 @@
   :keymaps 'override
   "C-q" 'Control-X-prefix
   "C-j" 'mode-specific-command-prefix)
+
 ;;"SPC-f-." 'counsel-find-file
 
 
-;;electric-newline-and-maybe-indent
-;;(lookup-key (current-global-map) (kbd "SPC"))
+;;
+;;
+;;(lookup-key (current-global-map) (kbd "Esc-g"))
