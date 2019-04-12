@@ -50,8 +50,8 @@
        :emacs
        (dired            ; making dired pretty [functional]
         +ranger         ; bringing the goodness of ranger to dired
-        +icons          ; colorful icons for dired-mode
-        )
+        +icons)          ; colorful icons for dired-mode
+
        electric          ; smarter, keyword-based electric-indent
        ;;eshell            ; a consistent, cross-platform shell (WIP)
        imenu             ; an imenu sidebar and searchable code index
@@ -157,6 +157,13 @@
        ;; config. Use it as a reference for your own modules.
        (default +bindings +smartparens))
 
+;; Toggle region comment
+(general-def
+  :states '(normal visual)
+  :keymaps 'override
+
+  "SPC c /" 'comment-or-uncomment-region
+  )
 
 
 ;; Basic navigation bindings
@@ -212,7 +219,7 @@
 
   "j" 'evil-change
 
-  "p" 'evil-paste-after-from-0
+  "p" 'evil-paste-after
 
 
   "oe" 'evil-open-below
@@ -244,3 +251,26 @@
 ;;
 ;;
 ;;(lookup-key (current-global-map) (kbd "Esc-g"))
+
+
+;;(set-frame-parameter (selected-frame) 'alpha '(<active> . <inactive>))
+;;(set-frame-parameter (selected-frame) 'alpha <both>)
+(set-frame-parameter (selected-frame) 'alpha '(95 . 80))
+(add-to-list 'default-frame-alist '(alpha . (95 . 80)))
+
+
+(general-def
+  :keymaps 'ranger-normal-mode-map
+  "t" 'ranger-next-file
+  "n" 'ranger-previous-file
+  "s" 'ranger-parent-child-select
+  "h" 'ranger-prev-parent)
+
+(general-def
+  "C-}" 'text-scale-increase
+  "C-{" 'text-scale-decrease)
+
+
+(general-def
+  :states '(normal visual)
+  "SPC c /" 'comment-or-uncomment-region)
