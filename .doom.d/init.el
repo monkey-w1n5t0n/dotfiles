@@ -1,3 +1,4 @@
+;;; init.el -*- lexical-binding: t; -*-
 ;; Copy me to ~/.doom.d/init.el or ~/.config/doom/init.el, then edit me!
 
 (doom! :feature
@@ -13,16 +14,16 @@
        :completion
        company           ; the ultimate code completion backend
        ;;helm             ; the *other* search engine for love and life
-       ido              ; the other *other* search engine...
+       ;;ido              ; the other *other* search engine...
        ivy              ; a search engine for love and life
 
        :ui
        ;;deft              ; notational velocity for Emacs
        doom              ; what makes DOOM look the way it does
-       ;;doom-dashboard    ; a nifty splash screen for Emacs
-       ;;doom-quit         ; DOOM quit-message prompts when you quit Emacs
+       doom-dashboard    ; a nifty splash screen for Emacs
+       doom-quit         ; DOOM quit-message prompts when you quit Emacs
        evil-goggles      ; display visual hints when editing in evil
-       ;;fci               ; a `fill-column' indicator
+       fill-column       ; a `fill-column' indicator
        hl-todo           ; highlight TODO/FIXME/NOTE tags
        indent-guides     ; highlighted indent columns
        modeline          ; snazzy, Atom-inspired modeline, plus API
@@ -41,8 +42,8 @@
 
        :editor
        fold              ; (nigh) universal code folding
-       (format +onsave)  ; automated prettiness
-       ;;lispy             ; vim for lisp, for people who dont like vim
+       ;;(format +onsave)  ; automated prettiness
+       lispy             ; vim for lisp, for people who dont like vim
        multiple-cursors  ; editing in many places at once
        parinfer          ; turn lisp into python, sort of
        rotate-text       ; cycle region at point between text candidates
@@ -55,16 +56,17 @@
        electric          ; smarter, keyword-based electric-indent
        ;;eshell            ; a consistent, cross-platform shell (WIP)
        imenu             ; an imenu sidebar and searchable code index
-       ;;term              ; terminals in Emacs
+       term              ; terminals in Emacs
        vc                ; version-control and Emacs, sitting in a tree
 
        :tools
        ;;ansible
-       docker
+       ;;direnv
+       ;;docker
        editorconfig      ; let someone else argue about tabs vs spaces
        ein               ; tame Jupyter notebooks with emacs
        flycheck          ; tasing you for every semicolon you forget
-       ;;flyspell          ; tasing you for misspelling mispelling
+       flyspell          ; tasing you for misspelling mispelling
        ;;gist              ; interacting with github gists
        ;;lsp
        ;;macos             ; MacOS-specific commands
@@ -73,7 +75,7 @@
        ;;password-store    ; password manager for nerds
        pdf               ; pdf enhancements
        ;;prodigy           ; FIXME managing external services & code builders
-       rgb               ; creating color strings
+       ;;rgb               ; creating color strings
        ;;terraform         ; infrastructure as code
        ;;tmux              ; an API for interacting with tmux
        ;;upload            ; map local to remote projects via ssh/ftp
@@ -97,10 +99,11 @@
        ;;go                ; the hipster dialect
        (haskell +intero) ; a language that's lazier than I am
        ;;hy                ; readability of scheme w/ speed of python
-       idris             ;
+       ;;idris             ;
        ;;(java +meghanada) ; the poster child for carpal tunnel syndrome
        javascript        ; all(hope(abandon(ye(who(enter(here))))))
        ;;julia             ; a better, faster MATLAB
+       ;;kotlin            ; a better, slicker Java(Script)
        latex             ; writing papers in Emacs has never been so fun
        ;;ledger            ; an accounting system in Emacs
        ;;lua               ; one-based indices? one-based indices
@@ -113,13 +116,14 @@
         +babel           ; running code in org
         +capture         ; org-capture in and outside of Emacs
         +export          ; Exporting org to whatever you want
-        +present)        ; Emacs for presentations
+        +present         ; Emacs for presentations
+        +protocol)       ; Support for org-protocol:// links
        ;;perl              ; write code no one else can comprehend
-       ;;php bs               ; perl's insecure younger brother
+       ;;php               ; perl's insecure younger brother
        ;;plantuml          ; diagrams for confusing people more
-       ;;purescript        ; javascript, but functional
+       purescript        ; javascript, but functional
        python            ; beautiful is better than ugly
-       qt                ; the 'cutest' gui framework ever
+       ;;qt                ; the 'cutest' gui framework ever
        racket            ; a DSL for DSLs
        ;;rest              ; Emacs as a REST client
        ;;ruby              ; 1.step do {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
@@ -128,6 +132,7 @@
        (sh +fish)        ; she sells (ba|z|fi)sh shells on the C xor
        ;;solidity          ; do you need a blockchain? No.
        ;;swift             ; who asked for emoji variables?
+       ;;terra             ; Earth and Moon in alignment for performance.
        ;;web               ; the tubes
        ;;vala              ; GObjective-C
 
@@ -157,16 +162,15 @@
        ;; config. Use it as a reference for your own modules.
        (default +bindings +smartparens))
 
-
-
+(def-package! general)
 ;; Basic navigation bindings
 (general-def
   :states '(normal visual motion)
   :keymaps 'override
 
   "h" 'evil-backward-char
-  "H" 'evil-backward-word-begin
   "t" 'evil-next-visual-line
+  "H" 'evil-backward-word-begin
   "T" 'evil-forward-paragraph
   "n" 'evil-previous-visual-line
   "N" 'evil-backward-paragraph
@@ -196,6 +200,14 @@
   "R" 'evil-scroll-up
   )
 
+
+(general-def
+  :states '(normal visual)
+  :keymaps 'override
+
+  "j" 'evil-change
+  )
+
 (defun evil-paste-after-from-0 ()
   (interactive)
   (let ((evil-this-register ?0))
@@ -210,17 +222,22 @@
   "I" 'evil-append-line
 
 
-  "j" 'evil-change
-
-  "p" 'evil-paste-after-from-0
-
+  "p" 'evil-paste-after;; -from-0
 
   "oe" 'evil-open-below
   "ou" 'evil-open-above
-  "oc" '(evil-goto-line 0)
-  "ok" 'evil-goto-max
 
   "-" 'newline-and-indent
+
+  "SPC w h" 'evil-window-left
+  "SPC w s" 'evil-window-right
+  "SPC w t" 'evil-window-down
+  "SPC w n" 'evil-window-up
+
+  "SPC w H" '+evil/window-move-left
+  "SPC w S" '+evil/window-move-right
+  "SPC w T" '+evil/window-move-down
+  "SPC w N" '+evil/window-move-up
   )
 
 
@@ -240,7 +257,25 @@
 
 ;;"SPC-f-." 'counsel-find-file
 
+(general-def
+  :keymaps 'timelines-mode-map
+  :states 'normal
 
+  "d" 'timelines-eval-region
+ )
 ;;
 ;;
 ;;(lookup-key (current-global-map) (kbd "Esc-g"))
+
+
+(add-to-list 'load-path "~/timelines-emacs/")
+(require 'timelines-mode)
+
+
+(add-to-list 'load-path "~/scel/el")
+(require 'sclang)
+
+;; Use a key sequence as escape instead of a dedicated button
+;; Caps lock can now be control!
+(def-package! evil-escape)
+(setq-default evil-escape-key-sequence ",.")
