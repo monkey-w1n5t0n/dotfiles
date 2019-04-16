@@ -30,5 +30,6 @@ fi
 export FILE="ranger"
 export RANGER_LOAD_DEFAULT_RC=FALSE
 
-export TERMINAL="st"
+export TERMINAL="urxvt"
 export EDITOR="emacs"
+export TIMELINES_PATH="~/timelines"

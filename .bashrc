@@ -101,4 +101,9 @@ if ! shopt -oq posix; then
   fi
 fi
 
+export PATH="/home/w1n5t0n/.pyenv/bin:$PATH"
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
+
 neofetch
+
