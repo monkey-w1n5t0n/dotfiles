@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: randoms
+# key: randoms
+# --
+randoms ${1:num} ${2:seed} ${0:index(0-1)}

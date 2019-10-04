@@ -1,0 +1,13 @@
+# -*- mode: snippet -*-
+# name: shaper
+# key: shaper
+# --
+synth "${1:name}_waveshaper" $ do
+  "amp" <>< let
+    in vol $ ${2:0}
+  "low" <>< let
+    in ${3:-1}
+  "hi" <>< let
+    in ${4:1}
+  "pan" <>< let
+    in ${0:0}

@@ -1,0 +1,13 @@
+# -*- mode: snippet -*-
+# name: square
+# key: square
+# --
+synth "$1_square" $ do
+  "amp" <>< let
+    in vol $ ${2:0}
+  "freq" <>< let
+    in ${3:f}
+  ("width", midSR) <><< let
+    in ${5:0.5}
+  ("pan", lowSR) <><< let
+    in ${0:0}
