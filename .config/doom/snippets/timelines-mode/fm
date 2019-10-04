@@ -1,0 +1,15 @@
+# -*- mode: snippet -*-
+# name: fm
+# key: fm
+# --
+synth "$1_fm" $ do
+  "amp" <>< let
+    in vol $ ${2:0}
+  "freq" <>< let
+    in ${3:f}
+  ("ratio", lowSR) <><< let
+    in ${4:0}
+  "index" <>< let
+    in ${5:0}
+  ("pan", lowSR) <><< let
+    in ${0:0}

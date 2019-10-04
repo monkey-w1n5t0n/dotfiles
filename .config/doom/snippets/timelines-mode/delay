@@ -1,0 +1,15 @@
+# -*- mode: snippet -*-
+# name: delay
+# key: delay
+# --
+synth "${1:name}_delay" $ do
+  ("amp", midSR) <><< let
+    in vol $ ${2:0}
+  ("delayTime", lowSR) <><< let
+    in ${3:beatDur*0.5}
+  ("decayTime", ulowSR) <><< let
+    in ${4:barDur}
+  ("mix", ulowSR) <><< let
+    in ${5:0.5}
+  ("pan", ulowSR) <><< let
+    in ${0:0}

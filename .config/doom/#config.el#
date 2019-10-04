@@ -1,0 +1,146 @@
+;;; .doom.d/config.el -*- lexical-binding: t; -*-
+
+;; Place your private configuration here
+
+
+
+(add-to-list 'load-path "~/code/timelines-emacs/")
+(require 'timelines-mode)
+(setq timelines-path "~/code/timelines")
+
+(add-to-list 'load-path "~/code/supercollider-emacs/el")
+(require 'sclang)
+
+
+;; Use a key sequence as escape instead of a dedicated button
+;; Caps lock can now be control!
+(setq-default evil-escape-key-sequence ",.")
+(global-hl-line-mode t)
+;; TODO add timelines
+;;(require )
+(setq doom-theme 'doom-one)
+(setq global-visual-line-mode t)
+
+
+;; Set TimeLines bindings
+(general-def
+  :keymaps 'timelines-mode-map
+  :states 'normal
+  "RET" 'timelines-eval-region)
+
+
+
+;; Toggle region comment
+(general-def
+  :states '(normal visual)
+  :keymaps 'override
+
+  "SPC c /" 'comment-or-uncomment-region
+  "j" 'evil-change
+  )
+
+
+(general-def
+  :states '(normal visual motion)
+  :keymaps 'visual-line-mode-map
+  "t" 'evil-next-visual-line
+  "n" 'evil-previous-visual-line
+  )
+
+(general-def
+  :states '(normal visual motion)
+  :keymaps 'override
+
+  "h" 'evil-backward-char
+  "t" 'evil-next-visual-line
+  "n" 'evil-previous-visual-line
+  "s" 'evil-forward-char
+
+  "H" 'evil-backward-word-begin
+  "T" 'evil-forward-paragraph
+  "N" 'evil-backward-paragraph
+  "S" 'evil-forward-word-end
+
+  "e" 'evil-delete
+  "a" 'evil-avy-goto-char
+
+  ";" 'undo-tree-undo
+  ":" 'undo-tree-redo
+
+  "'" 'evil-ex
+
+  "cg" 'evil-snipe-F
+  "cG" 'evil-snipe-T
+  "cr" 'evil-snipe-f
+  "cR" 'evil-snipe-t
+  "cc" 'evil-snipe-repeat
+
+  "gg" 'evil-beginning-of-visual-line
+  "gr" 'evil-end-of-visual-line
+  "gc" 'evil-goto-first-line
+  "gt" 'evil-goto-line
+
+  "G" 'evil-scroll-down
+  "R" 'evil-scroll-up
+  )
+
+
+(general-def
+  :states 'normal
+  :keymaps 'override
+  "u" 'evil-insert
+  "U" 'evil-insert-line
+  "i" 'evil-append
+  "I" 'evil-append-line
+
+
+  "p" 'evil-paste-after;; -from-0
+
+  "oe" 'evil-open-below
+  "ou" 'evil-open-above
+
+  "-" 'newline-and-indent
+
+  "SPC w h" 'evil-window-left
+  "SPC w s" 'evil-window-right
+  "SPC w t" 'evil-window-down
+  "SPC w n" 'evil-window-up
+
+  "SPC w H" '+evil/window-move-left
+  "SPC w S" '+evil/window-move-right
+  "SPC w T" '+evil/window-move-down
+  "SPC w N" '+evil/window-move-up
+  )
+
+
+
+;; NOTE remap C-x and C-c to be the same in Dvorak
+(general-def
+  :keymaps 'override
+  "C-q" 'Control-X-prefix
+  "C-j" 'mode-specific-command-prefix)
+
+;;"SPC-f-." 'counsel-find-file
+
+
+;;
+;;
+;;(lookup-key (current-global-map) (kbd "Esc-g"))
+
+
+;;(set-frame-parameter (selected-frame) 'alpha '(<active> . <inactive>))
+;;(set-frame-parameter (selected-frame) 'alpha <both>)
+(set-frame-parameter (selected-frame) 'alpha '(95 . 80))
+(add-to-list 'default-frame-alist '(alpha . (95 . 80)))
+
+
+(general-def
+  :keymaps 'ranger-normal-mode-map
+  "h" 'ranger-prev-parent
+  "t" 'ranger-next-file
+  "n" 'ranger-previous-file
+  "s" 'ranger-parent-child-select)
+
+(general-def
+  "C-}" 'text-scale-increase
+  "C-{" 'text-scale-decrease)
