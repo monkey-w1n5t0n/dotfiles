@@ -33,3 +33,5 @@ export RANGER_LOAD_DEFAULT_RC=FALSE
 export TERMINAL="urxvt"
 export EDITOR="emacs"
 export TIMELINES_PATH="~/timelines"
+
+export PATH="$HOME/.cargo/bin:$PATH"
