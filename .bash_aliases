@@ -28,7 +28,7 @@ cdla() { cd "$@" && la; }
 lsg() { ls -a | grep "$@"; }
 
 
-alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles --work-tree=$HOME'
+#alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles --work-tree=$HOME'
 
-alias notes='/usr/bin/git --git-dir=$HOME/.notes --work-tree=$HOME'
+#alias notes='/usr/bin/git --git-dir=$HOME/.notes --work-tree=$HOME'
 
