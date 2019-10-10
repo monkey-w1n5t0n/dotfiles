@@ -6,5 +6,7 @@
 
 (after! timelines-mode
   (setq timelines-path "~/code/timelines"))
+
+
 (package! general)
 (package! evil-escape)
