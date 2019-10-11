@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: patch
-# key: patch
-# --
-"$1" ><> "$0"

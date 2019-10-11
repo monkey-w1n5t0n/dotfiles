@@ -6,9 +6,12 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
 
 ; CapsLock::Esc
-; Esc::CapsLock
+
 
 ;CapsLock::Ctrl
+
+
+Esc::CapsLock
 
 *CapsLock::
     Send {Blind}{Ctrl Down}
