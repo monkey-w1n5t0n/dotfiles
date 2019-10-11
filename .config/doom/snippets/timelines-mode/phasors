@@ -1,6 +1,0 @@
-# -*- mode: snippet -*-
-# name: phasors
-# key: phasors
-# --
-let (beat, bar, beatDur, barDur) = bpmToPhasors ${1:bpm} ${0:beatsPerBar}
-$0

@@ -85,9 +85,9 @@ export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quo
 # ~/.bash_aliases, instead of adding them here directly.
 # See /usr/share/doc/bash-doc/examples in the bash-doc package.
 
-if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
-fi
+#if [ -f ~/.bash_aliases ]; then
+     # . ~/.bash_aliases
+#fi
 
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
@@ -105,11 +105,10 @@ fi
 #eval "$(pyenv virtualenv-init -)"
 
 #alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
-function dotfiles {
-   git --git-dir=$HOME/.config/.dotfiles/ --work-tree=$HOME $@
-}
+alias dotfiles="git --git-dir=$HOME/.config/.dotfiles/ --work-tree=$HOME"
 
-dotfiles config --local status.showUntrackedFiles no
-
+SCRIPTS_DIR="$HOME/code/scripts"
+# dotfiles config --local status.showUntrackedFiles no
+export PATH="$SCRIPTS_DIR:$PATH"
 neofetch
 
