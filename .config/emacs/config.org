@@ -1,57 +1,64 @@
 
 * Packages
+
 #+BEGIN_SRC elisp
   (use-package general)
 
   (use-package evil
     :config
     (evil-mode 1))
-(use-package haskell-mode)
+
+  (use-package haskell-mode)
+
+  (defconst timelines-mode-path "~/.emacs.d/timelines-mode.el")
+  (load timelines-mode-path)
+  (defconst timelines-path "~/timelines")
+
+  (use-package general)
 
 
-(use-package general)
-
-
-(use-package yasnippet
-  :config 
-  (yas-global-mode 1)
-  (define-key yas-minor-mode-map (kbd "<tab>") nil)
-  (define-key yas-minor-mode-map (kbd "TAB") nil)
-  (define-key yas-minor-mode-map (kbd "SPC") yas-maybe-expand))
-
-
-
-
-(use-package which-key
-  :config (which-key-mode))
-
-;; Use ido for autocompletion
-(use-package ido
-  :config
-  (ido-mode 1)
-  (setq ido-enable-flex-matching nil
-	ido-create-new-buffer 'always
-	ido-everywhere t))
-
-(use-package ido-vertical-mode
-  :init
-  (ido-vertical-mode 1))
-
-
-(use-package nord-theme)
+  (use-package yasnippet
+    :config 
+    (yas-global-mode 1)
+    (define-key yas-minor-mode-map (kbd "<tab>") nil)
+    (define-key yas-minor-mode-map (kbd "TAB") nil)
+    (define-key yas-minor-mode-map (kbd "SPC") yas-maybe-expand))
 
 
 
 
-(general-def
-  :keymaps 'timelines-mode-map
-  :states 'normal
-  "RET" 'timelines-eval-region)
+  (use-package which-key
+    :config (which-key-mode))
+
+  ;; Use ido for autocompletion
+  (use-package ido
+    :config
+    (ido-mode 1)
+    (setq ido-enable-flex-matching t
+	  ido-create-new-buffer 'always
+	  ido-everywhere t))
+
+  (use-package ido-vertical-mode
+    :init
+    (ido-vertical-mode 1))
+
+
+  (use-package nord-theme)
+
+
+
+
+  (general-def
+    :keymaps 'timelines-mode-map
+    :states 'normal
+    "RET" 'timelines-eval-region)
 
 
 
 #+END_SRC
 * Key bindings
+
+aoeuaoeuaoeuaoeu
 #+BEGIN_SRC elisp
 
 (general-def
@@ -123,7 +130,7 @@
 
 
 
-(defvar leader-key "SPC")
+(defconst leader-key "SPC")
 
 
 (general-def
@@ -138,10 +145,10 @@
   "w t" 'evil-window-down
   "w n" 'evil-window-up
 
-  "w H" '+evil/window-move-left
-  "w S" '+evil/window-move-right
-  "w T" '+evil/window-move-down
-  "w N" '+evil/window-move-up
+  ;;"w H" '+evil/window-move-left
+  ;;"w S" '+evil/window-move-right
+  ;;"w T" '+evil/window-move-down
+  ;;"w N" '+evil/window-move-up
   )
 
 
@@ -162,6 +169,8 @@
   "C-}" 'text-scale-increase
   "C-{" 'text-scale-decrease)
 #+END_SRC
+
+aoeuaoeua
 * Misc
 
 #+BEGIN_SRC elisp
@@ -228,16 +237,5 @@
 (global-set-key "\M-g" 'goto-line)
 
 (setq initial-major-mode 'lisp-interaction-mode)
-
-;; Display a more useful startup text
-(let ((startup-file "~/.emacs.d/mini-tutorial.org"))
-  (when (and (file-exists-p startup-file)
-             (get-buffer "*scratch*"))
-    (with-current-buffer "*scratch*"
-      (erase-buffer)
-      (insert-file-contents startup-file)
-      (org-mode))))
-
-;;;;;;;;;;;;;; Lastly, load a local-config.el file if it exists. This is where you should put your own configuration.
 
 #+END_SRC
