@@ -1,0 +1,5 @@
+#!/usr/bin/sh
+
+DEST_PATH="$(dirname $2)"
+mkdir -p $DEST_PATH
+mv $1 $2
