@@ -100,7 +100,7 @@ if ! shopt -oq posix; then
   fi
 fi
 
-#export PATH="/home/w1n5t0n/.pyenv/bin:$PATH"
+export PATH="$HOME/code/scripts:$PATH"
 #eval "$(pyenv init -)"
 #eval "$(pyenv virtualenv-init -)"
 
@@ -110,5 +110,5 @@ alias dotfiles="git --git-dir=$HOME/.config/.dotfiles/ --work-tree=$HOME"
 SCRIPTS_DIR="$HOME/code/scripts"
 # dotfiles config --local status.showUntrackedFiles no
 export PATH="$SCRIPTS_DIR:$PATH"
-neofetch
+#neofetch
 
