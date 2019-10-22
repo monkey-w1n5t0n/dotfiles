@@ -61,7 +61,7 @@
   (solaire-mode-swap-bg))
 #+END_SRC
 ** Editor
-
+   
 #+BEGIN_SRC elisp
   (use-package treemacs)
   (use-package treemacs-evil)
@@ -96,6 +96,9 @@
   (use-package linum-relative
     :config
     (linum-relative-mode))
+
+  (use-package smartparens
+    :config (smartparens-global-mode 1))
 #+END_SRC
 ** Languages
 #+BEGIN_SRC elisp
@@ -110,9 +113,9 @@
 #+BEGIN_SRC elisp
 
 
-  (defconst timelines-mode-path "~/.emacs.d/timelines-mode.el")
+  (defconst timelines-mode-path "~/code/misc/timelines-emacs/timelines-mode.el")
   (load timelines-mode-path)
-  (defconst timelines-path "~/timelines")
+  (defconst timelines-path "~/code/misc/timelines")
 
 
 
@@ -130,6 +133,7 @@
 #+BEGIN_SRC elisp
 
 
+  (defconst leader-key "SPC")
   (general-def
     :keymaps 'shell-mode-map
     :prefix leader-key
@@ -207,11 +211,11 @@
   
     "k" 'evil-scroll-page-down
     "K" 'evil-scroll-page-up
+
     )
 
 
 
-  (defconst leader-key "SPC")
 
 
   ;;;; WINDOWS AND BUFFERS
@@ -240,6 +244,8 @@
     "b e" 'ido-kill-buffer
 
     "o e" 'shell
+
+    "b s" 'save-buffer
     ;;"w H" '+evil/window-move-left
     ;;"w S" '+evil/window-move-right
     ;;"w T" '+evil/window-move-down

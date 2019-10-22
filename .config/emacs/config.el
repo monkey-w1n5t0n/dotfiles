@@ -82,14 +82,24 @@
   :config
   (linum-relative-mode))
 
+(use-package smartparens
+  :config (smartparens-global-mode 1))
+
 (use-package haskell-mode)
 (use-package intero)
 
-(defconst timelines-mode-path "~/.emacs.d/timelines-mode.el")
+(defconst timelines-mode-path "~/code/misc/timelines-emacs/timelines-mode.el")
 (load timelines-mode-path)
-(defconst timelines-path "~/timelines")
+(defconst timelines-path "~/code/misc/timelines")
 
 (global-display-line-numbers-mode 1)
+
+(defconst leader-key "SPC")
+(general-def
+  :keymaps 'shell-mode-map
+  :prefix leader-key
+  "C-n" 'comint-previous-input
+  "C-t" 'comint-next-input)
 
 (general-def
   :keymaps 'timelines-mode-map
@@ -162,11 +172,11 @@
 
   "k" 'evil-scroll-page-down
   "K" 'evil-scroll-page-up
+
   )
 
 
 
-(defconst leader-key "SPC")
 
 
 ;;;; WINDOWS AND BUFFERS
@@ -195,6 +205,8 @@
   "b e" 'ido-kill-buffer
 
   "o e" 'shell
+
+  "b s" 'save-buffer
   ;;"w H" '+evil/window-move-left
   ;;"w S" '+evil/window-move-right
   ;;"w T" '+evil/window-move-down
