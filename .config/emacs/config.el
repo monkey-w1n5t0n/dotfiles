@@ -1,10 +1,122 @@
-(defconst config-file-path 
-    (expand-file-name "~/.config/emacs/config.org"))
+(defun even? (n) (= (% n 2) 0))
+  (defun odd? (n) (not (even? n)))
 
-(setq explicit-shell-file-name
-  "C:/Program Files/Git/bin/bash.exe")
-(setq shell-file-name explicit-shell-file-name)
-(add-to-list 'exec-path "C:/Program Files/Git/bin")
+  (defun take (num l)
+    (butlast l (- (length l) num)))
+  (defalias 'drop 'nthcdr)
+
+  (defalias 'symbol->string 'symbol-name)
+  (defalias 'string->symbol 'make-symbol)
+
+(print (symbol->string 'helloMothafackas))
+
+  (defun slice (offset n l)
+    (take n (drop offset l)))
+
+
+  (defun group-by (num lst)
+    (if (= 0 (% (length lst) num))
+	(mapcar (lambda (pair-start)
+		  (slice pair-start num lst))
+		(number-sequence 0 (- (length lst) 1) num))
+      (error "group-by: length is not integer multiple of num")))
+
+  (defmacro defconsts (&rest ps)
+    (let ((list-of-defs (mapcar (lambda (x) (cons 'defconst x))
+				(group-by 2 ps))))
+      `(progn ,@list-of-defs)))
+
+
+  (defmacro my-let (&rest args)
+    (let ((list-of-pairs (group-by 2 (butlast args)))
+	  (body (last args)))
+      `(let (,@list-of-pairs)
+	 ,@body)))
+
+ ;; (contains-element-that? (lambda (x) (eql x '0)) '(1 2 3 4))
+
+
+  (defun num-elems-until (test list)
+    (let ((pos (cl-position 't
+			    (mapcar (lambda (x) (funcall test x))
+				    list))))
+      pos))
+
+  (defun args-contain-rest (args)
+    (let* ((list-of-strings
+	    (mapcar 'symbol->string args)))
+      (filter
+       (lambda (str) (string-match-p (regexp-quote "...") str))
+       list-of-strings)))
+
+  (defmacro my-lambda (defs body)
+    ;; If there's no need to change arguments:
+    (if (not (args-contain-rest defs))
+	`(lambda (,@defs) ,@body)
+      ;; Otherwise:
+      (let* ((rest-start
+	      (num-elems-until (lambda (x) (eql 't x))
+			       (mapcar
+				(lambda (x)
+				  (if (string-match-p (regexp-quote "...") (symbol->string x))
+				      't
+				    nil))
+				defs)))
+	     (first-defs (slice 0 rest-start defs))
+	     (rest-binder (string->symbol
+			   (substring (symbol->string (nth rest-start defs))
+				      0
+				      -3))))
+	(print (format "defs: %s" defs))
+	(print (format "rest-start: %s" rest-start))
+	(print (format "rest-binder %s" rest-binder))
+	`(lambda (,@first-defs &rest ,rest-binder)))))
+
+(defun concat-paths (p1 &rest ps)
+  (let ((new-ps
+	 (append (mapcar 'file-name-as-directory (butlast ps))
+		 (last ps))))
+    (apply 'concat (cons
+		    (file-name-as-directory p1)
+		    new-ps))))
+
+;; (progn
+ ;;   (defmacro def-const-paths (&rest list)
+ ;;     (let ((first-elems ))
+ ;;       `(defconsts ,@list)))
+
+ ;;   (macroexpand '(def-const-paths
+ ;; 		  p1 ("~")
+ ;; 		  p2 (p1 "code"))))
+
+
+(defconsts home-d (expand-file-name "~/"))
+(defconsts home-d (expand-file-name "~/"))
+(defconsts home-d (expand-file-name "~/"))
+(defconsts home-d (expand-file-name "~/"))
+(defconsts home-d (expand-file-name "~/"))
+
+ (macroexpand '(defconsts
+   ;; Main
+   home-d (expand-file-name "~/")
+   code-d (concat-paths home-d "code")
+   livecode-d (concat-paths home-d "livecode")
+   ;; Config
+   config-d (concat-paths home-d ".config")
+   config-f (concat-paths config-d "emacs" "config.org")
+   ;; TimeLines
+   timelines-d (concat-paths livecode-d "timelines")
+   timelines-sc-d (concat-paths livecode-d "timelines")
+   timelines-emacs-d (concat-paths livecode-d "timelines")
+   ;; Misc 
+   supercollider-d (concat-paths livecode-d "supercollider")
+   extempore-d (concat-paths code-d "timelines")
+   kymata-d (concat-paths code-d "timelines")))
+
+ (setq explicit-shell-file-name
+   "C:/Program Files/Git/bin/bash.exe")
+ (setq shell-file-name explicit-shell-file-name)
+ (add-to-list 'exec-path "C:/Program Files/Git/bin")
 
 ;;(use-package smart-mode-line
     ;; :config
@@ -48,49 +160,64 @@
   (solaire-global-mode +1)
   (solaire-mode-swap-bg))
 
+;  (use-package pretty-mode
+;    :config 
+;    (global-pretty-mode t))
+
 (use-package treemacs)
 (use-package treemacs-evil)
 
-
+(use-package multiple-cursors)
 (use-package general)
 
 (use-package evil
-  :config
-  (evil-mode 1))
+    :config
+    (evil-mode 1))
 
 (use-package yasnippet
-  :config 
-  (yas-global-mode 1)
-  (define-key yas-minor-mode-map (kbd "<tab>") nil)
-  (define-key yas-minor-mode-map (kbd "TAB") nil)
-  (define-key yas-minor-mode-map (kbd "SPC") yas-maybe-expand))
+    :config 
+    (yas-global-mode 1)
+    (define-key yas-minor-mode-map (kbd "<tab>") nil)
+    (define-key yas-minor-mode-map (kbd "TAB") nil)
+    (define-key yas-minor-mode-map (kbd "SPC") yas-maybe-expand))
 
 (use-package which-key
-  :config (which-key-mode))
+    :config (which-key-mode))
 
 (use-package ido
-  :config
-  (ido-mode 1)
-  (setq ido-enable-flex-matching t
-	ido-create-new-buffer 'always
-	ido-everywhere t))
+    :config
+    (ido-mode 1)
+    (setq ido-enable-flex-matching t
+	  ido-create-new-buffer 'always
+	  ido-everywhere t))
 (use-package ido-vertical-mode
-  :init
-  (ido-vertical-mode 1))
+    :init
+    (ido-vertical-mode 1))
 
 (use-package linum-relative
-  :config
-  (linum-relative-mode))
+    :config
+    (linum-relative-mode))
 
 (use-package smartparens
-  :config (smartparens-global-mode 1))
+    :config (smartparens-global-mode 1))
+
+(use-package paredit)
+(autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
+(add-hook 'emacs-lisp-mode-hook       #'enable-paredit-mode)
+(add-hook 'eval-expression-minibuffer-setup-hook #'enable-paredit-mode)
+(add-hook 'ielm-mode-hook             #'enable-paredit-mode)
+(add-hook 'lisp-mode-hook             #'enable-paredit-mode)
+(add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
+(add-hook 'scheme-mode-hook           #'enable-paredit-mode)
 
 (use-package haskell-mode)
-(use-package intero)
+ (use-package intero)
+(use-package racket-mode)
 
-(defconst timelines-mode-path "~/code/misc/timelines-emacs/timelines-mode.el")
-(load timelines-mode-path)
-(defconst timelines-path "~/code/misc/timelines")
+;;(use-package org-ref)
+  (defconst timelines-mode-path "~/code/timelines-emacs/timelines-mode.el")
+  (load timelines-mode-path)
+  (defconst timelines-path "~/code/misc/timelines")
 
 (global-display-line-numbers-mode 1)
 
@@ -215,7 +342,7 @@
 
 (defun open-config-file ()
   (interactive)
-  (find-file config-file-path))
+  (find-file config-f))
 
 
 ;;"SPC-f-." 'counsel-find-file
