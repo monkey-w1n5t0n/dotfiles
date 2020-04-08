@@ -253,13 +253,9 @@
 
   (use-package haskell-mode)
  (use-package intero)
-<<<<<<< HEAD
-
 (package-install-file "~/code/misc/extempore-emacs-mode")
 (package-install-file "~/.config/emacs/misc")
-=======
 (use-package racket-mode)
->>>>>>> 5c800504b4ab852c484ea9cd741d95f163c2292c
 #+END_SRC
 
 
@@ -396,7 +392,6 @@
       :prefix leader-key
 
 
-<<<<<<< HEAD
       "w k" 'split-window-below
       "w u" 'split-window-right
       ;;
@@ -407,11 +402,7 @@
       "w s" 'evil-window-right
       "w t" 'evil-window-down
       "w n" 'evil-window-up
-=======
-  (defun open-config-file ()
-    (interactive)
-    (find-file config-f))
->>>>>>> 5c800504b4ab852c484ea9cd741d95f163c2292c
+
 
       "f f" 'ido-find-file
       "f p" 'open-config-file 
@@ -429,6 +420,7 @@
       ;;"w N" '+evil/window-move-up
 
       )
+
 
     (defun open-config-file ()
       (interactive)
