@@ -1,3 +1,5 @@
 [user]
-	email = lnfinitemonkeys@tuta.io
-	name = lnfinite Monkeys
+	email = dimitrios@scored.film
+	name = Dimitrios Kyriakoudis
+[credential]
+	helper = wincred
