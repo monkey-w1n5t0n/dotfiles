@@ -48,45 +48,54 @@
   (solaire-global-mode +1)
   (solaire-mode-swap-bg))
 
+(add-to-list 'load-path "~/code/misc/scel/el")
+(require 'sclang)
+
+(use-package evil-snipe)
 (use-package treemacs)
-(use-package treemacs-evil)
+  (use-package treemacs-evil)
 
 
-(use-package general)
+  (use-package general)
 
-(use-package evil
-  :config
-  (evil-mode 1))
+  (use-package evil
+    :config
+    (evil-mode 1))
 
-(use-package yasnippet
-  :config 
-  (yas-global-mode 1)
-  (define-key yas-minor-mode-map (kbd "<tab>") nil)
-  (define-key yas-minor-mode-map (kbd "TAB") nil)
-  (define-key yas-minor-mode-map (kbd "SPC") yas-maybe-expand))
+  (use-package yasnippet
+    :config 
+    (yas-global-mode 1)
+    (define-key yas-minor-mode-map (kbd "<tab>") nil)
+    (define-key yas-minor-mode-map (kbd "TAB") nil)
+    (define-key yas-minor-mode-map (kbd "SPC") yas-maybe-expand))
 
-(use-package which-key
-  :config (which-key-mode))
+  (use-package which-key
+    :config (which-key-mode))
 
-(use-package ido
-  :config
-  (ido-mode 1)
-  (setq ido-enable-flex-matching t
-	ido-create-new-buffer 'always
-	ido-everywhere t))
-(use-package ido-vertical-mode
-  :init
-  (ido-vertical-mode 1))
+  (use-package ido
+    :config
+    (ido-mode 1)
+    (setq ido-enable-flex-matching t
+	  ido-create-new-buffer 'always
+	  ido-everywhere t))
+  (use-package ido-vertical-mode
+    :init
+    (ido-vertical-mode 1))
 
-(use-package linum-relative
-  :config
-  (linum-relative-mode))
+  (use-package linum-relative
+    :config
+    (linum-relative-mode))
 
-(use-package smartparens
-  :config (smartparens-global-mode 1))
+  (use-package smartparens
+    :config (smartparens-global-mode 1))
+
+(use-package multiple-cursors)
 
 (use-package haskell-mode)
-(use-package intero)
+ (use-package intero)
+
+(package-install-file "~/code/misc/extempore-emacs-mode")
+(package-install-file "~/.config/emacs/misc")
 
 (defconst timelines-mode-path "~/code/misc/timelines-emacs/timelines-mode.el")
 (load timelines-mode-path)
@@ -95,143 +104,160 @@
 (global-display-line-numbers-mode 1)
 
 (defconst leader-key "SPC")
-(general-def
-  :keymaps 'shell-mode-map
-  :prefix leader-key
-  "C-n" 'comint-previous-input
-  "C-t" 'comint-next-input)
 
-(general-def
-  :keymaps 'timelines-mode-map
-  :states 'normal
-  "RET" 'timelines-eval-region)
+   (general-def
+     :keymaps 'shell-mode-map
+     :prefix leader-key
+     "C-n" 'comint-previous-input
+     "C-t" 'comint-next-input)
 
-(general-def
-  :states '(normal visual motion)
-  :keymaps 'visual-line-mode-map
-  "t" 'evil-next-visual-line
-  "n" 'evil-previous-visual-line
-  )
+   (general-def
+     :keymaps 'timelines-mode-map
+     :states 'normal
+     "RET" 'timelines-eval-region)
 
-  ;;;; Inside a buffer
-(general-def
-  :states '(normal visual motion)
-  :keymaps 'override
+   (general-def
+     :states '(normal visual motion)
+     :keymaps 'visual-line-mode-map
+     "t" 'evil-next-visual-line
+     "n" 'evil-previous-visual-line
+     )
 
-  "h" 'backward-char
-  "t" 'evil-next-visual-line
-  "n" 'evil-previous-visual-line
-  "s" 'forward-char
+     ;;;; Inside a buffer
+   (general-def
+     :states '(normal visual motion)
+     :keymaps 'override
 
-  "H" 'evil-backward-word-begin
-  "T" 'evil-forward-paragraph
-  "N" 'evil-backward-paragraph
-  "S" 'evil-forward-word-end
+     "h" 'backward-char
+     "t" 'evil-next-visual-line
+     "n" 'evil-previous-visual-line
+     "s" 'forward-char
 
-  "e" 'evil-delete
-  "a" 'evil-avy-goto-char
+     "H" 'evil-backward-word-begin
+     "T" 'evil-forward-paragraph
+     "N" 'evil-backward-paragraph
+     "S" 'evil-forward-word-end
 
-  ";" 'undo-tree-undo
-  ":" 'undo-tree-redo
+     "e" 'evil-delete
+     "a" 'evil-avy-goto-char
 
-  "'" 'evil-ex
+     ";" 'undo-tree-undo
+     ":" 'undo-tree-redo
 
-  "E" 'evil-delete-whole-line
+     "'" 'evil-ex
 
-  "cg" 'evil-snipe-F
-  "cG" 'evil-snipe-T
-  "cr" 'evil-snipe-f
-  "cR" 'evil-snipe-t
-  "cc" 'evil-snipe-repeat
+     "E" 'evil-delete-whole-line
 
-  "gg" 'evil-beginning-of-visual-line
-  "gr" 'evil-end-of-visual-line
-  "gc" 'evil-goto-first-line
-  "gt" 'evil-goto-line
+     "cg" 'evil-snipe-F
+     "cG" 'evil-snipe-T
+     "cr" 'evil-snipe-f
+     "cR" 'evil-snipe-t
+     "cc" 'evil-snipe-repeat
 
-  "G" 'evil-scroll-down
-  "R" 'evil-scroll-up
+     "gg" 'evil-beginning-of-visual-line
+     "gr" 'evil-end-of-visual-line
+     "gc" 'evil-goto-first-line
+     "gt" 'evil-goto-line
 
-
-  "SPC c /" 'comment-or-uncomment-region
-  "j" 'evil-change
+     "G" 'evil-scroll-down
+     "R" 'evil-scroll-up
 
 
-  "u" 'evil-insert
-  "U" 'evil-insert-line
-  "i" 'evil-append
-  "I" 'evil-append-line
+     "SPC c /" 'comment-or-uncomment-region
+     "j" 'evil-change
 
 
-  "p" 'evil-paste-after;; -from-0
-
-  "oe" 'evil-open-below
-  "ou" 'evil-open-above
-
-  "-" 'newline-and-indent
-
-  "k" 'evil-scroll-page-down
-  "K" 'evil-scroll-page-up
-
-  )
+     "u" 'evil-insert
+     "U" 'evil-insert-line
+     "i" 'evil-append
+     "I" 'evil-append-line
 
 
+     "p" 'evil-paste-after;; -from-0
 
+     "oe" 'evil-open-below
+     "ou" 'evil-open-above
 
+     "-" 'newline-and-indent
 
-;;;; WINDOWS AND BUFFERS
-(general-def
-  :states 'normal
-  :keymaps 'override
-  :prefix leader-key
+     "k" 'evil-scrll-page-down
+     "K" 'evil-scroll-page-up
 
-
-  "w k" 'split-window-below
-  "w u" 'split-window-right
-  ;;
-  "w E" 'delete-other-windows
-  "w e" 'delete-window
-  ;;
-  "w h" 'evil-window-left
-  "w s" 'evil-window-right
-  "w t" 'evil-window-down
-  "w n" 'evil-window-up
-
-  "f f" 'ido-find-file
-  "f p" 'open-config-file 
-
-  "b s" 'save-buffer
-  "b b" 'ido-switch-buffer
-  "b e" 'ido-kill-buffer
-
-  "o e" 'shell
-
-  "b s" 'save-buffer
-  ;;"w H" '+evil/window-move-left
-  ;;"w S" '+evil/window-move-right
-  ;;"w T" '+evil/window-move-down
-  ;;"w N" '+evil/window-move-up
-  )
-
-(defun open-config-file ()
-  (interactive)
-  (find-file config-file-path))
-
-
-;;"SPC-f-." 'counsel-find-file
-
-
-;;
-;;
-;;(lookup-key (current-global-map) (kbd "Esc-g"))
+     )
 
 
 
+ (general-def
+   :states 'normal
+   :keymaps 'org-mode-map
+
+   "M-t" 'org-metadown
+   "M-n" 'org-metaup
+   "M-h" 'org-metaleft
+   "M-s" 'org-metaright
+
+   ;; "S-t" 'org-shiftdown
+   ;; "S-n" 'org-shiftup
+   ;; "S-h" 'org-shiftleft
+   ;; "S-s" 'org-shiftright
+   ;;
+)
+
+   ;; ;
+ ;;; WINDOWS AND BUFFERS
+   (general-def
+     :states 'normal
+     :keymaps 'override
+     :prefix leader-key
 
 
-(general-def
-  "C-}" 'text-scale-increase
-  "C-{" 'text-scale-decrease)
+     "w k" 'split-window-below
+     "w u" 'split-window-right
+     ;;
+     "w E" 'delete-other-windows
+     "w e" 'delete-window
+     ;;
+     "w h" 'evil-window-left
+     "w s" 'evil-window-right
+     "w t" 'evil-window-down
+     "w n" 'evil-window-up
+
+     "f f" 'ido-find-file
+     "f p" 'open-config-file 
+
+     "b s" 'save-buffer
+     "b b" 'ido-switch-buffer
+     "b e" 'ido-kill-buffer
+
+     "o e" 'shell
+
+     "b s" 'save-buffer
+     ;;"w H" '+evil/window-move-left
+     ;;"w S" '+evil/window-move-right
+     ;;"w T" '+evil/window-move-down
+     ;;"w N" '+evil/window-move-up
+
+     )
+
+   (defun open-config-file ()
+     (interactive)
+     (find-file config-file-path))
+
+
+   ;;"SPC-f-." 'counsel-find-file
+
+
+   ;;
+   ;;
+   ;;(lookup-key (current-global-map) (kbd "Esc-g"))
+
+
+
+
+
+   (general-def
+     "C-}" 'text-scale-increase
+     "C-{" 'text-scale-decrease)
 
 
 
