@@ -25,27 +25,17 @@
 (use-package org)
 
 (defconst literate-config (expand-file-name "~/.config/emacs/config.org"))
-(defconst tangled-config "config.el")
+(defconst tangled-config "config-tangled.el")
 (when (file-exists-p literate-config)
   (org-babel-tangle-file literate-config tangled-config)
   (org-babel-load-file literate-config))
-
-
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   (quote
-    ("c74e83f8aa4c78a121b52146eadb792c9facc5b1f02c917e3dbb454fca931223" "a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" default)))
  '(package-selected-packages
-   (quote
-<<<<<<< HEAD
-    (dockerfile-mode multiple-cursors cmake-mode load-directory evil-snipe extempore-mode scel smartparens linum-relative solaire-mode doom-themes treemacs-evil treemacs intero doom-modeline modeline smart-mode-line evil nord-theme ido-vertical-mode haskell-mode use-package))))
-=======
-    (parinfer pretty-mode paredit multiple-cursors racket-mode racket-mod helm org-ref smartparens linum-relative solaire-mode doom-themes treemacs-evil treemacs intero doom-modeline modeline smart-mode-line evil nord-theme ido-vertical-mode haskell-mode use-package))))
->>>>>>> 5c800504b4ab852c484ea9cd741d95f163c2292c
+   '(all-the-icons racket-mode cmake-mode extempore-mode intero haskell-mode parinfer smartparens linum-relative ido-vertical-mode which-key yasnippet general multiple-cursors treemacs-evil treemacs evil-snipe solaire-mode doom-themes use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

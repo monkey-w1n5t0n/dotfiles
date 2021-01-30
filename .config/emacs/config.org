@@ -1,81 +1,78 @@
 #+TITLE: w1n5t0n's Emacs config file
-
 * Functions
 ** Misc
 #+BEGIN_SRC elisp
-    (defun even? (n) (= (% n 2) 0))
-    (defun odd? (n) (not (even? n)))
-  
-    (defun take (num l)
-      (butlast l (- (length l) num)))
-    (defalias 'drop 'nthcdr)
+  (defun even? (n) (= (% n 2) 0))
+  (defun odd? (n) (not (even? n)))
 
-    (defalias 'symbol->string 'symbol-name)
-    (defalias 'string->symbol 'make-symbol)
+  (defun take (num l)
+    (butlast l (- (length l) num)))
+  (defalias 'drop 'nthcdr)
 
-  (print (symbol->string 'helloMothafackas))
+  (defalias 'symbol->string 'symbol-name)
+  (defalias 'string->symbol 'make-symbol)
 
-    (defun slice (offset n l)
-      (take n (drop offset l)))
+  (defun slice (offset n l)
+    (take n (drop offset l)))
 
+  (defun group-by (num lst)
+    (if (= 0 (% (length lst) num))
+	(mapcar
+	 (lambda (pair-start)
+	   (slice pair-start num lst))
+	 (number-sequence 0 (- (length lst) 1) num))
+      (error "group-by: length is not integer multiple of num")))
 
-    (defun group-by (num lst)
-      (if (= 0 (% (length lst) num))
-	  (mapcar (lambda (pair-start)
-		    (slice pair-start num lst))
-		  (number-sequence 0 (- (length lst) 1) num))
-	(error "group-by: length is not integer multiple of num")))
-
-    (defmacro defconsts (&rest ps)
-      (let ((list-of-defs (mapcar (lambda (x) (cons 'defconst x))
-				  (group-by 2 ps))))
-	`(progn ,@list-of-defs)))
+  (defmacro defconsts (&rest ps)
+    (let ((list-of-defs (mapcar (lambda (x) (cons 'defconst x))
+				(group-by 2 ps))))
+      `(progn ,@list-of-defs)))
 
 
-    (defmacro my-let (&rest args)
-      (let ((list-of-pairs (group-by 2 (butlast args)))
-	    (body (last args)))
-	`(let (,@list-of-pairs)
-	   ,@body)))
+  (defmacro my-let (&rest args)
+    (let ((list-of-pairs (group-by 2 (butlast args)))
+	  (body (last args)))
+      `(let (,@list-of-pairs)
+	 ,@body)))
 
-   ;; (contains-element-that? (lambda (x) (eql x '0)) '(1 2 3 4))
+  ;; (contains-element-that? (lambda (x) (eql x '0)) '(1 2 3 4))
 
 
-    (defun num-elems-until (test list)
-      (let ((pos (cl-position 't
-			      (mapcar (lambda (x) (funcall test x))
-				      list))))
-	pos))
+  (defun num-elems-until (test list)
+    (let ((pos (cl-position 't
+			    (mapcar (lambda (x) (funcall test x))
+				    list))))
+      pos))
 
-    (defun args-contain-rest (args)
-      (let* ((list-of-strings
-	      (mapcar 'symbol->string args)))
-	(filter
-	 (lambda (str) (string-match-p (regexp-quote "...") str))
-	 list-of-strings)))
+  (defun args-contain-rest (args)
+    (let* ((list-of-strings
+	    (mapcar 'symbol->string args)))
+      (filter
+       (lambda (str) (string-match-p (regexp-quote "...") str))
+       list-of-strings)))
 
-    (defmacro my-lambda (defs body)
-      ;; If there's no need to change arguments:
-      (if (not (args-contain-rest defs))
-	  `(lambda (,@defs) ,@body)
-	;; Otherwise:
-	(let* ((rest-start
-		(num-elems-until (lambda (x) (eql 't x))
-				 (mapcar
-				  (lambda (x)
-				    (if (string-match-p (regexp-quote "...") (symbol->string x))
-					't
-				      nil))
-				  defs)))
-	       (first-defs (slice 0 rest-start defs))
-	       (rest-binder (string->symbol
-			     (substring (symbol->string (nth rest-start defs))
-					0
-					-3))))
-	  (print (format "defs: %s" defs))
-	  (print (format "rest-start: %s" rest-start))
-	  (print (format "rest-binder %s" rest-binder))
-	  `(lambda (,@first-defs &rest ,rest-binder)))))
+  (defmacro my-lambda (defs body)
+    ;; If there's no need to change arguments:
+    (if (not (args-contain-rest defs))
+	`(lambda (,@defs) ,@body)
+      ;; Otherwise:
+      (let* ((rest-start
+	      (num-elems-until (lambda (x) (eql 't x))
+			       (mapcar
+				(lambda (x)
+				  (if (string-match-p (regexp-quote "...") (symbol->string x))
+				      't
+				    nil))
+				defs)))
+	     (first-defs (slice 0 rest-start defs))
+	     (rest-binder (string->symbol
+			   (substring (symbol->string (nth rest-start defs))
+				      0
+				      -3))))
+	(print (format "defs: %s" defs))
+	(print (format "rest-start: %s" rest-start))
+	(print (format "rest-binder %s" rest-binder))
+	`(lambda (,@first-defs &rest ,rest-binder)))))
 
 
 #+END_SRC
@@ -88,12 +85,89 @@
       (apply 'concat (cons
 		      (file-name-as-directory p1)
 		      new-ps))))
+
+
 #+END_SRC
 
+** Util
+#+BEGIN_SRC elisp
+  (defun kill-other-buffers ()
+    "Kill all other buffers."
+    (interactive)
+    (mapc 'kill-buffer 
+          (delq (current-buffer) 
+                (remove-if-not 'buffer-file-name (buffer-list)))))
+
+  (defun indent-buffer ()
+    (interactive)
+    (save-excursion
+      (indent-region (point-min) (point-max) nil)))
+
+
+  (global-set-key [f12] 'indent-buffer)
+#+END_SRC
+ 
+* Defaults
+#+BEGIN_SRC elisp
+  ;;;;;;;;;;;;;; Setup some more user-friendly functionality and defaults (e.g. the usual cut/copy/paste bindings)
+
+  ;; Type 'y' or 'n' instead of 'yes' or 'no'
+  (fset 'yes-or-no-p 'y-or-n-p)
+
+  ;; Replaces a selection with any letter pressed
+  (delete-selection-mode 1)
+
+  (setq scroll-conservatively 100
+        select-enable-clipboard t
+        show-paren-delay 0
+        show-trailing-whitespace nil)
+
+
+  ;;;;;;;;;;;;;; Setup themes and other aesthetic stuff
+
+  ;; Set the mood, there's plenty of other themes to choose from here:
+  ;; https://emacsthemes.ocm/popular/index.html
+
+  ;; Set the window's name
+  (setq frame-title-format "TimeLines")
+
+  ;; Remove unecessary distractions from the frame
+  (when window-system
+    (menu-bar-mode -1)
+    (tool-bar-mode -1)
+    (scroll-bar-mode -1)
+    (tooltip-mode -1))
+
+  (line-number-mode 0)
+  (show-paren-mode 1)
+
+  ;; Cursor settings
+  (blink-cursor-mode 0)
+  (set-default 'cursor-type 'box)
+  (set-cursor-color "#ff1493")
+
+  ;; Highlight the line the cursor is on
+  (global-hl-line-mode t)
+
+  ;; Operate on visual, rather than logical, lines
+  (add-hook 'text-mode-hook 'turn-on-visual-line-mode)
+
+
+
+  ;; Clean up startup behaviour
+  (setq inhibit-startup-message t)
+  (setq initial-scratch-message "")
+  (setq ring-bell-function 'ignore)
+
+  ;; Go to any line with Alt-g
+  (global-set-key "\M-g" 'goto-line)
+
+  (setq initial-major-mode 'lisp-interaction-mode)
+
+#+END_SRC
 * Variables
 ** Paths
 #+BEGIN_SRC elisp
-
 
   ;; (progn
   ;;   (defmacro def-const-paths (&rest list)
@@ -105,31 +179,38 @@
   ;; 		  p2 (p1 "code"))))
 
 
- (defconsts home-d (expand-file-name "~/"))
- (defconsts home-d (expand-file-name "~/"))
- (defconsts home-d (expand-file-name "~/"))
- (defconsts home-d (expand-file-name "~/"))
- (defconsts home-d (expand-file-name "~/"))
+  (defconsts home-d (expand-file-name "~/"))
+
+  ;(defpaths
+  ;  *home* "~/"
+  ;  *code* (*home* / "code"))
   
-  (macroexpand '(defconsts
+
+
+  (defconsts
     ;; Main
     home-d (expand-file-name "~/")
     code-d (concat-paths home-d "code")
     livecode-d (concat-paths home-d "livecode")
+
     ;; Config
     config-d (concat-paths home-d ".config")
-    config-f (concat-paths config-d "emacs" "config.org")
+    emacs-config-d (concat-paths config-d "emacs")
+    emacs-config-literate-f (concat-paths emacs-config-d "config.org")
+    emacs-config-tangled-f (concat-paths emacs-config-d tangled-config)
+
     ;; TimeLines
     timelines-d (concat-paths livecode-d "timelines")
     timelines-sc-d (concat-paths livecode-d "timelines")
     timelines-emacs-d (concat-paths livecode-d "timelines")
+
     ;; Misc 
     supercollider-d (concat-paths livecode-d "supercollider")
     extempore-d (concat-paths code-d "timelines")
-    kymata-d (concat-paths code-d "timelines")))
+    kymata-d (concat-paths code-d "timelines"))
 
   (setq explicit-shell-file-name
-    "C:/Program Files/Git/bin/bash.exe")
+	"C:/Program Files/Git/bin/bash.exe")
   (setq shell-file-name explicit-shell-file-name)
   (add-to-list 'exec-path "C:/Program Files/Git/bin")
 
@@ -139,40 +220,41 @@
 ** Appearance
 *** Themes   
 #+BEGIN_SRC elisp
-    ;;(use-package smart-mode-line
-    ;; :config
-    ;;(sml/setup)
-   ;;(setq sml/theme 'respectful))
+      ;;(use-package smart-mode-line
+      ;; :config
+      ;;(sml/setup)
+     ;;(setq sml/theme 'respectful))
 
-  ;;(use-package all-the-icons)
-  ;;(use-package nord-theme)
+    ;;(use-package all-the-icons)
+    ;;(use-package nord-theme)
 
 
-(use-package doom-themes)
+  (use-package doom-themes)
 
-;; Global settings (defaults)
-(setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-      doom-themes-enable-italic t) ; if nil, italics is universally disabled
+  ;; Global settings (defaults)
+  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+        doom-themes-enable-italic t) ; if nil, italics is universally disabled
 
-;; Load the theme (doom-one, doom-molokai, etc); keep in mind that each theme
-;; may have their own settings.
-(load-theme 'doom-nord t)
+  ;; Load the theme (doom-one, doom-molokai, etc); keep in mind that each theme
+  ;; may have their own settings.
+  (load-theme 'doom-nord t)
 
-;; Enable flashing mode-line on errors
-(doom-themes-visual-bell-config)
+  ;; Enable flashing mode-line on errors
+  (doom-themes-visual-bell-config)
 
-;; Enable custom neotree theme (all-the-icons must be installed!)
-(doom-themes-neotree-config)
-;; or for treemacs users
-(setq doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
-(doom-themes-treemacs-config)
+  ;; Enable custom neotree theme (all-the-icons must be installed!)
+  (doom-themes-neotree-config)
+  ;; or for treemacs users
+  (setq doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
+  (doom-themes-treemacs-config)
 
-;; Corrects (and improves) org-mode's native fontification.
-(doom-themes-org-config)
-  ;;(use-package doom-modeline
-  ;;  :config
+  ;; Corrects (and improves) org-mode's native fontification.
+  ;;(doom-themes-org-config)
+    ;;(use-package doom-modeline
+    ;;  :config
   ;;  (doom-modeline-mode 1))
 
+  (use-package all-the-icons)
 #+END_SRC
 *** Solaire Mode
 #+BEGIN_SRC elisp
@@ -194,55 +276,70 @@
    
 #+BEGIN_SRC elisp
 
-(add-to-list 'load-path "~/code/misc/scel/el")
-(require 'sclang)
+  (add-to-list 'load-path "~/code/misc/scel/el")
+  (require 'sclang)
 
-(use-package evil-snipe)
-(use-package treemacs)
+  (use-package evil-snipe)
+  (use-package treemacs)
   (use-package treemacs-evil)
 
   (use-package multiple-cursors)
   (use-package general)
 
   (use-package evil
-      :config
-      (evil-mode 1))
+    :config
+    (evil-mode 1))
 
   (use-package yasnippet
-      :config 
-      (yas-global-mode 1)
-      (define-key yas-minor-mode-map (kbd "<tab>") nil)
-      (define-key yas-minor-mode-map (kbd "TAB") nil)
-      (define-key yas-minor-mode-map (kbd "SPC") yas-maybe-expand))
+    :config 
+    (yas-global-mode 1)
+    (define-key yas-minor-mode-map (kbd "<tab>") nil)
+    (define-key yas-minor-mode-map (kbd "TAB") nil)
+    (define-key yas-minor-mode-map (kbd "SPC") yas-maybe-expand))
 
+
+  ;; When a key combination has started, after a while
+  ;; displays all possible keys to complete it
   (use-package which-key
-      :config (which-key-mode))
+    :config (which-key-mode))
 
   (use-package ido
-      :config
-      (ido-mode 1)
-      (setq ido-enable-flex-matching t
-	    ido-create-new-buffer 'always
-	    ido-everywhere t))
+    :config
+    (ido-mode 1)
+    (setq ido-enable-flex-matching t
+          ido-create-new-buffer 'always
+          ido-everywhere t))
   (use-package ido-vertical-mode
-      :init
-      (ido-vertical-mode 1))
+    :init
+    (ido-vertical-mode 1))
 
   (use-package linum-relative
-      :config
-      (linum-relative-mode))
+    :config
+    (linum-relative-mode))
 
   (use-package smartparens
-      :config (smartparens-global-mode 1))
+    :config (smartparens-global-mode 1))
 
-  (use-package paredit)
-  (autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
-  (add-hook 'emacs-lisp-mode-hook       #'enable-paredit-mode)
-  (add-hook 'eval-expression-minibuffer-setup-hook #'enable-paredit-mode)
-  (add-hook 'ielm-mode-hook             #'enable-paredit-mode)
-  (add-hook 'lisp-mode-hook             #'enable-paredit-mode)
-  (add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
-  (add-hook 'scheme-mode-hook           #'enable-paredit-mode)
+  (use-package parinfer
+    :bind
+    (("C-," . parinfer-toggle-mode))
+    :init
+    (progn
+      (setq parinfer-extensions
+            '(defaults       ; should be included.
+               pretty-parens  ; different paren styles for different modes.
+               evil           ; If you use Evil.
+                                          ;lispy          ; If you use Lispy. With this extension, you should install Lispy and do not enable lispy-mode directly.
+               paredit        ; Introduce some paredit commands.
+               smart-tab      ; C-b & C-f jump positions and smart shift with tab & S-tab.
+               smart-yank))   ; Yank behavior depend on mode.
+      (add-hook 'clojure-mode-hook #'parinfer-mode)
+      (add-hook 'emacs-lisp-mode-hook #'parinfer-mode)
+      (add-hook 'common-lisp-mode-hook #'parinfer-mode)
+      (add-hook 'scheme-mode-hook #'parinfer-mode)
+      (add-hook 'lisp-mode-hook #'parinfer-mode)
+      (add-hook 'racket-mode-hook #'parinfer-mode)))
+
 #+END_SRC
 *** Multiple Cursors
 #+BEGIN_SRC elisp
@@ -252,10 +349,10 @@
 #+BEGIN_SRC elisp
 
   (use-package haskell-mode)
- (use-package intero)
-(package-install-file "~/code/misc/extempore-emacs-mode")
-(package-install-file "~/.config/emacs/misc")
-(use-package racket-mode)
+  (use-package intero)
+  (package-install-file "~/code/misc/extempore-emacs-mode")
+  (package-install-file "~/.config/emacs/misc")
+  (use-package racket-mode)
 #+END_SRC
 
 
@@ -265,7 +362,7 @@
 
 ;;(use-package org-ref)
   (defconst timelines-mode-path "~/code/timelines-emacs/timelines-mode.el")
-  (load timelines-mode-path)
+  ;;(load timelines-mode-path)
   (defconst timelines-path "~/code/misc/timelines")
 
 
@@ -274,97 +371,100 @@
 
 
 #+END_SRC
+
 * Config
 
 #+BEGIN_SRC elisp
 (global-display-line-numbers-mode 1)
+  (setq-default indent-tabs-mode nil)
 #+END_SRC
+
 * Key bindings
 
 #+BEGIN_SRC elisp
 
 
-    (defconst leader-key "SPC")
+  (defconst leader-key "SPC")
 
-    (general-def
-      :keymaps 'shell-mode-map
-      :prefix leader-key
-      "C-n" 'comint-previous-input
-      "C-t" 'comint-next-input)
+  (general-def
+    :keymaps 'shell-mode-map
+    :prefix leader-key
+    "C-n" 'comint-previous-input
+    "C-t" 'comint-next-input)
 
-    (general-def
-      :keymaps 'timelines-mode-map
-      :states 'normal
-      "RET" 'timelines-eval-region)
+  (general-def
+    :keymaps 'timelines-mode-map
+    :states 'normal
+    "RET" 'timelines-eval-region)
 
-    (general-def
-      :states '(normal visual motion)
-      :keymaps 'visual-line-mode-map
-      "t" 'evil-next-visual-line
-      "n" 'evil-previous-visual-line
-      )
+  (general-def
+    :states '(normal visual motion)
+    :keymaps 'visual-line-mode-map
+    "t" 'evil-next-visual-line
+    "n" 'evil-previous-visual-line
+    )
 
-      ;;;; Inside a buffer
-    (general-def
-      :states '(normal visual motion)
-      :keymaps 'override
+        ;;;; Inside a buffer
+  (general-def
+    :states '(normal visual motion)
+    :keymaps 'override
 
-      "h" 'backward-char
-      "t" 'evil-next-visual-line
-      "n" 'evil-previous-visual-line
-      "s" 'forward-char
+    "h" 'backward-char
+    "t" 'evil-next-visual-line
+    "n" 'evil-previous-visual-line
+    "s" 'forward-char
 
-      "H" 'evil-backward-word-begin
-      "T" 'evil-forward-paragraph
-      "N" 'evil-backward-paragraph
-      "S" 'evil-forward-word-end
+    "H" 'evil-backward-word-begin
+    "T" 'evil-forward-paragraph
+    "N" 'evil-backward-paragraph
+    "S" 'evil-forward-word-end
 
-      "e" 'evil-delete
-      "a" 'evil-avy-goto-char
+    "e" 'evil-delete
+    "a" 'evil-avy-goto-char
 
-      ";" 'undo-tree-undo
-      ":" 'undo-tree-redo
+    ";" 'undo-tree-undo
+    ":" 'undo-tree-redo
 
-      "'" 'evil-ex
+    "'" 'evil-ex
 
-      "E" 'evil-delete-whole-line
+    "E" 'evil-delete-whole-line
 
-      "cg" 'evil-snipe-F
-      "cG" 'evil-snipe-T
-      "cr" 'evil-snipe-f
-      "cR" 'evil-snipe-t
-      "cc" 'evil-snipe-repeat
+    "cg" 'evil-snipe-F
+    "cG" 'evil-snipe-T
+    "cr" 'evil-snipe-f
+    "cR" 'evil-snipe-t
+    "cc" 'evil-snipe-repeat
 
-      "gg" 'evil-beginning-of-visual-line
-      "gr" 'evil-end-of-visual-line
-      "gc" 'evil-goto-first-line
-      "gt" 'evil-goto-line
+    "gg" 'evil-beginning-of-visual-line
+    "gr" 'evil-end-of-visual-line
+    "gc" 'evil-goto-first-line
+    "gt" 'evil-goto-line
 
-      "G" 'evil-scroll-down
-      "R" 'evil-scroll-up
-
-
-      "SPC c /" 'comment-or-uncomment-region
-      "j" 'evil-change
+    "G" 'evil-scroll-down
+    "R" 'evil-scroll-up
 
 
-      "u" 'evil-insert
-      "U" 'evil-insert-line
-      "i" 'evil-append
-      "I" 'evil-append-line
+    "SPC c /" 'comment-or-uncomment-region
+    "j" 'evil-change
 
 
-      "p" 'evil-paste-after;; -from-0
+    "u" 'evil-insert
+    "U" 'evil-insert-line
+    "i" 'evil-append
+    "I" 'evil-append-line
 
-      "oe" 'evil-open-below
-      "ou" 'evil-open-above
 
-      "-" 'newline-and-indent
+    "p" 'evil-paste-after;; -from-0
 
-      "k" 'evil-scrll-page-down
-      "K" 'evil-scroll-page-up
+    "oe" 'evil-open-below
+    "ou" 'evil-open-above
 
-      )
+    "-" 'newline-and-indent
+
+    "k" 'evil-scrll-page-down
+    "K" 'evil-scroll-page-up
+
+    )
 
 
 
@@ -382,135 +482,75 @@
     ;; "S-h" 'org-shiftleft
     ;; "S-s" 'org-shiftright
     ;;
- )
+    )
 
-    ;; ;
-  ;;; WINDOWS AND BUFFERS
-    (general-def
-      :states 'normal
-      :keymaps 'override
-      :prefix leader-key
-
-
-      "w k" 'split-window-below
-      "w u" 'split-window-right
-      ;;
-      "w E" 'delete-other-windows
-      "w e" 'delete-window
-      ;;
-      "w h" 'evil-window-left
-      "w s" 'evil-window-right
-      "w t" 'evil-window-down
-      "w n" 'evil-window-up
+  ;; ;
+    ;;; WINDOWS AND BUFFERS
+  (general-def
+    :states 'normal
+    :keymaps 'override
+    :prefix leader-key
 
 
-      "f f" 'ido-find-file
-      "f p" 'open-config-file 
-
-      "b s" 'save-buffer
-      "b b" 'ido-switch-buffer
-      "b e" 'ido-kill-buffer
-
-      "o e" 'shell
-
-      "b s" 'save-buffer
-      ;;"w H" '+evil/window-move-left
-      ;;"w S" '+evil/window-move-right
-      ;;"w T" '+evil/window-move-down
-      ;;"w N" '+evil/window-move-up
-
-      )
-
-
-    (defun open-config-file ()
-      (interactive)
-      (find-file config-file-path))
-
-
-    ;;"SPC-f-." 'counsel-find-file
-
-
+    "w k" 'split-window-below
+    "w u" 'split-window-right
     ;;
+    "w E" 'delete-other-windows
+    "w e" 'delete-window
     ;;
-    ;;(lookup-key (current-global-map) (kbd "Esc-g"))
+    "w h" 'evil-window-left
+    "w s" 'evil-window-right
+    "w t" 'evil-window-down
+    "w n" 'evil-window-up
+
+
+    "f f" 'ido-find-file
+    "f p" 'open-config-file 
+
+    "b s" 'save-buffer
+    "b b" 'ido-switch-buffer
+    "b e" 'ido-kill-buffer
+
+    "o e" 'shell
+
+    "b s" 'save-buffer
+
+    "c p" 'reload-config-file
+    ;;"w H" '+evil/window-move-left
+    ;;"w S" '+evil/window-move-right
+    ;;"w T" '+evil/window-move-down
+    ;;"w N" '+evil/window-move-up
+
+    )
+
+
+  (defun open-config-file ()
+    (interactive)
+    (find-file emacs-config-literate-f))
+
+  (defun reload-config-file ()
+    (interactive)
+    (load-file emacs-config-tangled-f))
+  ;; Reload the init file with a key binding
+  ;;(global-set-key (kbd "C-c p")
+  ;;"SPC-f-." 'counsel-find-file
+
+
+  ;;
+  ;;
+  ;;(lookup-key (current-global-map) (kbd "Esc-g"))
 
 
 
 
 
-    (general-def
-      "C-}" 'text-scale-increase
-      "C-{" 'text-scale-decrease)
+  (general-def
+    "C-}" 'text-scale-increase
+    "C-{" 'text-scale-decrease)
 #+END_SRC
 ** General
 
 #+BEGIN_SRC elisp
 #+END_SRC
-aoeuaoeua
 * Misc
 
-#+BEGIN_SRC elisp
-
-;;;;;;;;;;;;;; Setup some more user-friendly functionality and defaults (e.g. the usual cut/copy/paste bindings)
-
-;; When a key combination has started, after a while
-;; displays all possible keys to complete it
-;; Type 'y' or 'n' instead of 'yes' or 'no'
-(fset 'yes-or-no-p 'y-or-n-p)
-
-;; Replaces a selection with any letter pressed
-(delete-selection-mode 1)
-
-(setq scroll-conservatively 100
-      select-enable-clipboard t
-      show-paren-delay 0
-      show-trailing-whitespace nil)
-
-
-;;;;;;;;;;;;;; Setup themes and other aesthetic stuff
-
-;; Set the mood, there's plenty of other themes to choose from here:
-;; https://emacsthemes.ocm/popular/index.html
-
-;; Set the window's name
-(setq frame-title-format "TimeLines")
-
-;; Remove unecessary distractions from the frame
-(when window-system
-  (menu-bar-mode -1)
-  (tool-bar-mode -1)
-  (scroll-bar-mode -1)
-  (tooltip-mode -1))
-
-(line-number-mode 1)
-(show-paren-mode 1)
-
-;; Cursor settings
-(blink-cursor-mode 0)
-(set-default 'cursor-type 'box)
-(set-cursor-color "#ff1493")
-
-;; Highlight the line the cursor is on
-(global-hl-line-mode t)
-
-;; Operate on visual, rather than logical, lines
-(add-hook 'text-mode-hook 'turn-on-visual-line-mode)
-
-;; Reload the init file with a key binding
-(global-set-key (kbd "C-c p")
-		(lambda ()
-		  (interactive)
-		  (load-file "~/.emacs.d/init.el")))
-
-
-;; Clean up startup behaviour
-(setq inhibit-startup-message t)
-(setq initial-scratch-message "")
-(setq ring-bell-function 'ignore)
-
-;; Go to any line with Alt-g
-(global-set-key "\M-g" 'goto-line)
-
-(setq initial-major-mode 'lisp-interaction-mode)
-
-#+END_SRC
