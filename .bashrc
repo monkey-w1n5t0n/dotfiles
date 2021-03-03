@@ -112,3 +112,10 @@ SCRIPTS_DIR="$HOME/code/scripts"
 export PATH="$SCRIPTS_DIR:$PATH"
 #neofetch
 
+
+function cmake_build () {
+	mkdir -p build
+    cmake -S . -B build && cmake --build build
+}
+
+export PATH=$PATH:"~/code/v/v"
