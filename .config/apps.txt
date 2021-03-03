@@ -1,0 +1,17 @@
+git
+emacs
+neovim
+firefox
+sxhkd
+bspwm
+audacity
+dmenu
+alacritty
+racket
+python
+rustup
+cmake
+pamac
+redshift
+bitwarden
+compton
