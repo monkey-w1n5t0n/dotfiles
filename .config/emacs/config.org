@@ -1,4 +1,4 @@
-#+TITLE: w1n5t0n's Emacs config file
+#+TITLE: w1n5t0n's Emacs Config
 * Functions
 ** Misc
 #+BEGIN_SRC elisp
@@ -265,6 +265,16 @@
         `(("." . ,(concat user-emacs-directory "backups"))))
 #+END_SRC
 * Functionality
+** quelpa-use-package
+   #+begin_src elisp
+     (quelpa
+      '(quelpa-use-package
+        :fetcher git
+        :url "https://github.com/quelpa/quelpa-use-package.git"))
+     (require 'quelpa-use-package)
+   #+end_src
+
+** undo-tree
   #+begin_src elisp
     (use-package undo-tree
       :defer t
@@ -276,7 +286,9 @@
 
     (use-package discover-my-major
       :bind ("C-h C-m" . discover-my-major))
-
+#+end_src
+** Avy, ace-window
+#+begin_src elisp
 
         ;; AVY
          (use-package avy
@@ -493,6 +505,12 @@ The original function deletes trailing whitespace of the current line."
 ;; -FontFun
 
 
+(set-fontset-font t 'unicode (font-spec :family "all-the-icons") nil 'append)
+(set-fontset-font t 'unicode (font-spec :family "file-icons") nil 'append)
+(set-fontset-font t 'unicode (font-spec :family "Material Icons") nil 'append)
+(set-fontset-font t 'unicode (font-spec :family "github-octicons") nil 'append)
+(set-fontset-font t 'unicode (font-spec :family "FontAwesome") nil 'append)
+(set-fontset-font t 'unicode (font-spec :family "Weather Icons") nil 'append)
 #+end_src
 *** Themes
 #+BEGIN_SRC elisp
@@ -511,16 +529,7 @@ The original function deletes trailing whitespace of the current line."
     (disable-theme (intern (car (mapcar #'symbol-name custom-enabled-themes))))
     (call-interactively #'load-theme)))
 
-(use-package doom-modeline
-  :custom
-  ;; Don't compact font caches during GC. Windows Laggy Issue
-  (inhibit-compacting-font-caches t)
-  (doom-modeline-minor-modes t)
-  (doom-modeline-icon t)
-  (doom-modeline-major-mode-color-icon t)
-  (doom-modeline-height 15)
-  :config
-  (doom-modeline-mode))
+
 
 
       ;;(use-package smart-mode-line
@@ -582,6 +591,20 @@ The original function deletes trailing whitespace of the current line."
 (add-hook 'org-mode-hook 'add-pretty-lambda)
 
 #+END_SRC
+*** Modeline
+    #+begin_src elisp
+      (use-package doom-modeline
+;        :disabled
+       :custom
+       ;; Don't compact font caches during GC. Windows Laggy Issue
+       (inhibit-compacting-font-caches t)
+       (doom-modeline-minor-modes t)
+       (doom-modeline-icon t)
+       (doom-modeline-major-mode-color-icon t)
+       (doom-modeline-height 15)
+       :config
+       (doom-modeline-mode))
+    #+end_src
 *** Dashboard
     #+begin_src elisp
     (use-package dashboard
@@ -1173,12 +1196,19 @@ If all failed, try to complete the common part with `company-complete-common'"
     #+begin_src elisp
   (use-package rust-mode)
   (use-package cargo)
+  (use-package cargo)
   (use-package flycheck-rust)
   (add-hook 'flycheck-mode-hook #'flycheck-rust-setup)
     #+end_src
 *** Extempore
     #+begin_src elisp
     (use-package extempore-mode)
+    #+end_src
+*** Janet
+    #+begin_src elisp
+      (use-package janet-mode)
+      ;(use-package ijanet-mode
+      ;  :quelpa (ijanet-mode :fetcher github :repo "SerialDev/ijanet-mode"))
     #+end_src
 *** Others
 #+BEGIN_SRC elisp
