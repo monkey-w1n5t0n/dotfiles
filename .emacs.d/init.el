@@ -56,10 +56,10 @@ If you experience freezing, decrease this.  If you experience stuttering, increa
       package-archives
       '(("gnu"   . "https://elpa.gnu.org/packages/")
         ("melpa" . "https://melpa.org/packages/")
-        ("cselpa" . "https://elpa.thecybershadow.net/packages/")
+        ("cselpa" . "https://elpa.thecybershadow.net/packages/")))
         ;; ("melpa-cn" . "http://mirrors.cloud.tencent.com/elpa/melpa/")
         ;; ("gnu-cn"   . "http://mirrors.cloud.tencent.com/elpa/gnu/")
-        ))
+
 ;; -MelpaPackages
 
 ;; ConfigurePackageManager
@@ -78,6 +78,12 @@ If you experience freezing, decrease this.  If you experience stuttering, increa
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
+
+(unless (package-installed-p 'quelpa)
+  (with-temp-buffer
+    (url-insert-file-contents "https://raw.githubusercontent.com/quelpa/quelpa/master/quelpa.el")
+    (eval-buffer)
+    (quelpa-self-upgrade)))
 
 (eval-and-compile
   (setq use-package-always-ensure t)
