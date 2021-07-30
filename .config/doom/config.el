@@ -137,10 +137,22 @@
   "w H" '+evil/window-move-left
   "w S" '+evil/window-move-right
   "w T" '+evil/window-move-down
-  "w N" '+evil/window-move-up)
+  "w N" '+evil/window-move-up
 
 
+  "k n" 'sp-up-sexp
+  "k t" 'sp-down-sexp
+  "k h" 'sp-backward-sexp
+  "k s" 'sp-forward-sexp
 
+  "k b h" 'sp-backward-barf-sexp
+  "k b s" 'sp-forward-barf-sexp
+
+  "k m h" 'sp-slurp-hybrid-sexp
+
+  "k d" 'sp-splice-sexp
+
+  "k e" 'sp-kill-sexp)
 
 
 ;;"SPC-f-." 'counsel-find-file
