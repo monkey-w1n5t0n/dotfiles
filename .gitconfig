@@ -1,5 +1,5 @@
 [user]
-	email = dimitrios@scored.film
-	name = Dimitrios Kyriakoudis
+	email = lm-w1n5t0n@protonmail.com
+	name = w1n5t0n
 [credential]
-	helper = wincred
+	helper = cache --timeout=3600
