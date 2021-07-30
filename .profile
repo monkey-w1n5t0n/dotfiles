@@ -14,7 +14,7 @@ export SCRIPT_DIR="$DEV_DIR/scripts"
 
 # Scripts
 export PATH="$HOME/dev/scripts:$PATH"
-
+keyboard
 
 # Configs
 export CONFIG_DIR=$HOME/.config
