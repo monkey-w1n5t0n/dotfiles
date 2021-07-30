@@ -38,7 +38,7 @@ bindsym $mod+Return exec $terminal
 bindsym $mod+w kill
 
 # start program launcher
-bindsym $mod+e exec --no-startup-id dmenu_recency
+#bindsym $mod+e exec --no-startup-id dmenu_recency
 
 # launch categorized menu
 bindsym $mod+z exec --no-startup-id morc_menu
@@ -123,7 +123,7 @@ bindsym $mod+period layout toggle split
 bindsym $mod+Shift+space floating toggle
 
 # change focus between tiling / floating windows
-bindsym $mod+space focus mode_toggle
+# bindsym $mod+space focus mode_toggle
 
 # toggle sticky
 bindsym $mod+Shift+o sticky toggle
@@ -356,7 +356,7 @@ gaps outer -5
 # gaps outer all plus 5
 
 # Smart gaps (gaps used if only more than one container on the workspace)
-# smart_gaps on
+smart_gaps on
 
 # Smart borders (draw borders around container only if it is not the only container on this workspace) 
 # on|no_gaps (on=always activate and no_gaps=only activate if the gap size to the edge of the screen is 0)
