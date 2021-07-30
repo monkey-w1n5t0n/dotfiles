@@ -3,7 +3,6 @@
 ;; Place your private configuration here! Remember, you do not need to run 'doom
 ;; sync' after modifying this file!
 
-
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets.
 (setq user-full-name "w1n5t0n"
@@ -155,6 +154,9 @@
   "k e" 'sp-kill-sexp)
 
 
+(defun browse-scored ()
+  (doom-project-browse "~/dev/scored"))
+
 ;;"SPC-f-." 'counsel-find-file
 
 
@@ -169,12 +171,3 @@
 (general-def
   "C-}" 'text-scale-increase
   "C-{" 'text-scale-decrease)
-
-
-;(map!
-;
-; :n "h" 'evil-backward-char
-; :n "t" 'evil-next-visual-line
-; :n "n" 'evil-previous-visual-line
-; ;:n "s" nil
-; :n "s" 'evil-forward-char)

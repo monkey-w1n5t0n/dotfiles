@@ -7,15 +7,15 @@
 #	$TERMINAL
 
 # # program launcher
-super + space
-	dmenu_run
+#super + space
+#	dmenu_run
 
 # # make sxhkd reload its configuration files:
-super + alt + c
-	pkill -USR1 -x sxhkd
+#super + alt + c
+#	pkill -USR1 -x sxhkd
 
-super + e
-	$EDITOR
+#super + e
+#	$EDITOR
 
 #
 # bspwm hotkeys
