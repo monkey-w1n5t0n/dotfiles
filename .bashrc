@@ -4,6 +4,8 @@
 
 [[ $- != *i* ]] && return
 
+source $HOME/.bash_aliases
+
 colors() {
 	local fgc bgc vals seq0
 
@@ -138,3 +140,5 @@ ex ()
 
 
 alias dotfiles='git --git-dir=$HOME/.config/dotfiles/ --work-tree=$HOME'
+
+export SCORED_AUDIO_ENGINE_DIR="$HOME/dev/scored/audio_engine"

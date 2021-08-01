@@ -20,6 +20,9 @@
 ;; font string. You generally only need these two:
 ;; (setq doom-font (font-spec :family "monospace" :size 12 :weight 'semi-light)
 ;;       doom-variable-pitch-font (font-spec :family "sans" :size 13))
+(set-face-attribute 'default nil :height 130)
+
+
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
@@ -171,3 +174,7 @@
 (general-def
   "C-}" 'text-scale-increase
   "C-{" 'text-scale-decrease)
+
+;; (load (expand-file-name "~/quicklisp/slime-helper.el"))
+;; ;; Replace "sbcl" with the path to your implementation
+(setq inferior-lisp-program "/usr/bin/ecl")
