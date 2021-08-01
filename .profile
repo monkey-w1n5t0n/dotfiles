@@ -27,5 +27,8 @@ export EMACS_DIR=$CONFIG_DIR/emacs
 export DOOM_DIR=$CONFIG_DIR/doom
 export PATH=$EMACS_DIR/bin:$PATH
 
+## Lang
+# V
+#export PATH=$HOME/dev/lang/v:$PATH
 ##########
 
