@@ -78,9 +78,6 @@ if ${use_color} ; then
 	fi
 
 	alias ls='ls --color=auto'
-	alias grep='grep --colour=auto'
-	alias egrep='egrep --colour=auto'
-	alias fgrep='fgrep --colour=auto'
 else
 	if [[ ${EUID} == 0 ]] ; then
 		# show root@ when we don't have colors
@@ -139,6 +136,3 @@ ex ()
 }
 
 
-alias dotfiles='git --git-dir=$HOME/.config/dotfiles/ --work-tree=$HOME'
-
-export SCORED_AUDIO_ENGINE_DIR="$HOME/dev/scored/audio_engine"
