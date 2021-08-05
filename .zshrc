@@ -5,6 +5,7 @@ export CONFIG_DIR=$HOME/.config
 export DOTFILES_DIR=$CONFIG_DIR/dotfiles
 
 
+export LISP=sbcl
 source ~/.config/zsh_aliases
 source ~/.config/paths
 
