@@ -111,11 +111,17 @@
   "i" 'evil-append
   "I" 'evil-append-line
 
-
   "p" 'evil-paste-after;; -from-0
 
   "ou" 'evil-open-below
   "oe" 'evil-open-above
+
+  "ou" 'sp-select-next-thing
+
+  "os" 'sp-slurp-hybrid-sexp
+  "oS" 'sp-forward-barf-sexp
+  "oh" 'sp-backward-slurp-sexp
+  "oH" 'sp-backward-barf-sexp
 
   "-" 'newline-and-indent
 
@@ -158,7 +164,10 @@
 
 
 (defun browse-scored ()
+  (interactive)
   (doom-project-browse "~/dev/scored"))
+
+
 
 ;;"SPC-f-." 'counsel-find-file
 
