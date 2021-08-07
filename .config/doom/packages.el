@@ -54,5 +54,10 @@
 (package! command-log-mode
   :recipe (:host github :repo "lewang/command-log-mode"))
 
-(package! slime
-  :recipe (:host github :repo "slime/slime"))
+;; (package! slime
+;;   :recipe (:host github :repo "slime/slime"))
+
+(package! tree-sitter
+  :recipe (:host github :repo "tree-sitter/tree-sitter"))
+
+(package! tree-sitter-langs)
