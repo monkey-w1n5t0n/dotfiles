@@ -64,69 +64,80 @@
 
 
 (general-def
-  :states '(normal visual motion)
-  :keymaps 'override
-
-  "h" 'backward-char
-  "t" 'evil-next-visual-line
-  "n" 'evil-previous-visual-line
-  "s" 'forward-char
-
-  "H" 'evil-backward-word-begin
-  "T" 'evil-forward-paragraph
-  "N" 'evil-backward-paragraph
-  "S" 'evil-forward-word-end
-
-  "e" 'evil-delete
-  "a" 'evil-avy-goto-char
-
-  ";" 'evil-undo
-  ":" 'evil-redo
-
-  "'" 'evil-ex
-
-  "E" 'evil-delete-whole-line
-
-  "cg" 'evil-snipe-F
-  "cG" 'evil-snipe-T
-  "cr" 'evil-snipe-f
-  "cR" 'evil-snipe-t
-  "cc" 'evil-snipe-repeat
-
-  "gg" 'evil-beginning-of-visual-line
-  "gr" 'evil-end-of-visual-line
-  "gc" 'evil-goto-first-line
-  "gt" 'evil-goto-line
-
-  "G" 'evil-scroll-down
-  "R" 'evil-scroll-up
+:states '(normal visual motion)
+:keymaps 'override
 
 
-  "SPC c /" 'comment-or-uncomment-region
-  "j" 'evil-change
+
+"o t" '(lambda ()
+         (browse-directory "~/dev/monkey_business/timelines")
+         (message "hello"))
+
+; Compile C++
+"C-c" '(lambda ()
+         (sh "cd ~/dev/timelines && ./build.sh")
+         (copy-files "cd ~/dev/timelines/out"))
+
+"h" 'backward-char
+"t" 'evil-next-visual-line
+"n" 'evil-previous-visual-line
+"s" 'forward-char
+
+"H" 'evil-backward-word-begin
+"T" 'evil-forward-paragraph
+"N" 'evil-backward-paragraph
+"S" 'evil-forward-word-end
+
+"e" 'evil-delete
+"a" 'evil-avy-goto-char
+
+";" 'evil-undo
+":" 'evil-redo
+
+"'" 'evil-ex
+
+"E" 'evil-delete-whole-line
+
+"cg" 'evil-snipe-F
+"cG" 'evil-snipe-T
+"cr" 'evil-snipe-f
+"cR" 'evil-snipe-t
+"cc" 'evil-snipe-repeat
+
+"gg" 'evil-beginning-of-visual-line
+"gr" 'evil-end-of-visual-line
+"gc" 'evil-goto-first-line
+"gt" 'evil-goto-line
+
+"G" 'evil-scroll-down
+"R" 'evil-scroll-up
 
 
-  "u" 'evil-insert
-  "U" 'evil-insert-line
-  "i" 'evil-append
-  "I" 'evil-append-line
+"SPC c /" 'comment-or-uncomment-region
+"j" 'evil-change
 
-  "p" 'evil-paste-after;; -from-0
 
-  "ou" 'evil-open-below
-  "oe" 'evil-open-above
+"u" 'evil-insert
+"U" 'evil-insert-line
+"i" 'evil-append
+"I" 'evil-append-line
 
-  "ou" 'sp-select-next-thing
+"p" 'evil-paste-after;; -from-0
 
-  "os" 'sp-slurp-hybrid-sexp
-  "oS" 'sp-forward-barf-sexp
-  "oh" 'sp-backward-slurp-sexp
-  "oH" 'sp-backward-barf-sexp
+"ou" 'evil-open-below
+"oe" 'evil-open-above
 
-  "-" 'newline-and-indent
+"ou" 'sp-select-next-thing
 
-  "k" 'evil-scroll-page-down
-  "K" 'evil-scroll-page-up)
+"os" 'sp-slurp-hybrid-sexp
+"oS" 'sp-forward-barf-sexp
+"oh" 'sp-backward-slurp-sexp
+"oH" 'sp-backward-barf-sexp
+
+"-" 'newline-and-indent
+
+"k" 'evil-scroll-page-down
+"K" 'evil-scroll-page-up)
 
 
 

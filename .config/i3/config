@@ -4,7 +4,7 @@
 
 # Default terminal:
 set $terminal alacritty
-
+set $editor emacs
 
 # Set mod key (Mod1=<Alt>, Mod4=<Super>)
 set $mod Mod4
@@ -34,6 +34,9 @@ floating_modifier $mod
 
 # start a terminal
 bindsym $mod+Return exec $terminal
+
+# Start emacs
+bindsym $mod+m exec $editor
 
 # kill focused window
 bindsym $mod+w kill
@@ -330,7 +333,7 @@ set_from_resource $term_color15    color15
 
 
 # hide/unhide i3status bar
-bindsym $mod+m bar mode toggle
+#bindsym $mod+m bar mode toggle
 
 
 # Theme colors
