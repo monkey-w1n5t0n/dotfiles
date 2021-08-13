@@ -5,6 +5,7 @@
 # Default terminal:
 set $terminal alacritty
 set $editor emacs
+set $file pcmanfm
 
 # Set mod key (Mod1=<Alt>, Mod4=<Super>)
 set $mod Mod4
@@ -37,6 +38,9 @@ bindsym $mod+Return exec $terminal
 
 # Start emacs
 bindsym $mod+m exec $editor
+
+# Start file browser
+bindsym $mod+f exec $file
 
 # kill focused window
 bindsym $mod+w kill
