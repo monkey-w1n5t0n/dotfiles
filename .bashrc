@@ -4,7 +4,7 @@
 
 [[ $- != *i* ]] && return
 
-source $HOME/.bash_aliases
+#source $HOME/.bash_aliases
 
 colors() {
 	local fgc bgc vals seq0
