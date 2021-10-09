@@ -61,3 +61,5 @@
   :recipe (:host github :repo "tree-sitter/tree-sitter"))
 
 (package! tree-sitter-langs)
+
+(package! tidal)

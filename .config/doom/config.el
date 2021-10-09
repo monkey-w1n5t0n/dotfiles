@@ -56,12 +56,33 @@
 ;; they are implemented.
 
 
+
+(general-def
+  :states '(normal insert)
+  :keymaps 'cider-mode-map
+  "C-c C-e" 'cider-eval-defun-at-point)
+
 (general-def
   :states '(normal visual motion)
   :keymaps 'visual-line-mode-map
   "t" 'evil-next-visual-line
   "n" 'evil-previous-visual-line)
 
+
+
+;; TIDAL
+(general-def
+  :states '(normal insert)
+  :keymap 'tidal-mode-mapI
+  "C-c C-l" (lambda ()
+              (interactive)
+              (tidal-run-line)
+              (evil-previous-visual-line))
+
+  "C-c C-h" (lambda ()
+              (interactive)
+              (tidal-send-string "hush"))
+  )
 
 (general-def
   :states '(normal visual motion)
@@ -112,7 +133,7 @@
   "i" 'evil-append
   "I" 'evil-append-line
 
-  "p" 'evil-paste-after;; -from-0
+  "p" 'evil-paste-after ;; -from-0
 
   "ou" 'evil-open-below
   "oe" 'evil-open-above
