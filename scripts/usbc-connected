@@ -1,0 +1,2 @@
+#!/usr/bin/sh
+xrandr --output DP-1-0.8 --auto --left-of eDP-1

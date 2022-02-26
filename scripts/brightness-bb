@@ -1,0 +1,9 @@
+#!/usr/bin/bb
+
+(require '[clojure.java.shell :refer [sh]])
+
+(defn connected-monitors []
+  (:out (sh "xrandr | grep \" connected \" | awk '{ print$1 }'")))
+
+
+(println (connected-monitors))
