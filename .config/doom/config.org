@@ -1,0 +1,702 @@
+#+TITLE: w1n5t0n's Config of Doom
+#+STARTUP: overview
+* Init
+#+begin_src elisp :tangle init.el
+;;; init.el -*- lexical-binding: t; -*-
+
+;; This file controls what Doom modules are enabled and what order they load
+;; in. Remember to run 'doom sync' after modifying it!
+
+;; NOTE Press 'SPC h d h' (or 'C-h d h' for non-vim users) to access Doom's
+;;      documentation. There you'll find a "Module Index" link where you'll find
+;;      a comprehensive list of Doom's modules and what flags they support.
+
+;; NOTE Move your cursor over a module's name (or its flags) and press 'K' (or
+;;      'C-c c k' for non-vim users) to view its documentation. This works on
+;;      flags as well (those symbols that start with a plus).
+;;
+;;      Alternatively, press 'gd' (or 'C-c c d') on a module to browse its
+;;      directory (for easy access to its source code).
+
+(doom! :input
+       ;;chinese
+       ;;japanese
+       ;;layout            ; auie,ctsrnm is the superior home row
+
+       :completion
+       company           ; the ultimate code completion backend
+       ;;helm              ; the *other* search engine for love and life
+       ;;ido               ; the other *other* search engine...
+       ivy               ; a search engine for love and life
+
+       :ui
+       ;;deft              ; notational velocity for Emacs
+       doom              ; what makes DOOM look the way it does
+       ;;doom-dashboard    ; a nifty splash screen for Emacs
+       ;;doom-quit         ; DOOM quit-message prompts when you quit Emacs
+       ;;(emoji +unicode)  ; 🙂
+       ;;fill-column       ; a `fill-column' indicator
+       hl-todo           ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
+       hydra
+       indent-guides     ; highlighted indent columns
+       ligatures         ; ligatures and symbols to make your code pretty again
+       minimap           ; show a map of the code on the side
+       modeline          ; snazzy, Atom-inspired modeline, plus API
+       nav-flash         ; blink cursor line after big motions
+       ;;neotree           ; a project drawer, like NERDTree for vim
+       ophints           ; highlight the region an operation acts on
+       (popup +defaults)   ; tame sudden yet inevitable temporary windows
+       ;;tabs              ; a tab bar for Emacs
+       treemacs          ; a project drawer, like neotree but cooler
+       ;;unicode           ; extended unicode support for various languages
+       vc-gutter         ; vcs diff in the fringe
+       vi-tilde-fringe   ; fringe tildes to mark beyond EOB
+       window-select     ; visually switch windows
+       workspaces        ; tab emulation, persistence & separate workspaces
+       zen               ; distraction-free coding or writing
+
+       :editor
+       (evil +everywhere)  ; come to the dark side, we have cookies
+       file-templates      ; auto-snippets for empty files
+       fold                ; (nigh) universal code folding
+       (format +onsave)    ; automated prettiness
+       ;;god               ; run Emacs commands without modifier keys
+       ;; lispy             ; vim for lisp, for people who don't like vim
+       multiple-cursors    ; editing in many places at once
+       ;;objed             ; text object editing for the innocent
+       ;;parinfer            ; turn lisp into python, sort of
+       ;;rotate-text       ; cycle region at point between text candidates
+       snippets            ; my elves. They type so I don't have to
+       ;;word-wrap         ; soft wrapping with language-aware indent
+
+       :emacs
+       dired             ; making dired pretty [functional]
+       electric          ; smarter, keyword-based electric-indent
+       ;;ibuffer         ; interactive buffer management
+       undo              ; persistent, smarter undo for your inevitable mistakes
+       vc                ; version-control and Emacs, sitting in a tree
+
+       :term
+       eshell              ; the elisp shell that works everywhere
+       ;;shell             ; simple shell REPL for Emacs
+       ;;term              ; basic terminal emulator for Emacs
+       ;;vterm             ; the best terminal emulation in Emacs
+
+       :checkers
+       syntax              ; tasing you for every semicolon you forget
+       ;;(spell +flyspell) ; tasing you for misspelling mispelling
+       ;;grammar           ; tasing grammar mistake every you make
+
+       :tools
+       ;;ansible
+       ;;debugger          ; FIXME stepping through code, to help you add bugs
+       ;;direnv
+       docker
+       ;;editorconfig      ; let someone else argue about tabs vs spaces
+       ;;ein               ; tame Jupyter notebooks with emacs
+       (eval +overlay)     ; run code, run (also, repls)
+       ;;gist              ; interacting with github gists
+       lookup              ; navigate your code and its documentation
+       (lsp +peek)
+       magit               ; a git porcelain for Emacs
+       make                ; run make tasks from Emacs
+       ;;pass              ; password manager for nerds
+       pdf                 ; pdf enhancements
+       ;;prodigy           ; FIXME managing external services & code builders
+       ;;rgb               ; creating color strings
+       ;;taskrunner        ; taskrunner for all your projects
+       ;;terraform         ; infrastructure as code
+       ;;tmux              ; an API for interacting with tmux
+       ;;upload            ; map local to remote projects via ssh/ftp
+
+       :os
+       (:if IS-MAC macos)  ; improve compatibility with macOS
+       ;;tty               ; improve the terminal Emacs experience
+
+       :lang
+       ;;agda              ; types of types of types of types...
+       (cc +lsp)                 ; C/C++/Obj-C madness
+       clojure             ; java with a lisp
+       common-lisp         ; if you've seen one lisp, you've seen them all
+       ;;coq               ; proofs-as-programs
+       ;;crystal           ; ruby at the speed of c
+       ;;csharp            ; unity, .NET, and mono shenanigans
+       ;;data              ; config/data formats
+       ;;(dart +flutter)   ; paint ui and not much else
+       ;;elixir            ; erlang done right
+       ;;elm               ; care for a cup of TEA?
+       emacs-lisp          ; drown in parentheses
+       ;;erlang            ; an elegant language for a more civilized age
+       ;;ess               ; emacs speaks statistics
+       faust               ; dsp, but you get to keep your soul
+       ;;fsharp            ; ML stands for Microsoft's Language
+       ;;fstar             ; (dependent) types and (monadic) effects and Z3
+       ;;gdscript          ; the language you waited for
+       ;;(go +lsp)         ; the hipster dialect
+       (haskell +dante)    ; a language that's lazier than I am
+       hy                  ; readability of scheme w/ speed of python
+       ;;idris             ; a language you can depend on
+       json                ; At least it ain't XML
+       ;;(java +meghanada) ; the poster child for carpal tunnel syndrome
+       ;;javascript        ; all(hope(abandon(ye(who(enter(here))))))
+       ;;julia             ; a better, faster MATLAB
+       ;;kotlin            ; a better, slicker Java(Script)
+       ;;latex             ; writing papers in Emacs has never been so fun
+       ;;lean
+       ;;factor
+       ;;ledger            ; an accounting system in Emacs
+       lua                 ; one-based indices? one-based indices
+       markdown            ; writing docs for people to ignore
+       nim                 ; python + lisp at the speed of c
+       ;;nix               ; I hereby declare "nix geht mehr!"
+       ;;ocaml             ; an objective camel
+       (org +roam2)                 ; organize your plain life in plain text
+       ;;php               ; perl's insecure younger brother
+       ;;plantuml          ; diagrams for confusing people more
+       ;;purescript        ; javascript, but functional
+       python              ; beautiful is better than ugly
+       ;;qt                ; the 'cutest' gui framework ever
+       racket              ; a DSL for DSLs
+       ;;raku              ; the artist formerly known as perl6
+       ;;rest              ; Emacs as a REST client
+       ;;rst               ; ReST in peace
+       ;;(ruby +rails)     ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
+       rust                ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
+       ;;scala             ; java, but good
+       scheme              ; a fully conniving family of lisps
+       sh                  ; she sells {ba,z,fi}sh shells on the C xor
+       ;;sml
+       ;;solidity          ; do you need a blockchain? No.
+       ;;swift             ; who asked for emoji variables?
+       ;;terra             ; Earth and Moon in alignment for performance.
+       ;;web               ; the tubes
+       yaml              ; JSON, but readable
+
+       :email
+       ;;(mu4e +gmail)
+       ;;notmuch
+       ;;(wanderlust +gmail)
+
+       :app
+       ;;calendar
+       ;;emms
+       ;;everywhere        ; *leave* Emacs!? You must be joking
+       ;;irc               ; how neckbeards socialize
+       ;;(rss +org)        ; emacs as an RSS reader
+       ;;twitter           ; twitter client https://twitter.com/vnought
+
+       :config
+       literate
+       (default +bindings +smartparens))
+#+end_src
+** Re-tangle on save
+#+begin_src elisp :tangle init.el
+(add-hook 'org-mode-hook #'+literate-enable-recompile-h)
+#+end_src
+* Packages
+#+begin_src elisp :tangle packages.el
+;; -*- no-byte-compile: t; -*-
+;;; $DOOMDIR/packages.el
+
+;; To install a package with Doom you must declare them here and run 'doom sync'
+;; on the command line, then restart Emacs for the changes to take effect -- or
+;; use 'M-x doom/reload'.
+
+
+;; To install SOME-PACKAGE from MELPA, ELPA or emacsmirror:
+;(package! some-package)
+
+;; To install a package directly from a remote git repo, you must specify a
+;; `:recipe'. You'll find documentation on what `:recipe' accepts here:
+;; https://github.com/raxod502/straight.el#the-recipe-format
+;(package! another-package
+;  :recipe (:host github :repo "username/repo"))
+
+;; If the package you are trying to install does not contain a PACKAGENAME.el
+;; file, or is located in a subdirectory of the repo, you'll need to specify
+;; `:files' in the `:recipe':
+;(package! this-package
+;  :recipe (:host github :repo "username/repo"
+;           :files ("some-file.el" "src/lisp/*.el")))
+
+;; If you'd like to disable a package included with Doom, you can do so here
+;; with the `:disable' property:
+;(package! builtin-package :disable t)
+
+;; You can override the recipe of a built in package without having to specify
+;; all the properties for `:recipe'. These will inherit the rest of its recipe
+;; from Doom or MELPA/ELPA/Emacsmirror:
+;(package! builtin-package :recipe (:nonrecursive t))
+;(package! builtin-package-2 :recipe (:repo "myfork/package"))
+
+;; Specify a `:branch' to install a package from a particular branch or tag.
+;; This is required for some packages whose default branch isn't 'master' (which
+;; our package manager can't deal with; see raxod502/straight.el#279)
+;(package! builtin-package :recipe (:branch "develop"))
+
+;; Use `:pin' to specify a particular commit to install.
+;(package! builtin-package :pin "1a2b3c4d5e")
+
+
+;; Doom's packages are pinned to a specific commit and updated from release to
+;; release. The `unpin!' macro allows you to unpin single packages...
+;(unpin! pinned-package)
+;; ...or multiple packages
+;(unpin! pinned-package another-pinned-package)
+;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
+;(unpin! t)
+;
+
+(package! command-log-mode
+  :recipe (:host github :repo "lewang/command-log-mode"))
+
+;; (package! slime
+;;   :recipe (:host github :repo "slime/slime"))
+
+;; (package! tree-sitter
+;;   :recipe (:host github :repo "tree-sitter/tree-sitter"))
+
+;; (package! tree-sitter-langs)
+
+(package! tidal)
+
+(package! extempore-mode
+  :recipe (:host github
+           :repo "extemporelang/extempore-emacs-mode"))
+
+
+
+;; ORG-ROAM stuff
+
+
+;; (package! emacsql)
+;; (package! emacsql-sqlite)
+;; (package! magit-section)
+;; (package! org-roam)
+
+;; (use-package! org-roam
+;;   :config
+;;   (setq org-roam-directory "~/phd/org-roam-files")
+;;   (org-roam-setup)
+;;   )
+
+
+;; Random fix to bug, see here: https://github.com/hlissner/doom-emacs/issues/5667
+(package! gitconfig-mode
+	  :recipe (:host github :repo "magit/git-modes"
+			 :files ("gitconfig-mode.el")))
+(package! gitignore-mode
+	  :recipe (:host github :repo "magit/git-modes"
+			 :files ("gitignore-mode.el")))
+
+(package! v-mode)
+
+(package! aggressive-indent)
+
+(package! sclang-extensions)
+;; (package! scel)                         ;
+
+
+(package! org-bullets)
+#+end_src
+* Monolith
+
+#+begin_src elisp :tangle config.el
+;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
+
+
+;; TODO: figure out markers, bound to `
+
+;; Place your private configuration here! Remember, you do not need to run 'doom
+;; sync' after modifying this file!
+
+;; Some functionality uses this to identify you, e.g. GPG configuration, email
+;; clients, file templates and snippets.
+(setq user-full-name "w1n5t0n"
+      user-mail-address "lm-w1n5t0n@protonmail.com")
+
+;; Doom exposes five (optional) variables for controlling fonts in Doom. Here
+;; are the three important ones:
+;;
+;; + `doom-font'
+;; + `doom-variable-pitch-font'
+;; + `doom-big-font' -- used for `doom-big-font-mode'; use this for
+;;   presentations or streaming.
+;;
+;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
+;; font string. You generally only need these two:
+;; (setq doom-font (font-spec :family "monospace" :size 12 :weight 'semi-light)
+;;       doom-variable-pitch-font (font-spec :family "sans" :size 13))
+(set-face-attribute 'default nil :height 130)
+
+
+
+;; There are two ways to load a theme. Both assume the theme is installed and
+;; available. You can either set `doom-theme' or manually load a theme with the
+;; `load-theme' function. This is the default:
+;; (setq doom-theme 'doom-nord)
+
+(setq doom-theme 'doom-tomorrow-night)
+;; (setq doom-theme 'doom-material)
+
+
+
+
+
+
+;; If you use `org' and don't want your org files in the default location below,
+;; change `org-directory'. It must be set before org loads!
+(setq org-directory "~/org/")
+
+;; This determines the style of line numbers in effect. If set to `nil', line
+;; numbers are disabled. For relative line numbers, set this to `relative'.
+(setq display-line-numbers-type t)
+
+
+;; Here are some additional functions/macros that could help you configure Doom:
+;;
+;; - `load!' for loading external *.el files relative to this one
+;; - `use-package!' for configuring packages
+;; - `after!' for running code after a package has loaded
+;; - `add-load-path!' for adding directories to the `load-path', relative to
+;;   this file. Emacs searches the `load-path' when you load packages with
+;;   `require' or `use-package'.
+;; - `map!' for binding new keys
+;;
+;; To get information about any of these functions/macros, move the cursor over
+;; the highlighted symbol at press 'K' (non-evil users must press 'C-c c k').
+;; This will open documentation for it, including demos of how they are used.
+;;
+;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
+;; they are implemented.
+
+
+
+
+
+
+
+(after! org
+  (progn
+    (setq org-roam-node-display-template
+          (concat "${title:*} "
+                  (propertize "${tags:10}" 'face 'org-tag)))
+    (setq org-roam-completion-everywhere t)
+    (setq org-roam-directory "~/phd/org-roam")
+    (org-roam-db-autosync-mode)
+    (require 'org-roam-protocol)))
+
+(after! org-bullets
+  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+#+end_src
+* Functions
+#+begin_src elisp :tangle config.el
+(defun rename-current-buffer-file ()
+  "Renames current buffer and file it is visiting."
+  (interactive)
+  (let* ((name (buffer-name))
+         (filename (buffer-file-name))
+         (basename (file-name-nondirectory filename)))
+    (if (not (and filename (file-exists-p filename)))
+        (error "Buffer '%s' is not visiting a file!" name)
+      (let ((new-name (read-file-name "New name: " (file-name-directory filename) basename nil basename)))
+        (if (get-buffer new-name)
+            (error "A buffer named '%s' already exists!" new-name)
+          (rename-file filename new-name 1)
+          (rename-buffer new-name)
+          (set-visited-file-name new-name)
+          (set-buffer-modified-p nil)
+          (message "File '%s' successfully renamed to '%s'"
+                   name (file-name-nondirectory new-name)))))))
+#+end_src
+* Key Bindings
+** Navigation
+#+begin_src elisp :tangle config.el
+(map!
+ :map override
+
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ ;; LEFT - DOWN - UP - RIGHT
+ :nvm "h" 'backward-char
+ :nvm "t" 'evil-next-visual-line
+ :nvm "n" 'evil-previous-visual-line
+ :nvm "s" 'forward-char
+
+ :nvm "H" 'evil-backward-word-begin
+ :nvm "T" 'evil-forward-paragraph
+ :nvm "N" 'evil-backward-paragraph
+ :nvm "S" 'evil-forward-word-end
+
+
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ ;; By Lines
+ :nvm "D"  'evil-beginning-of-visual-line
+ :nvm "gg" 'evil-beginning-of-visual-line
+ :nvm "_"  'evil-end-of-visual-line
+ :nvm "gr" 'evil-end-of-visual-line
+
+ ;; Top and Bottom
+ :nvm "gc" 'evil-goto-first-line
+ :nvm "gt" 'evil-goto-line
+
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ ;; Scrolls
+ :nvm "G" 'evil-scroll-down
+ :nvm "R" 'evil-scroll-up
+
+
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ ;; Go anywhere on the screen
+ :nvm "a" 'evil-avy-goto-char
+
+
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ ;; Snipes
+ ;; TODO: Distinguish between them, write some comments
+ :nvm "cg" 'evil-snipe-F
+ :nvm "cG" 'evil-snipe-T
+ :nvm "cr" 'evil-snipe-f
+ :nvm "cR" 'evil-snipe-t
+ :nvm "cc" 'evil-snipe-repeat
+
+ )
+
+;; FIXME: why does this mess up the normal map?
+;; (map! :map evil-snipe-local-mode-map
+;;       :nvm "u" 'evil-snipe-repeat
+;;       :nvm "o" 'evil-snipe-repeat-reverse
+
+;;       :nvm "r" 'evil-snipe-repeat
+;;       :nvm "g" 'evil-snipe-repeat-reverse
+;;       )
+#+end_src
+** Modes
+#+begin_src elisp :tangle config.el
+(map!
+ :map override
+ ;; Insert
+ :nvm "i" 'evil-append
+ :nvm "I" 'evil-append-line
+ :nvm "u" 'evil-insert
+ :nvm "U" 'evil-insert-line
+
+ :nvm "j" 'evil-change
+ )
+#+end_src
+** Text Editing
+#+begin_src elisp :tangle config.el
+(map!
+ :map override
+
+ ;; :n "u" nil
+ :n ";" 'evil-undo
+ :n ":" 'evil-redo
+
+ :nv "e" 'evil-delete
+ :nv "E" 'evil-delete-whole-line
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ ;; Paste
+ :n "p" 'evil-paste-after ;; -from-0
+ ;; TODO: make it work even if cursor is inside parens
+ :nv "C-M-'" 'indent-pp-sexp
+ )
+
+;;   "'" 'evil-ex
+
+;;
+
+
+
+
+;;   "SPC c /" 'comment-or-uncomment-region
+
+
+;;
+;;
+
+;;
+
+;;   "ou" 'evil-open-below
+;;   "oe" 'evil-open-above
+
+;;   "ou" 'sp-select-next-thing
+
+;;   "os" 'sp-slurp-hybrid-sexp
+;;   "oS" 'sp-forward-barf-sexp
+;;   "oh" 'sp-backward-slurp-sexp
+;;   "oH" 'sp-backward-barf-sexp
+
+;;   "-" 'newline-and-indent
+
+;;   "k" 'evil-scroll-page-down
+;;   "K" 'evil-scroll-page-up
+
+;;   "SPC w h" 'evil-window-left
+;;   "SPC w s" 'evil-window-right
+
+;;   "SPC w t" 'evil-window-bottom
+;;   "SPC w n" 'evil-window-up
+
+
+
+;;;;;;;;;;;;;;
+;; GENERAL
+;;;;;;;;;;;;;;
+
+
+(map!
+ "C-{" 'text-scale-decrease
+ "C-}" 'text-scale-increase
+ )
+
+
+
+
+;; (general-def
+;;   :states '(normal insert)
+;;   :keymaps 'cider-mode-map
+;;   "C-c C-e" 'cider-eval-defun-at-point)
+
+;; (general-def
+;;   :states '(normal visual motion)
+;;   :keymaps 'visual-line-mode-map
+;;   "t" 'evil-next-visual-line
+;;   "n" 'evil-previous-visual-line)
+
+
+
+;; (defun tidal-extract-synth-name (code-str)
+;;   )
+
+;; (defun tidal-mute-synth ()
+;;   (interactive)
+;;   (mark-paragraph)
+;;   (let* ((s (buffer-substring-no-properties (region-beginning)
+;;                                             (region-end)))
+;;          (synth-name (if tidal-literate-p
+;;                  (tidal-unlit s)
+;;                s)))
+;;     (tidal-send-string ":{")
+;;     (tidal-send-string s*)
+;;     (tidal-send-string ":}")
+;;     (mark-paragraph)
+;;     (pulse-momentary-highlight-region (mark) (point))
+;;     )
+
+;; TIDAL
+;; (general-def
+;;   :states '(normal insert)
+;;   :keymap 'tidal-mode-mapI
+;;   "C-c C-l" (lambda ()
+;;               (interactive)
+;;               (save-excursion
+;;                 (tidal-run-line)))
+;;               ;; (evil-previous-visual-line))
+
+;;   ;; randomly change the prompt each time something evaluates
+;;   ;; "C-c C-u" (lambda ()
+;;   ;;             (interactive)
+;;   ;;             (tidal-run-multiple-lines)
+;;   ;;             (let (()))
+;;   ;;             (tidal-)
+;;   ;;             )
+;;   ;;
+;;   ;;
+;;   "C-c C-h" (lambda ()
+;;               (interactive)
+;;               (tidal-send-string "hush"))
+;;   )
+
+;; (general-def
+;;   :states '(normal visual motion)
+;;   :keymaps 'override
+
+
+;;   )
+
+
+
+;; (general-def
+;;   :states 'normal
+;;   :keymaps 'override
+;;   :prefix doom-leader-key
+
+;;   "b s" 'save-buffer
+
+;;   "w h" 'evil-window-left
+;;   "w s" 'evil-window-right
+;;   "w t" 'evil-window-down
+;;   "w n" 'evil-window-up
+
+;;   "w H" '+evil/window-move-left
+;;   "w S" '+evil/window-move-right
+;;   "w T" '+evil/window-move-down
+;;   "w N" '+evil/window-move-up
+
+
+;;   "k n" 'sp-up-sexp
+;;   "k t" 'sp-down-sexp
+;;   "k h" 'sp-backward-sexp
+;;   "k s" 'sp-forward-sexp
+
+;;   "k b h" 'sp-backward-barf-sexp
+;;   "k b s" 'sp-forward-barf-sexp
+
+;;   "k m h" 'sp-slurp-hybrid-sexp
+
+;;   "k d" 'sp-splice-sexp
+
+;;   "k e" 'sp-kill-sexp)
+
+
+;; (defun browse-scored ()
+;;   (interactive)
+;;   (doom-project-browse "~/dev/scored"))
+
+
+
+;; (map!
+;;  )
+
+;; ;;"SPC-f-." 'counsel-find-file
+
+
+;; ;;
+;; ;;
+;; ;;(lookup-key (current-global-map) (kbd "Esc-g"))
+
+
+;; ;; (load "/home/w1n5t0n/dev/timelines-hs/timelines-emacs/timelines-mode.el")
+;; ;; (setq timelines-path "/home/w1n5t0n/dev/timelines-hs/timelines-hs")
+
+;; (load "/home/w1n5t0n/dev/emute_6/timelines/timelines-emacs/timelines-mode.el")
+;; (setq timelines-path "/home/w1n5t0n/dev/emute_6/timelines/timelines-hs")
+
+;; (general-def
+
+;; ;; (load (expand-file-name "~/quicklisp/slime-helper.el"))
+;; ;; ;; Replace "sbcl" with the path to your implementation
+;; (setq inferior-lisp-program "/usr/bin/sbcl")
+
+;; (add-to-list 'load-path "/home/w1n5t0n/.local/share/SuperCollider/downloaded-quarks/scel/el")
+;; (require 'sclang)
+;; (add-hook 'sclang-mode-hook 'sclang-extensions-mode)
+#+end_src
+
+** Org Roam
+#+begin_src elisp :tangle config.el
+(map!
+ :map override
+ "C-c n l" 'org-roam-buffer-toggle
+ "C-c n f" 'org-roam-node-find
+ "C-c n i" 'org-roam-node-insert
+ "C-c n g" 'org-roam-graph
+ "C-c n i" 'org-roam-node-insert
+ "C-c n c" 'org-roam-capture
+ ;; Dailies
+ "C-c n j" 'org-roam-dailies-capture-today
+
+ "C-M-s" 'completion-at-point
+)
+#+end_src
