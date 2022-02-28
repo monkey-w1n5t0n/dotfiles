@@ -1,4 +1,5 @@
 #+TITLE: w1n5t0n's Config of Doom
+#+PROPERTY: header-args:elisp :tangle ./config.el
 #+STARTUP: fold
 * Init
 #+begin_src elisp :tangle init.el
@@ -298,9 +299,13 @@
 
 
 (package! org-bullets)
+
+(package! org-roam :pin "65ea325")
+
+(package! rainbow-mode)
 #+end_src
-* Monolith
-#+begin_src elisp :tangle config.el
+* Doom stuff
+#+begin_src elisp
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 ;; TODO: figure out markers, bound to `
 
@@ -334,35 +339,96 @@
 
 
 #+end_src
+* Projects
+#+begin_src elisp
+(setq projectile-project-search-path '("~/dev"))
+#+end_src
 * Org
-#+begin_src elisp :tangle config.el
+** Org
+#+begin_src elisp
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory "~/org/")
 
-(after! org-bullets
+(use-package! org-bullets
+  :config
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 #+end_src
 ** Org Roam
-#+begin_src elisp :tangle confige.l
-(after! org
-  (progn
-    (setq org-roam-node-display-template
-          (concat "${title:*} "
-                  (propertize "${tags:10}" 'face 'org-tag)))
-    (setq org-roam-completion-everywhere t)
-    (setq org-roam-directory "~/phd/org-roam")
-    (org-roam-db-autosync-mode)
-    (require 'org-roam-protocol)
-    (setq org-roam-mode-section-functions
-          (list #'org-roam-backlinks-section
-                #'org-roam-reflinks-section
-                ;; #'org-roam-unlinked-references-section
-                ))
+#+begin_src elisp
+;; From https://systemcrafters.net/build-a-second-brain-in-emacs/5-org-roam-hacks/
+(defun org-roam-node-insert-immediate (arg &rest args)
+  (interactive "P")
+  (let ((args (cons arg args))
+        (org-roam-capture-templates (list (append (car org-roam-capture-templates)
+                                                  '(:immediate-finish t)))))
+    (apply #'org-roam-node-insert args)
+    ;;(evil-forward-word-end) FIXME: doesn't work
     ))
+
+(use-package! org-roam
+  :init
+  (setq org-roam-v2-ack t)
+  :custom
+  (org-roam-directory "~/phd/org-roam")
+  (org-roam-completion-everywhere t)
+  (org-roam-mode-section-functions
+   (list #'org-roam-backlinks-section
+         #'org-roam-reflinks-section
+         ;; #'org-roam-unlinked-references-section
+         ))
+  ;; :bind (("C-c n l" . org-roam-buffer-toggle)
+  ;;        ("C-c n f" . org-roam-node-find)
+  ;;        ("C-c n i" . org-roam-node-insert)
+  ;;        :map org-mode-map
+  ;;        ("C-M-i" . completion-at-point)
+  ;;        :map org-roam-dailies-map
+  ;;        ("Y" . org-roam-dailies-capture-yesterday)
+  ;;        ("T" . org-roam-dailies-capture-tomorrow))
+  ;; :bind-keymap
+  ;; ("C-c n d" . org-roam-dailies-map)
+  :config
+  (require 'org-roam-dailies) ;; Ensure the keymap is available
+  (require 'org-roam-protocol)
+  (org-roam-db-autosync-mode)
+  (map!
+   ;; :map org-mode-map
+   "C-M-h" 'completion-at-point
+   "C-c n i" 'org-roam-node-insert
+   "C-c n I" 'org-roam-node-insert-immediate)
+  )
+
 #+end_src
-* Theme
-#+begin_src elisp :tangle config.el
+*** TODO: delete?
+#+begin_src elisp :tangle no
+;; (map!
+;;  :map override
+;;  "C-c n l" 'org-roam-buffer-toggle
+;;  "C-c n f" 'org-roam-node-find
+;;  "C-c n i" 'org-roam-node-insert
+;;  "C-c n g" 'org-roam-graph
+;;  "C-c n i" 'org-roam-node-insert
+;;  "C-c n c" 'org-roam-capture
+;;  ;; Dailies
+;;  "C-c n j" 'org-roam-dailies-capture-today
+
+;;  "C-M-s" 'completion-at-point
+;; )
+#+end_src
+* Cursor Behaviour
+#+begin_src elisp
+(setq
+ evil-repeat-move-cursor t
+ evil-move-cursor-back nil ;; TODO
+ evil-move-beyond-eol t
+ evil-cross-lines t
+ evil-respect-visual-line-mode t
+ evil-track-eol t ;; TODO what does this actually do?
+ evil-start-of-line nil)
+#+end_src
+* Visuals
+** Theme
+#+begin_src elisp
 ;; Doom exposes five (optional) variables for controlling fonts in Doom. Here
 ;; are the three important ones:
 ;;
@@ -388,9 +454,32 @@
 
 (setq doom-theme 'doom-tomorrow-night)
 ;; (setq doom-theme 'doom-material)
+
+#+end_src
+*** Cursor Appearance
+#+begin_src elisp
+;; Other colours:
+;; "#00ffa9"
+;; "#C0E8F9"
+
+(setq normal-cursor-color   "#1BE7FF")
+(setq operator-cursor-color "#ff0054")
+
+(setq evil-normal-state-cursor   `(box    ,normal-cursor-color)
+      evil-insert-state-cursor   `(bar    ,normal-cursor-color)
+      evil-visual-state-cursor   `(hollow ,normal-cursor-color)
+      evil-motion-state-cursor   `(bar    ,normal-cursor-color)
+      evil-replace-state-cursor  `(bar    ,normal-cursor-color)
+      evil-operator-state-cursor `(evil-half-cursor ,operator-cursor-color))
+#+end_src
+** Others
+#+begin_src elisp
+(use-package! rainbow-mode
+  :hook
+  (prog-mode . rainbow-mode))
 #+end_src
 * Functions
-#+begin_src elisp :tangle config.el
+#+begin_src elisp
 (defun rename-current-buffer-file ()
   "Renames current buffer and file it is visiting."
   (interactive)
@@ -409,9 +498,10 @@
           (message "File '%s' successfully renamed to '%s'"
                    name (file-name-nondirectory new-name)))))))
 #+end_src
-* Key Bindings
+* TODO Key Bindings
 ** Navigation
-#+begin_src elisp :tangle config.el
+- TODO figure out where to put ~+eval:region~, originally under ~g r~
+#+begin_src elisp
 (map!
  :map override
 
@@ -471,7 +561,7 @@
 ;;       )
 #+end_src
 ** Modes
-#+begin_src elisp :tangle config.el
+#+begin_src elisp
 (map!
  :map override
  ;; Insert
@@ -484,7 +574,7 @@
  )
 #+end_src
 ** Text Editing
-#+begin_src elisp :tangle config.el
+#+begin_src elisp
 (map!
  :map override
 
@@ -500,6 +590,9 @@
  :n "p" 'evil-paste-after ;; -from-0
  ;; TODO: make it work even if cursor is inside parens
  :nv "C-M-'" 'indent-pp-sexp
+
+
+ :v "SPC c /" 'comment-or-uncomment-region
  )
 
 ;;   "'" 'evil-ex
@@ -509,7 +602,6 @@
 
 
 
-;;   "SPC c /" 'comment-or-uncomment-region
 
 
 ;;
@@ -522,10 +614,6 @@
 
 ;;   "ou" 'sp-select-next-thing
 
-;;   "os" 'sp-slurp-hybrid-sexp
-;;   "oS" 'sp-forward-barf-sexp
-;;   "oh" 'sp-backward-slurp-sexp
-;;   "oH" 'sp-backward-barf-sexp
 
 ;;   "-" 'newline-and-indent
 
@@ -683,20 +771,24 @@
 ;; (require 'sclang)
 ;; (add-hook 'sclang-mode-hook 'sclang-extensions-mode)
 #+end_src
-
-** Org Roam
-#+begin_src elisp :tangle config.el
-(map!
- :map override
- "C-c n l" 'org-roam-buffer-toggle
- "C-c n f" 'org-roam-node-find
- "C-c n i" 'org-roam-node-insert
- "C-c n g" 'org-roam-graph
- "C-c n i" 'org-roam-node-insert
- "C-c n c" 'org-roam-capture
- ;; Dailies
- "C-c n j" 'org-roam-dailies-capture-today
-
- "C-M-s" 'completion-at-point
-)
+*** Lisp
+#+begin_src elisp
+;; (map!
+;;  :prefix "o"
+;;  :n "s" 'sp-slurp-hybrid-sexp
+;;  :n "S" 'sp-forward-barf-sexp
+;;  :n "h" 'sp-backward-slurp-sexp
+;;  :n "H" 'sp-backward-barf-sexp
+;;  )
 #+end_src
+
+** TODO Project
+#+begin_src elisp
+;; (map! "SPC p c" 'projectile-compile-project)
+(after! counsel
+  (map! [remap projectile-compile-project] nil))
+#+end_src
+
+* TODO More
+** Multiple Cursors
+** Direct navigation to files
