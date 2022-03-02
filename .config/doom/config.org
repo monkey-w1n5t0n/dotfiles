@@ -62,11 +62,11 @@
        fold                ; (nigh) universal code folding
        (format +onsave)    ; automated prettiness
        ;;god               ; run Emacs commands without modifier keys
-       ;; lispy             ; vim for lisp, for people who don't like vim
+       lispy             ; vim for lisp, for people who don't like vim
        multiple-cursors    ; editing in many places at once
-       ;;objed             ; text object editing for the innocent
+       objed             ; text object editing for the innocent
        ;;parinfer            ; turn lisp into python, sort of
-       ;;rotate-text       ; cycle region at point between text candidates
+       rotate-text       ; cycle region at point between text candidates
        snippets            ; my elves. They type so I don't have to
        ;;word-wrap         ; soft wrapping with language-aware indent
 
@@ -461,9 +461,19 @@
 ;; Other colours:
 ;; "#00ffa9"
 ;; "#C0E8F9"
+;;  #88C0D0
+;; From tomorrow night theme
+;;  #6d9fa1 complimented by "#FF6B6B"
 
-(setq normal-cursor-color   "#1BE7FF")
-(setq operator-cursor-color "#ff0054")
+;; (setq normal-cursor-color   "#1BE7FF")
+;; (setq operator-cursor-color "#ff0054")
+
+;; (setq operator-cursor-color "#bf616a")
+
+
+
+(setq normal-cursor-color   "#FF6B6B")
+(setq operator-cursor-color "#65d4f3")
 
 (setq evil-normal-state-cursor   `(box    ,normal-cursor-color)
       evil-insert-state-cursor   `(bar    ,normal-cursor-color)
@@ -480,7 +490,7 @@
 #+end_src
 * Functions
 #+begin_src elisp
-(defun rename-current-buffer-file ()
+(defun my/rename-current-buffer-file ()
   "Renames current buffer and file it is visiting."
   (interactive)
   (let* ((name (buffer-name))
@@ -497,6 +507,19 @@
           (set-buffer-modified-p nil)
           (message "File '%s' successfully renamed to '%s'"
                    name (file-name-nondirectory new-name)))))))
+
+;; based on http://emacsredux.com/blog/2013/04/03/delete-file-and-buffer/
+(defun my/delete-file-and-buffer ()
+  "Kill the current buffer and deletes the file it is visiting."
+  (interactive)
+  (let ((filename (buffer-file-name)))
+    (if filename
+        (if (y-or-n-p (concat "Do you really want to delete file " filename " ?"))
+            (progn
+              (delete-file filename)
+              (message "Deleted file %s." filename)
+              (kill-buffer)))
+      (message "Not a file visiting buffer!"))))
 #+end_src
 * TODO Key Bindings
 ** Navigation
