@@ -28,7 +28,7 @@ fi
 
 export SCORED_AUDIO_ENGINE_DIR="$HOME/dev/scored/audio_engine"
 
-export PATH="$HOME/dev/scored/scripts":$PATH
+export PATH="$HOME/scripts":$PATH
 
 # Background
 #feh --bg-scale ~/Documents/wallpapers/wp5413541.jpg
