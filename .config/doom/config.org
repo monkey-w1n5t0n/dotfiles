@@ -62,9 +62,9 @@
        fold                ; (nigh) universal code folding
        (format +onsave)    ; automated prettiness
        ;;god               ; run Emacs commands without modifier keys
-       lispy             ; vim for lisp, for people who don't like vim
+       ;; lispy             ; vim for lisp, for people who don't like vim
        multiple-cursors    ; editing in many places at once
-       objed             ; text object editing for the innocent
+       ;; objed             ; text object editing for the innocent
        ;;parinfer            ; turn lisp into python, sort of
        rotate-text       ; cycle region at point between text candidates
        snippets            ; my elves. They type so I don't have to
@@ -597,6 +597,7 @@
  )
 #+end_src
 ** Text Editing
+*** Misc
 #+begin_src elisp
 (map!
  :map override
@@ -621,10 +622,6 @@
 ;;   "'" 'evil-ex
 
 ;;
-
-
-
-
 
 
 ;;
@@ -796,14 +793,31 @@
 #+end_src
 *** Lisp
 #+begin_src elisp
-;; (map!
-;;  :prefix "o"
-;;  :n "s" 'sp-slurp-hybrid-sexp
-;;  :n "S" 'sp-forward-barf-sexp
-;;  :n "h" 'sp-backward-slurp-sexp
-;;  :n "H" 'sp-backward-barf-sexp
+;; FIXME: getting "error key sequence os starts with non-prefix key o"
+;; Replaced with general-def block below
+(map!
+ ;; :prefix "o"
+ :n "o" nil
+ :n "o u" 'evil-open-below
+ :n "o U" 'evil-open-above
+
+ :n "o s" 'sp-slurp-hybrid-sexp
+ :n "o S" 'sp-forward-barf-sexp
+ :n "o h" 'sp-backward-slurp-sexp
+ :n "o H" 'sp-backward-barf-sexp
+ )
+
+;; (general-def
+;;   :state 'normal
+;;   "o s" 'sp-slurp-hybrid-sexp
+;;   "o S" 'sp-forward-barf-sexp
+;;   "o h" 'sp-backward-slurp-sexp
+;;   "o H" 'sp-backward-barf-sexp
 ;;  )
+
+
 #+end_src
+
 
 ** TODO Project
 #+begin_src elisp

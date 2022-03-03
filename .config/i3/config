@@ -1,6 +1,9 @@
 # i3 config file (v4)
 # Please see http://i3wm.org/docs/userguide.html for a complete reference!
 
+# Set keyboard layout and background picture
+exec .config/keyboard/setup_keyboard.sh
+exec --no-startup-id feh --bg-scale /home/w1n5t0n/Documents/wallpapers/abstract1.jpg
 
 # Default terminal:
 set $terminal alacritty
@@ -14,7 +17,7 @@ set $mod Mod4
 # workspace_layout tabbed <stacking|tabbed>
 
 # Configure border style <normal|1pixel|pixel xx|none|pixel>
-default_border pixel 2
+default_border pixel 1
 default_floating_border normal
 
 for_window [class="^.*"] border pixel 3
@@ -319,24 +322,24 @@ exec_always --no-startup-id fix_xcursor
 # to:
 # background $term_background
 # Same logic applied to everything else.
-set_from_resource $term_background background
-set_from_resource $term_foreground foreground
-set_from_resource $term_color0     color0
-set_from_resource $term_color1     color1
-set_from_resource $term_color2     color2
-set_from_resource $term_color3     color3
-set_from_resource $term_color4     color4
-set_from_resource $term_color5     color5
-set_from_resource $term_color6     color6
-set_from_resource $term_color7     color7
-set_from_resource $term_color8     color8
-set_from_resource $term_color9     color9
-set_from_resource $term_color10    color10
-set_from_resource $term_color11    color11
-set_from_resource $term_color12    color12
-set_from_resource $term_color13    color13
-set_from_resource $term_color14    color14
-set_from_resource $term_color15    color15
+# set_from_resource $term_background background
+# set_from_resource $term_foreground foreground
+# set_from_resource $term_color0     color0
+# set_from_resource $term_color1     color1
+# set_from_resource $term_color2     color2
+# set_from_resource $term_color3     color3
+# set_from_resource $term_color4     color4
+# set_from_resource $term_color5     color5
+# set_from_resource $term_color6     color6
+# set_from_resource $term_color7     color7
+# set_from_resource $term_color8     color8
+# set_from_resource $term_color9     color9
+# set_from_resource $term_color10    color10
+# set_from_resource $term_color11    color11
+# set_from_resource $term_color12    color12
+# set_from_resource $term_color13    color13
+# set_from_resource $term_color14    color14
+# set_from_resource $term_color15    color15
 
 # Start i3bar to display a workspace bar (plus the system information i3status if available)
 
@@ -344,14 +347,36 @@ set_from_resource $term_color15    color15
 # hide/unhide i3status bar
 #bindsym $mod+m bar mode toggle
 
-
+set $color1  #1d1f21
+set $color2  #282a2e
+set $color3  #373b41
+set $color4  #c5c8c6
+set $color5  #969896
+set $color6  #cc6666
+set $color7  #de935f
+set $color8  #f0c674
+set $color9  #b5bd68
+set $color10 #8abeb7
+set $color11 #81a2be
+set $color12 #b294bb
+set $color13 #aeafad
+set $color14 #000000
+set $color15 #666666
+set $color16 #FF3334
+set $color17 #9ec400
+set $color18 #b777e0
+set $color19 #54ced6
+set $color20 #ECEFF4
+set $color21 #8FBCBB
+set $color22 #CB4B16
+#
 # Theme colors
-# class                   border  backgr. text    indic.   child_border
-  client.focused          #8FBCBB #88C0D0 #ECEFF4 #A3BE8C
-  client.focused_inactive #4c566a #2F3D44 #ECEFF4 #454948
-  client.unfocused        #8FBCBB #2E3440 #ECEFF4 #454948
-  client.urgent           #CB4B16 #FDF6E3 #ECEFF4 #268BD2
-  client.placeholder      #000000 #0c0c0c #ECEFF4 #000000 
+# class                   border        backgr.          text          indic.   child_border
+  client.focused          $color10      $color10         $color20      #A3BE8C
+  client.focused_inactive $color3       $color3          $color20      #454948
+  client.unfocused        $color2       $color2          $color20      #454948
+  client.urgent           $color22      #FDF6E3          $color20      #268BD2
+  client.placeholder      #000000       #0c0c0c          $color20      #000000
 
   client.background       #2E3440
 
@@ -360,8 +385,8 @@ set_from_resource $term_color15    color15
 #############################
 
 # Set inner/outer gaps
-gaps inner 20
-gaps outer 0
+gaps inner 23
+gaps outer 00
 
 # Additionally, you can issue commands with the following syntax. This is useful to bind keys to changing the gap size.
 # gaps inner|outer current|all set|plus|minus <px>
