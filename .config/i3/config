@@ -4,10 +4,11 @@
 # Set keyboard layout and background picture
 exec .config/keyboard/setup_keyboard.sh
 exec --no-startup-id feh --bg-scale /home/w1n5t0n/Documents/wallpapers/abstract1.jpg
+exec --no-startup-id emacs --daemon
 
 # Default terminal:
 set $terminal alacritty
-set $editor emacs
+# set $editor "emacsclient -c" # alias for emacsclient
 set $file pcmanfm
 
 # Set mod key (Mod1=<Alt>, Mod4=<Super>)
@@ -40,7 +41,7 @@ floating_modifier $mod
 bindsym $mod+Return exec $terminal
 
 # Start emacs
-bindsym $mod+m exec $editor
+bindsym $mod+m exec "emacsclient -c"
 
 # Start file browser
 bindsym $mod+f exec $file

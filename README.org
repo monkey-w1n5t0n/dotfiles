@@ -1,0 +1,18 @@
+#+TITLE: w1n5t0n's PC Dotfiles
+* Dotfiles VC
+Using bare git repo
+** How to...
+*** TODO Install
+*** TODO Use
+* Shell
+ZSH, not bad so far
+** Aliases
+** Paths
+** Functions
+*** TODO Desire
+* Editor
+Emacs, of course.
+* Wallpaper Management
+Two options:
+1. Using ~nitrogen~ (preferred, current)
+2. Using ~feh~ inside ~.config/i3/config~
