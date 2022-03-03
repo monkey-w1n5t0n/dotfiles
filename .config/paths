@@ -1,2 +1,0 @@
-export PATH="$HOME/dev/lib/depot_tools:${PATH}"
-export PATH="$HOME/dev/scripts:${PATH}"
