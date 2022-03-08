@@ -490,7 +490,22 @@
 #+end_src
 * Functions
 #+begin_src elisp
-(defun my/rename-current-buffer-file ()
+
+
+
+
+
+
+
+(+ 1 2 (* 2 3))
+
+
+
+
+
+
+
+                (defun my/rename-current-buffer-file ()
   "Renames current buffer and file it is visiting."
   (interactive)
   (let* ((name (buffer-name))
@@ -520,6 +535,12 @@
               (message "Deleted file %s." filename)
               (kill-buffer)))
       (message "Not a file visiting buffer!"))))
+#+end_src
+* Projects
+#+begin_src elisp
+(projectile-add-known-project "~/dev/lang/carp")
+(projectile-add-known-project "~/dev/lang/v")
+(projectile-add-known-project "~/dev/lang/mal")
 #+end_src
 * TODO Key Bindings
 ** Navigation
@@ -693,28 +714,28 @@
 ;;     )
 
 ;; TIDAL
-;; (general-def
-;;   :states '(normal insert)
-;;   :keymap 'tidal-mode-mapI
-;;   "C-c C-l" (lambda ()
-;;               (interactive)
-;;               (save-excursion
-;;                 (tidal-run-line)))
-;;               ;; (evil-previous-visual-line))
+(map!
+  ;; :states '(normal insert)
+  :map 'tidal-mode-map
+  :ni "C-c C-l" (lambda ()
+              (interactive)
+              (save-excursion
+                (tidal-run-line)))
+              ;; (evil-previous-visual-line))
 
-;;   ;; randomly change the prompt each time something evaluates
-;;   ;; "C-c C-u" (lambda ()
-;;   ;;             (interactive)
-;;   ;;             (tidal-run-multiple-lines)
-;;   ;;             (let (()))
-;;   ;;             (tidal-)
-;;   ;;             )
-;;   ;;
-;;   ;;
-;;   "C-c C-h" (lambda ()
-;;               (interactive)
-;;               (tidal-send-string "hush"))
-;;   )
+  ;; randomly change the prompt each time something evaluates
+  ;; "C-c C-u" (lambda ()
+  ;;             (interactive)
+  ;;             (tidal-run-multiple-lines)
+  ;;             (let (()))
+  ;;             (tidal-)
+  ;;             )
+  ;;
+  ;;
+  :ni "C-c C-h" (lambda ()
+              (interactive)
+              (tidal-send-string "hush"))
+  )
 
 ;; (general-def
 ;;   :states '(normal visual motion)
@@ -829,3 +850,5 @@
 * TODO More
 ** Multiple Cursors
 ** Direct navigation to files
+* IMPORTANT
+Tal is a bae
