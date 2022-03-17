@@ -1,17 +1,25 @@
 #+TITLE: w1n5t0n's PC Dotfiles
-* Dotfiles VC
+* [[id:84bb8ba1-ad34-4889-9477-0bb3c0860baf][Dotfiles Version Control]]
 Using bare git repo
 ** How to...
 *** TODO Install
 *** TODO Use
+* [[id:49f87f5a-bdc3-4164-aabc-c1c0f0da91a0][Script]]
+Currently a bounch of (mostly) [[id:8bf821b1-f40e-49b9-8778-e0ba6a059a49][Shell Script]]s
 * Shell
 ZSH, not bad so far
 ** Aliases
 ** Paths
 ** Functions
 *** TODO Desire
-* Editor
-Emacs, of course.
+* [[id:96c23130-b95b-41e5-84dc-ee055b447a18][Text Editor]]
+[[id:6bf337bb-f1dd-4800-a347-b50ed364761e][Emacs]], of course.
+* Programs
+** Defaults
+*** File
+#+begin_src shell
+xdg-mime default pcmanfm.desktop inode/directory
+#+end_src
 * Wallpaper Management
 Two options:
 1. Using ~nitrogen~ (preferred, current)
