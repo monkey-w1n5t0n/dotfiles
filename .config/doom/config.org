@@ -1,8 +1,10 @@
 #+TITLE: w1n5t0n's Config of Doom
 #+PROPERTY: header-args:elisp :tangle ./config.el
 #+STARTUP: fold
-* Init
-#+begin_src elisp :tangle init.el
+* Doom-specific
+** Init
+*** Helper Text
+#+begin_src elisp :tangle no
 ;;; init.el -*- lexical-binding: t; -*-
 
 ;; This file controls what Doom modules are enabled and what order they load
@@ -18,7 +20,9 @@
 ;;
 ;;      Alternatively, press 'gd' (or 'C-c c d') on a module to browse its
 ;;      directory (for easy access to its source code).
-
+#+end_src
+*** Block
+#+begin_src elisp :tangle init.el
 (doom! :input
        ;;chinese
        ;;japanese
@@ -190,15 +194,36 @@
        literate
        (default +bindings +smartparens))
 #+end_src
-** Re-tangle on save
+*** Re-tangle on save
 #+begin_src elisp :tangle init.el
 ;; (add-hook 'org-mode-hook #'+literate-enable-recompile-h)
 #+end_src
-* Packages
-#+begin_src elisp :tangle packages.el
-;; -*- no-byte-compile: t; -*-
-;;; $DOOMDIR/packages.el
+** Config
+#+begin_src elisp
+;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
+(setq user-full-name "w1n5t0n"
+      user-mail-address "lm-w1n5t0n@protonmail.com")
 
+;; Here are some additional functions/macros that could help you configure Doom:
+;;
+;; - `load!' for loading external *.el files relative to this one
+;; - `use-package!' for configuring packages
+;; - `after!' for running code after a package has loaded
+;; - `add-load-path!' for adding directories to the `load-path', relative to
+;;   this file. Emacs searches the `load-path' when you load packages with
+;;   `require' or `use-package'.
+;; - `map!' for binding new keys
+;;
+;; To get information about any of these functions/macros, move the cursor over
+;; the highlighted symbol at press 'K' (non-evil users must press 'C-c c k').
+;; This will open documentation for it, including demos of how they are used.
+;;
+;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
+;; they are implemented.
+#+end_src
+* Packages
+** Help
+#+begin_src elisp :tangle no
 ;; To install a package with Doom you must declare them here and run 'doom sync'
 ;; on the command line, then restart Emacs for the changes to take effect -- or
 ;; use 'M-x doom/reload'.
@@ -246,7 +271,11 @@
 ;(unpin! pinned-package another-pinned-package)
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;(unpin! t)
-;
+#+end_src
+** Misc
+#+begin_src elisp :tangle packages.el
+;; -*- no-byte-compile: t; -*-
+;;; $DOOMDIR/packages.el
 
 (package! command-log-mode
   :recipe (:host github :repo "lewang/command-log-mode"))
@@ -259,11 +288,6 @@
 
 ;; (package! tree-sitter-langs)
 
-(package! tidal)
-
-(package! extempore-mode
-  :recipe (:host github
-           :repo "extemporelang/extempore-emacs-mode"))
 
 
 
@@ -282,21 +306,11 @@
 ;;   )
 
 
-;; Random fix to bug, see here: https://github.com/hlissner/doom-emacs/issues/5667
-(package! gitconfig-mode
-	  :recipe (:host github :repo "magit/git-modes"
-			 :files ("gitconfig-mode.el")))
-(package! gitignore-mode
-	  :recipe (:host github :repo "magit/git-modes"
-			 :files ("gitignore-mode.el")))
-
-(package! v-mode)
+(package! org-download)
 
 (package! aggressive-indent)
 
-(package! sclang-extensions)
-;; (package! scel)                         ;
-
+(package! org-roam-ui)
 
 (package! org-bullets)
 
@@ -304,44 +318,30 @@
 
 (package! rainbow-mode)
 #+end_src
-* Doom stuff
-#+begin_src elisp
-;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
-;; TODO: figure out markers, bound to `
+** Language Support
+#+begin_src elisp :tangle packages.el
 
-(setq user-full-name "w1n5t0n"
-      user-mail-address "lm-w1n5t0n@protonmail.com")
+;; Random fix to bug, see here: https://github.com/hlissner/doom-emacs/issues/5667
+(package! gitconfig-mode
+	  :recipe (:host github :repo "magit/git-modes"
+			 :files ("gitconfig-mode.el")))
+(package! gitignore-mode
+	  :recipe (:host github :repo "magit/git-modes"
+			 :files ("gitignore-mode.el")))
+(package! sclang-extensions)
+;; (package! scel)                         ;
+(package! v-mode)
+(package! tidal)
 
+(package! extempore-mode
+  :recipe (:host github
+           :repo "extemporelang/extempore-emacs-mode"))
 
+(package! kbd-mode
+  :recipe (:host github
+           :repo "kmonad/kbd-mode"))
 
-
-
-;; Here are some additional functions/macros that could help you configure Doom:
-;;
-;; - `load!' for loading external *.el files relative to this one
-;; - `use-package!' for configuring packages
-;; - `after!' for running code after a package has loaded
-;; - `add-load-path!' for adding directories to the `load-path', relative to
-;;   this file. Emacs searches the `load-path' when you load packages with
-;;   `require' or `use-package'.
-;; - `map!' for binding new keys
-;;
-;; To get information about any of these functions/macros, move the cursor over
-;; the highlighted symbol at press 'K' (non-evil users must press 'C-c c k').
-;; This will open documentation for it, including demos of how they are used.
-;;
-;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
-;; they are implemented.
-
-
-
-
-
-
-#+end_src
-* Projects
-#+begin_src elisp
-(setq projectile-project-search-path '("~/dev"))
+(package! edn)
 #+end_src
 * Org
 ** Org
@@ -353,6 +353,10 @@
 (use-package! org-bullets
   :config
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+
+;; (add-hook 'org-mode-hook '(lambda ()
+;;                             (visual-fill-column 1)
+;;                             (setq visual-fill-column-center-text t)))
 #+end_src
 ** Org Roam
 #+begin_src elisp
@@ -395,7 +399,7 @@
    ;; :map org-mode-map
    "C-M-h" 'completion-at-point
    "C-c n i" 'org-roam-node-insert
-   "C-c n I" 'org-roam-node-insert-immediate)
+   "C-c n u" 'org-roam-node-insert-immediate)
   )
 
 #+end_src
@@ -415,12 +419,48 @@
 ;;  "C-M-s" 'completion-at-point
 ;; )
 #+end_src
+* Package Config
+#+begin_src elisp
+(use-package! kbd-mode)
+#+end_src
+** Ace Window
+#+begin_src elisp
+(use-package! ace-window
+  ;; :bind (("M-o" . ace-window))
+  :custom
+  (aw-scope 'frame)
+  (aw-keys '(?a ?o ?e ?u ?i ?d ?h ?t ?n))
+  (aw-minibuffer-flag t)
+  :config
+  (ace-window-display-mode 1))
+#+end_src
+** Org Roam
+#+begin_src elisp
+(use-package! websocket
+    :after org-roam)
+
+(use-package! org-roam-ui
+    :after org-roam ;; or :after org
+;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
+;;         a hookable mode anymore, you're advised to pick something yourself
+;;         if you don't care about startup time, use
+;;  :hook (after-init . org-roam-ui-mode)
+    :config
+    (setq org-roam-ui-sync-theme t
+          org-roam-ui-follow t
+          org-roam-ui-update-on-save t
+          org-roam-ui-open-on-start t))
+#+end_src
+* Projects
+#+begin_src elisp
+(setq projectile-project-search-path '("~/dev"))
+#+end_src
 * Cursor Behaviour
 #+begin_src elisp
 (setq
  evil-repeat-move-cursor t
  evil-move-cursor-back nil ;; TODO
- evil-move-beyond-eol t
+ evil-move-beyond-eol nil
  evil-cross-lines t
  evil-respect-visual-line-mode t
  evil-track-eol t ;; TODO what does this actually do?
@@ -473,7 +513,7 @@
 
 
 (setq normal-cursor-color   "#FF6B6B")
-(setq operator-cursor-color "#65d4f3")
+(setq operator-cursor-color "#6d9fa1")
 
 (setq evil-normal-state-cursor   `(box    ,normal-cursor-color)
       evil-insert-state-cursor   `(bar    ,normal-cursor-color)
@@ -488,24 +528,25 @@
   :hook
   (prog-mode . rainbow-mode))
 #+end_src
+** Line wrapping
+#+begin_src elisp
+;; (add-hook 'org-mode-hook 'visual-fill-column-mode)
+;; (add-hook 'minibuffer-mode-hook '(lambda () (visual-fill-column-mode 0)))
+(global-visual-fill-column-mode 1)
+(setq-default fill-column 85)
+;; (setq-defau)
+(setq-default visual-fill-column-center-text t)
+;; (set-fill-column 90)
+;; (setq-local visual-fill-column-center-text t)
+(add-hook 'org-mode-hook 'turn-on-auto-fill)
+(add-hook 'minibuffer-mode-hook '(lambda () (setq-local fill-column 100)))
+;; (add-hook 'org-mode-hook
+;;           '(lambda ()
+;;              (setq-local visual-fill-column-center-text t)))
+#+end_src
 * Functions
 #+begin_src elisp
-
-
-
-
-
-
-
-(+ 1 2 (* 2 3))
-
-
-
-
-
-
-
-                (defun my/rename-current-buffer-file ()
+(defun my/rename-current-buffer-file ()
   "Renames current buffer and file it is visiting."
   (interactive)
   (let* ((name (buffer-name))
@@ -536,13 +577,34 @@
               (kill-buffer)))
       (message "Not a file visiting buffer!"))))
 #+end_src
-* Projects
+* TODO Projects
 #+begin_src elisp
 (projectile-add-known-project "~/dev/lang/carp")
 (projectile-add-known-project "~/dev/lang/v")
 (projectile-add-known-project "~/dev/lang/mal")
 #+end_src
 * TODO Key Bindings
+** TODO Emacs
+#+begin_src elisp
+(defun my/open-private-config ()
+  (find-file  "~/.config/doom/config.org"))
+
+;; FIXME don't work
+(map! :map doom-leader-file-map
+      :nvm "p" 'my/open-private-config)
+
+(map! :map doom-leader-map
+      :nvm "f p" 'my/open-private-config)
+
+(map! :nvmi "M-q" 'counsel-M-x)
+#+end_src
+
+#+RESULTS:
+
+** Big Picture
+#+begin_src elisp :tangle no
+;; TODO
+#+end_src
 ** Navigation
 - TODO figure out where to put ~+eval:region~, originally under ~g r~
 #+begin_src elisp
@@ -616,10 +678,24 @@
 
  :nvm "j" 'evil-change
  )
+
+(map!
+ :map 'doom-leader-notes-map
+ :n "r e" 'org-roam-tag-add
+ :n "r E" 'org-roam-tag-remove
+
+ :n "r o" 'org-roam-alias-add
+ :n "r O" 'org-roam-alias-add
+ )
 #+end_src
 ** Text Editing
 *** Misc
 #+begin_src elisp
+;; (map! :map doom-leader-code-map         ;
+;;       :n ";" 'comment-line
+;;       )
+
+
 (map!
  :map override
 
@@ -630,7 +706,7 @@
  :nv "e" 'evil-delete
  :nv "E" 'evil-delete-whole-line
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  ;; Paste
  :n "p" 'evil-paste-after ;; -from-0
  ;; TODO: make it work even if cursor is inside parens
@@ -839,16 +915,23 @@
 
 #+end_src
 
-
 ** TODO Project
+Read proper list of project paths from somewhere.
 #+begin_src elisp
 ;; (map! "SPC p c" 'projectile-compile-project)
 (after! counsel
   (map! [remap projectile-compile-project] nil))
 #+end_src
 
+** Notes
+#+begin_src emacs-lisp
+#+end_src
 * TODO More
 ** Multiple Cursors
 ** Direct navigation to files
-* IMPORTANT
-Tal is a bae
+* Auto chmod +x
+Automatically set a script's execution permissions (TODO: good idea?)
+#+begin_src elisp
+(add-hook 'after-save-hook
+          'executable-make-buffer-file-executable-if-script-p)
+#+end_src

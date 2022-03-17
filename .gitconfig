@@ -3,3 +3,5 @@
 	name = w1n5t0n
 [credential]
 	helper = cache --timeout=28800
+[init]
+	defaultBranch = master

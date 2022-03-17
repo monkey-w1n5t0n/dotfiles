@@ -1,2 +1,2 @@
 #!/usr/bin/bash
-xrandr --output DP-1-0.8 --off
+xrandr --output DP-1-0 --off
