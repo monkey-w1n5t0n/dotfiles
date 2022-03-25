@@ -39,13 +39,13 @@
        doom              ; what makes DOOM look the way it does
        ;;doom-dashboard    ; a nifty splash screen for Emacs
        ;;doom-quit         ; DOOM quit-message prompts when you quit Emacs
-       ;;(emoji +unicode)  ; 🙂
-       ;;fill-column       ; a `fill-column' indicator
+       (emoji +unicode)  ; 🙂
+       fill-column       ; a `fill-column' indicator
        hl-todo           ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
        hydra
        indent-guides     ; highlighted indent columns
        ligatures         ; ligatures and symbols to make your code pretty again
-       minimap           ; show a map of the code on the side
+       ;;minimap           ; show a map of the code on the side
        modeline          ; snazzy, Atom-inspired modeline, plus API
        nav-flash         ; blink cursor line after big motions
        ;;neotree           ; a project drawer, like NERDTree for vim
@@ -53,7 +53,7 @@
        (popup +defaults)   ; tame sudden yet inevitable temporary windows
        ;;tabs              ; a tab bar for Emacs
        treemacs          ; a project drawer, like neotree but cooler
-       ;;unicode           ; extended unicode support for various languages
+       unicode           ; extended unicode support for various languages
        vc-gutter         ; vcs diff in the fringe
        vi-tilde-fringe   ; fringe tildes to mark beyond EOB
        window-select     ; visually switch windows
@@ -66,7 +66,7 @@
        fold                ; (nigh) universal code folding
        (format +onsave)    ; automated prettiness
        ;;god               ; run Emacs commands without modifier keys
-       ;; lispy             ; vim for lisp, for people who don't like vim
+       lispy             ; vim for lisp, for people who don't like vim
        multiple-cursors    ; editing in many places at once
        ;; objed             ; text object editing for the innocent
        ;;parinfer            ; turn lisp into python, sort of
@@ -194,6 +194,9 @@
        literate
        (default +bindings +smartparens))
 #+end_src
+
+#+RESULTS:
+
 *** Re-tangle on save
 #+begin_src elisp :tangle init.el
 ;; (add-hook 'org-mode-hook #'+literate-enable-recompile-h)
@@ -320,7 +323,6 @@
 #+end_src
 ** Language Support
 #+begin_src elisp :tangle packages.el
-
 ;; Random fix to bug, see here: https://github.com/hlissner/doom-emacs/issues/5667
 (package! gitconfig-mode
 	  :recipe (:host github :repo "magit/git-modes"
@@ -342,6 +344,8 @@
            :repo "kmonad/kbd-mode"))
 
 (package! edn)
+
+(package! org-transclusion)
 #+end_src
 * Org
 ** Org
@@ -374,7 +378,7 @@
   :init
   (setq org-roam-v2-ack t)
   :custom
-  (org-roam-directory "~/phd/org-roam")
+  (org-roam-directory "~/research/org-roam")
   (org-roam-completion-everywhere t)
   (org-roam-mode-section-functions
    (list #'org-roam-backlinks-section
@@ -450,6 +454,17 @@
           org-roam-ui-follow t
           org-roam-ui-update-on-save t
           org-roam-ui-open-on-start t))
+
+(use-package! org-transclusion
+              :after org
+              :init
+              (map!
+               :map global-map
+               "<f12>"   #'org-transclusion-add
+               "C-<f12>" #'org-transclusion-remove
+               :leader
+               :prefix "n"
+               :desc "Org Transclusion Mode" "t" #'org-transclusion-mode))
 #+end_src
 * Projects
 #+begin_src elisp
@@ -459,7 +474,7 @@
 #+begin_src elisp
 (setq
  evil-repeat-move-cursor t
- evil-move-cursor-back nil ;; TODO
+ evil-move-cursor-back nil ;; TODO do I want this?
  evil-move-beyond-eol nil
  evil-cross-lines t
  evil-respect-visual-line-mode t
@@ -533,16 +548,19 @@
 ;; (add-hook 'org-mode-hook 'visual-fill-column-mode)
 ;; (add-hook 'minibuffer-mode-hook '(lambda () (visual-fill-column-mode 0)))
 (global-visual-fill-column-mode 1)
-(setq-default fill-column 85)
-;; (setq-defau)
+(setq-default fill-column 78)
+(setq-default visual-fill-column-width 90)
 (setq-default visual-fill-column-center-text t)
 ;; (set-fill-column 90)
 ;; (setq-local visual-fill-column-center-text t)
 (add-hook 'org-mode-hook 'turn-on-auto-fill)
-(add-hook 'minibuffer-mode-hook '(lambda () (setq-local fill-column 100)))
-;; (add-hook 'org-mode-hook
-;;           '(lambda ()
-;;              (setq-local visual-fill-column-center-text t)))
+
+(add-hook 'minibuffer-mode-hook
+          '(lambda ()
+             ;; (setq-local visual-fill-column-center-text nil)
+             (visual-fill-column-mode 0)
+             (setq-local visual-fill-column-center-text nil)
+             ))
 #+end_src
 * Functions
 #+begin_src elisp
@@ -664,6 +682,13 @@
 
 ;;       :nvm "r" 'evil-snipe-repeat
 ;;       :nvm "g" 'evil-snipe-repeat-reverse
+;;       )
+#+end_src
+*** TODO Navigating inside minibuffers
+#+begin_src elisp
+;; (map! :map minibuffer-mode-map
+;;       "C-t" 'next-line
+;;       "C-n" 'previous-line
 ;;       )
 #+end_src
 ** Modes
@@ -924,7 +949,7 @@ Read proper list of project paths from somewhere.
 #+end_src
 
 ** Notes
-#+begin_src emacs-lisp
+#+begin_src elisp
 #+end_src
 * TODO More
 ** Multiple Cursors
@@ -935,3 +960,5 @@ Automatically set a script's execution permissions (TODO: good idea?)
 (add-hook 'after-save-hook
           'executable-make-buffer-file-executable-if-script-p)
 #+end_src
+
+* Test1
