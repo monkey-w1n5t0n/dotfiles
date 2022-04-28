@@ -1,3 +1,4 @@
+# hi
 # i3 config file (v4)
 # Please see http://i3wm.org/docs/userguide.html for a complete reference!
 
@@ -319,7 +320,7 @@ exec_always --no-startup-id fix_xcursor
 # Change the variable name at the place you want to match the color
 # of your terminal like this:
 # [example]
-# If you want your bar to have the same background color as your 
+# If you want your bar to have the same background color as your
 # terminal background change the line 362 from:
 # background #14191D
 # to:
@@ -376,8 +377,12 @@ set $color22 #CB4B16
 
 # Theme colors
 # class                   border        backgr.      text          indic.   child_border
-  client.focused          $color10-1    $color10-1   $color20      #A3BE8C
-  client.focused_inactive $color3       $color3      $color20      #454948
+  # client.focused          $color10-1    $color10-1   $color20      #A3BE8C
+  # client.focused          $color10-1    $color4      $color20      #A3BE8C
+  client.focused          $color10-1    $color4      $color1      $color3
+  # client.focused_inactive $color3       $color3      $color1      #45494
+  client.focused_inactive $color3       $color3      $color1      $color2
+
   client.unfocused        $color2       $color2      $color20      #454948
   client.urgent           $color22      #FDF6E3      $color20      #268BD2
   client.placeholder      #000000       #0c0c0c      $color20      #000000
@@ -400,7 +405,7 @@ gaps outer 00
 # Smart gaps (gaps used if only more than one container on the workspace)
 #smart_gaps on
 
-# Smart borders (draw borders around container only if it is not the only container on this workspace) 
+# Smart borders (draw borders around container only if it is not the only container on this workspace)
 # on|no_gaps (on=always activate and no_gaps=only activate if the gap size to the edge of the screen is 0)
 #smart_borders on
 
