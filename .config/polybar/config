@@ -31,10 +31,10 @@ alert = #bd2c40
 ;monitor = ${env:MONITOR:HDMI-1}
 bottom = true
 width = 100%
-height = 27
+height = 26
 ;offset-x = 1%
 ;offset-y = 1%
-radius = 3.0
+radius = 1.0
 fixed-center = true
 
 background = ${colors.background}
@@ -43,8 +43,8 @@ foreground = ${colors.foreground}
 line-size = 3
 line-color = #CB4B16
 
-border-size = 4
-border-color = #00000000
+border-size = 2
+border-color = #1d1f21
 
 padding-left = 0
 padding-right = 2
@@ -56,9 +56,12 @@ font-0 = fixed:pixelsize=10;1
 font-1 = unifont:fontformat=truetype:size=8:antialias=false;0
 font-2 = siji:pixelsize=10;1
 
-modules-left = bspwm i3
-modules-center = mpd
-modules-right = xbacklight pulseaudio filesystem temperature  cpu  memory wlan eth date xkeyboard battery powermenu
+module-group-2 = menu
+
+modules-left = filesystem-root filesystem-home temperature
+modules-center = mpd i3
+; modules-right = xbacklight pulseaudio filesystem-root filesystem-home temperature  cpu  memory wlan eth date xkeyboard battery powermenu
+modules-right = xbacklight pulseaudio cpu memory wlan eth date xkeyboard battery powermenu
 
 tray-position = right
 tray-padding = 2
@@ -91,20 +94,46 @@ format-prefix-foreground = ${colors.foreground-alt}
 format-prefix-underline = ${colors.secondary}
 
 label-layout = %layout%
-label-layout-underline = ${colors.secondary}
+label-layout-underline = #ECEFF4
 
 label-indicator-padding = 2
 label-indicator-margin = 1
 label-indicator-background = ${colors.secondary}
 label-indicator-underline = ${colors.secondary}
 
-[module/filesystem]
+[module/filesystem-root]
 type = internal/fs
 interval = 25
+spacing = 4
+warn-percentage = 85
 
 mount-0 = /
 
-label-mounted = %{F#ECEFF4}%mountpoint%%{F-}: %percentage_used%%
+label-mounted = |%{F#ECEFF4}/  %{F-}%percentage_used%%, %free%|
+label-unmounted = %mountpoint% not mounted
+label-unmounted-foreground = ${colors.foreground-alt}
+
+
+[module/filesystem-home]
+type = internal/fs
+interval = 25
+spacing = 4
+warn-percentage = 85
+
+mount-0 = /home
+
+label-mounted = |%{F#ECEFF4}~/  %{F-}%percentage_used%%, %free%|
+; label-mounted = %{F#ECEFF4}~/%{F-}: %free%
+label-unmounted = %mountpoint% not mounted
+label-unmounted-foreground = ${colors.foreground-alt}
+
+[module/filesystem-hdd]
+type = internal/fs
+interval = 25
+
+mount-0 = /run/media/w1n5t0n/Blade 15 HDD
+
+label-mounted = %{F#ECEFF4}~%{F-}: %free%
 label-unmounted = %mountpoint% not mounted
 label-unmounted-foreground = ${colors.foreground-alt}
 
