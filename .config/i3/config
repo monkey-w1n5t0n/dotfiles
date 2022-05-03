@@ -6,12 +6,11 @@
 exec .config/keyboard/setup_keyboard.sh
 exec --no-startup-id feh --bg-scale /home/w1n5t0n/Documents/wallpapers/abstract1.jpg
 exec --no-startup-id emacs --daemon
-
+exec --no-startup-id picom
 # Default terminal:
 set $terminal alacritty
 # set $editor "emacsclient -c" # alias for emacsclient
 set $file pcmanfm
-
 # Set mod key (Mod1=<Alt>, Mod4=<Super>)
 set $mod Mod4
 
@@ -40,6 +39,10 @@ floating_modifier $mod
 
 # start a terminal
 bindsym $mod+Return exec $terminal
+bindsym $mod+Shift+Return exec $terminal --title "Terminal - Floating"
+
+bindsym $mod+c exec $terminal --command calcurse
+
 
 # Start emacs
 bindsym $mod+m exec "emacsclient -c"
@@ -62,10 +65,11 @@ bindsym $mod+z exec --no-startup-id morc_menu
 ################################################################################################
 
 exec --no-startup-id volumeicon
-bindsym $mod+Ctrl+m exec terminal -e 'alsamixer'
+bindsym $mod+Ctrl+m exec pavucontrol
 #exec --no-startup-id pulseaudio
 #exec --no-startup-id pa-applet
 #bindsym $mod+Ctrl+m exec pavucontrol
+# bindsym $mod+Ctrl+m exec pavucontrol
 
 ################################################################################################
 
@@ -75,6 +79,8 @@ bindsym $mod+Ctrl+m exec terminal -e 'alsamixer'
 
 # Start Applications
 bindsym $mod+Ctrl+b exec terminal -e 'bmenu'
+
+
 bindsym $mod+b exec firefox
 bindsym $mod+F3 exec pcmanfm
 # bindsym $mod+F3 exec ranger
@@ -211,6 +217,8 @@ bindsym $mod+Shift+8 move container to workspace $ws8; workspace $ws8
 
 # Open specific applications in floating mode
 for_window [title="alsamixer"] floating enable border pixel 1
+for_window [title="Terminal - Floating"] floating enable border pixel 1
+for_window [title="QjackCtl"] floating enable border pixel 1
 for_window [class="calamares"] floating enable border normal
 for_window [class="Clipgrab"] floating enable
 for_window [title="File Transfer*"] floating enable
@@ -394,8 +402,8 @@ set $color22 #CB4B16
 #############################
 
 # Set inner/outer gaps
-gaps inner 23
-gaps outer 00
+gaps inner 30
+gaps outer -5
 
 # Additionally, you can issue commands with the following syntax. This is useful to bind keys to changing the gap size.
 # gaps inner|outer current|all set|plus|minus <px>
