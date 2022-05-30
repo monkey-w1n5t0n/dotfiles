@@ -1,8 +1,8 @@
 #+TITLE: w1n5t0n's Config of Doom
 #+PROPERTY: header-args:elisp :tangle ./config.el
 #+STARTUP: fold
-* i3
-TODO
+* TODO i3
+Can't find a source block mode for i3 config files
 * Doom-specific
 ** Init
 *** Helper Text
