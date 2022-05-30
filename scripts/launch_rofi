@@ -1,0 +1,2 @@
+#!/bin/sh
+rofi -combi-modi window,combi,drun,ssh -show combi -icon-theme "Papirus" -show-icons -run-shell-command '{terminal} -e zsh -ic "{cmd} && read"'
