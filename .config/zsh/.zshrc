@@ -100,3 +100,8 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+
+# turn off bell
+xset b off
+# visual bell too
+# vbell off

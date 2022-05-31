@@ -6,6 +6,7 @@
 exec .config/keyboard/setup_keyboard.sh
 exec --no-startup-id feh --bg-scale /home/w1n5t0n/Documents/wallpapers/abstract1.jpg
 exec --no-startup-id emacs --daemon
+exec --no-startup-id kmonad $HOME/.config/kmonad/test.kbd
 # exec --no-startup-id picom
 # Default terminal:
 set $terminal alacritty
@@ -306,7 +307,7 @@ bindsym $mod+9 exec --no-startup-id blurlock
 
 # Autostart applications
 exec_always --no-startup-id ~/.config/polybar/launch.sh #--material
-exec        --no-startup-id xset r rate 250 40
+#exec        --no-startup-id xset r rate 250 40
 
 exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 exec --no-startup-id nitrogen --restore; #sleep 1; picom -b --corenr-radius 10
