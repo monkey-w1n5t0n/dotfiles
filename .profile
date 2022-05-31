@@ -32,3 +32,4 @@ export PATH=$EMACS_DIR/bin:$PATH
 #export PATH=$HOME/dev/lang/v:$PATH
 ##########
 
+export DOTPROFILE_TEST="mama"
