@@ -237,6 +237,8 @@ Can't find a source block mode for i3 config files
 ;; To install SOME-PACKAGE from MELPA, ELPA or emacsmirror:
 ;(package! some-package)
 
+(package! org-bullets)
+
 ;; To install a package directly from a remote git repo, you must specify a
 ;; `:recipe'. You'll find documentation on what `:recipe' accepts here:
 ;; https://github.com/raxod502/straight.el#the-recipe-format
@@ -294,7 +296,7 @@ Can't find a source block mode for i3 config files
 ;; (package! tree-sitter-langs)
 
 
-
+(package! speed-type)
 
 ;; ORG-ROAM stuff
 
