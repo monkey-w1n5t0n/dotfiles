@@ -1,3 +1,6 @@
 [submodule "/home/w1n5t0n/.config/emacs"]
 	path = /home/w1n5t0n/.config/emacs
 	url = https://github.com/lm-w1n5t0n/doom-emacs.git
+[submodule ".config/oh-my-zsh"]
+	path = .config/oh-my-zsh
+	url = https://github.com/ohmyzsh/ohmyzsh.git

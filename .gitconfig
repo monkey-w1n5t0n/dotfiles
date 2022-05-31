@@ -1,7 +1,0 @@
-[user]
-	email = lm-w1n5t0n@protonmail.com
-	name = w1n5t0n
-[credential]
-	helper = cache --timeout=28800
-[init]
-	defaultBranch = master

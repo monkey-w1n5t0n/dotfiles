@@ -1,4 +1,29 @@
-export XDG_CONFIG_HOME=${XDG_CONFIG_HOME:=${HOME}/.config}
-export ZDOTDIR=${ZDOTDIR:=${XDG_CONFIG_HOME}/zsh}
-export HISTFILE=$ZDOTDIR/.zhistory
-source $ZDOTDIR/.zshenv
+#export XDG_CONFIG_HOME=${XDG_CONFIG_HOME:=${HOME}/.config}
+#export ZDOTDIR=${ZDOTDIR:=${XDG_CONFIG_HOME}/zsh}
+#export HISTFILE=$ZDOTDIR/.zhistory
+export CONFIG_HOME="$HOME/.config"
+
+## CONFIG HOME
+if [[ -z "$XDG_CONFIG_HOME" ]]
+then
+    export XDG_CONFIG_HOME=$CONFIG_HOME
+fi
+
+## ZDOTDIR
+if [[ -d "$XDG_CONFIG_HOME/zsh" ]]
+then
+    export ZDOTDIR="$XDG_CONFIG_HOME/zsh/"
+fi
+
+## SHELL HISTORY
+export SHELL_HISTORY_FILENAME=".zhistory"
+export SHELL_HISTORY_FILEPATH="$ZDOTDIR/$SHELL_HISTORY_FILENAME"
+if [[ -f "$ZDOTDIR/" ]]
+then
+    export HISTFILE=$SHELL_HISTORY_FILEPATH
+fi
+
+## ZSHENV
+export SHELL_ENV_FILENAME=".zshenv"
+export SHELL_ENV_FILEPATH="$ZDOTDIR/$SHELL_ENV_FILENAME"
+source $SHELL_ENV_FILEPATH
