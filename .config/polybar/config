@@ -31,7 +31,7 @@ alert = #bd2c40
 ;monitor = ${env:MONITOR:HDMI-1}
 bottom = true
 width = 100%
-height = 24
+height = 25
 ;offset-x = 1%
 ;offset-y = 1%
 radius = 1.0
@@ -46,11 +46,11 @@ line-color = #CB4B16
 border-size = 2
 border-color = #1d1f21
 
-padding-left = 1
+padding-left = 2
 padding-right = 2
 
 module-margin-left = 1
-module-margin-right = 2
+module-margin-right = 1
 
 font-0 = fixed:pixelsize=10;1
 font-1 = unifont:fontformat=truetype:size=8:antialias=false;0
@@ -58,7 +58,7 @@ font-2 = siji:pixelsize=10;1
 
 module-group-2 = menu
 
-modules-left = filesystem-root filesystem-home temperature
+modules-left = filesystem-root temperature
 modules-center = mpd i3
 modules-right = xbacklight pulseaudio cpu memory wlan eth xkeyboard battery date powermenu
 
@@ -108,35 +108,7 @@ warn-percentage = 85
 mount-0 = /
 
 ; label-mounted = |%{F#ECEFF4} /  %{F-}%percentage_used%%, %free%  |
-label-mounted = |/:  %percentage_used%%, %free%|
-label-unmounted = %mountpoint% not mounted
-label-unmounted-foreground = ${colors.foreground-alt}
-
-format-underline = #c5c8c6
-
-[module/filesystem-home]
-type = internal/fs
-interval = 25
-spacing = 2
-warn-percentage = 85
-
-mount-0 = /home
-
-; label-mounted = %{F#ECEFF4}~/  %{F-}%percentage_used%%, %free%|
-label-mounted = |~/:  %percentage_used%%, %free%|
-; label-mounted = %{F#ECEFF4}~/%{F-}: %free%
-label-unmounted = %mountpoint% not mounted
-label-unmounted-foreground = ${colors.foreground-alt}
-
-format-underline = #c5c8c6
-
-[module/filesystem-hdd]
-type = internal/fs
-interval = 25
-
-mount-0 = /run/media/w1n5t0n/Blade 15 HDD
-
-label-mounted = %{F#ECEFF4}~%{F-}: %free%
+label-mounted = |/:  %used% used, %free% free|
 label-unmounted = %mountpoint% not mounted
 label-unmounted-foreground = ${colors.foreground-alt}
 
@@ -295,23 +267,23 @@ format-disconnected =
 type = internal/date
 interval = 5
 
-date =
-date-alt = " %Y-%m-%d"
-
 time = %H:%M
 time-alt = %H:%M:%S
+
+date = "%d"
+date-alt = " %Y-%m-%d"
 
 format-prefix = 
 format-prefix-foreground = ${colors.foreground-alt}
 format-underline = #c5c8c6
 
-label = %date% %time%
+label = %time%, %date%
 
 [module/pulseaudio]
 type = internal/pulseaudio
 
 format-volume = <label-volume> <bar-volume>
-label-volume = VOL %percentage%%
+label-volume = vol %percentage%%
 label-volume-foreground = ${root.foreground}
 
 label-muted = 🔇 muted
