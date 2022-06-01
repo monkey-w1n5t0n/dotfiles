@@ -27,15 +27,11 @@ IDE:
       documents-dock: ""
       help-dock: ""
       post-dock: ""
-    geometry: AdnQywADAAAAAAAZAAAAGQAAB18AAAP8AAAAHAAAABwAAAdcAAAD+QAAAAAAAAAAB3gAAAAcAAAAHAAAB1wAAAP5
-    state: AAAA/wAAAAD9AAAAAgAAAAAAAAAAAAAAAPwCAAAAAfsAAAAcAGQAbwBjAHUAbQBlAG4AdABzAC0AZABvAGMAawAAAAAA/////wAAAF4A////AAAAAQAAAdkAAAOs/AIAAAAC+wAAABIAaABlAGwAcAAtAGQAbwBjAGsBAAAAFQAAAocAAABMAP////sAAAASAHAAbwBzAHQALQBkAG8AYwBrAQAAAp0AAAEkAAAATAD///8AAAVnAAADrAAAAAEAAAACAAAAAQAAAAL8AAAAAA==
+    geometry: AdnQywADAAAAAAAZAAAAGQAAB2YAAAQCAAAAGwAAABsAAAdkAAAEAAAAAAAAAAAAB4AAAAAbAAAAGwAAB2QAAAQA
+    state: AAAA/wAAAAD9AAAAAgAAAAAAAAAAAAAAAPwCAAAAAfsAAAAcAGQAbwBjAHUAbQBlAG4AdABzAC0AZABvAGMAawAAAAAA/////wAAAF4A////AAAAAQAAAdkAAAO0/AIAAAAC+wAAABIAaABlAGwAcAAtAGQAbwBjAGsBAAAAFQAAAo0AAABMAP////sAAAASAHAAbwBzAHQALQBkAG8AYwBrAQAAAqMAAAEmAAAATAD///8AAAVwAAADtAAAAAEAAAACAAAAAQAAAAL8AAAAAA==
   postWindow:
     lineWrap: false
     scrollback: 1000
   recentDocuments: !QVariantList
-    - /home/w1n5t0n/livecoding/supercollider/tidal_boot.scd
-    - /home/w1n5t0n/dev/emute_6/installation/startup.scd
-    - /home/w1n5t0n/dev/emute_6/timelines/timelines-sc/defs/TimeLines_SynthDefs.scd
-    - /home/w1n5t0n/dev/emute_6/timelines/timelines-sc/defs/synthDefs/synths.scd
-    - /home/w1n5t0n/dev/emute_6/timelines/timelines-sc/defs/synthDefs/core.scd
+    []
   startWithSession: last
