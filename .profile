@@ -14,7 +14,6 @@ export SCRIPT_DIR="$DEV_DIR/scripts"
 
 # Scripts
 export PATH="$HOME/dev/scripts:$PATH"
-keyboard
 
 # Configs
 export CONFIG_DIR=$HOME/.config
@@ -32,4 +31,4 @@ export PATH=$EMACS_DIR/bin:$PATH
 #export PATH=$HOME/dev/lang/v:$PATH
 ##########
 
-export DOTPROFILE_TEST="mama"
+source $HOME/.config/keyboard/setup_keyboard.sh

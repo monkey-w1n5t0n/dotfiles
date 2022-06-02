@@ -6,6 +6,8 @@
 exec .config/keyboard/setup_keyboard.sh
 exec --no-startup-id feh --bg-scale /home/w1n5t0n/Documents/wallpapers/abstract1.jpg
 exec --no-startup-id emacs --daemon
+exec --no-startup-id /usr/lib/geoclue-2.0/demos/agent
+
 # exec --no-startup-id picom
 # Default terminal:
 set $terminal alacritty

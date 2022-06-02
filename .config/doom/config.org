@@ -447,6 +447,10 @@ Can't find a source block mode for i3 config files
 * Package Config
 #+begin_src elisp
 (use-package! kbd-mode)
+
+(use-package! tidal
+  :custom
+  (tidal-boot-script-path "/home/w1n5t0n/live/boot-scripts/BootTidal.hs"))
 #+end_src
 ** Ace Window
 #+begin_src elisp
