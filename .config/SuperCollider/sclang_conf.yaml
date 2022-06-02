@@ -1,9 +1,9 @@
 includePaths:
     -   /home/w1n5t0n/.local/share/SuperCollider/downloaded-quarks/Vowel
     -   /home/w1n5t0n/.local/share/SuperCollider/downloaded-quarks/scel
-    -   /home/w1n5t0n/dev/emute_6/timelines/timelines-sc
-    -   /home/w1n5t0n/dev/lib/superdirt
+#    -   /home/w1n5t0n/dev/emute_6/timelines/timelines-sc
     -   /home/w1n5t0n/.local/share/SuperCollider/downloaded-quarks/Dirt-Samples
+    -   /home/w1n5t0n/.local/share/SuperCollider/downloaded-quarks/SuperDirt
 excludePaths:
     []
 postInlineWarnings: false
