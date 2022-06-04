@@ -450,7 +450,7 @@ Can't find a source block mode for i3 config files
 
 (use-package! tidal
   :custom
-  (tidal-boot-script-path "/home/w1n5t0n/live/boot-scripts/BootTidal.hs"))
+  (tidal-boot-script-path "/home/w1n5t0n/live/startup/tidal.hs"))
 #+end_src
 ** Ace Window
 #+begin_src elisp
