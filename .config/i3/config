@@ -7,6 +7,7 @@ exec .config/keyboard/setup_keyboard.sh
 exec --no-startup-id feh --bg-scale /home/w1n5t0n/Documents/wallpapers/abstract1.jpg
 exec --no-startup-id emacs --daemon
 exec --no-startup-id /usr/lib/geoclue-2.0/demos/agent
+exec --no-startup-id redshift-gtk
 
 # exec --no-startup-id picom
 # Default terminal:
@@ -78,8 +79,8 @@ bindsym $mod+Ctrl+m exec pavucontrol
 ################################################################################################
 
 # Screen brightness controls
-bindsym XF86MonBrightnessUp exec "xbacklight -inc 10; notify-send 'brightness up'"
-bindsym XF86MonBrightnessDown exec "xbacklight -dec 10; notify-send 'brightness down'"
+bindsym XF86MonBrightnessUp exec "xbacklight -inc 3; notify-send 'brightness up'"
+bindsym XF86MonBrightnessDown exec "xbacklight -dec 3; notify-send 'brightness down'"
 
 # Start Applications
 bindsym $mod+Ctrl+b exec terminal -e 'bmenu'
