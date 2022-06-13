@@ -1,14 +1,19 @@
 #+TITLE: w1n5t0n's Config of Doom
 #+PROPERTY: header-args:elisp :tangle ./config.el
 #+STARTUP: fold
-* TODO i3
-Can't find a source block mode for i3 config files
 * Doom-specific
-** Init
-*** Helper Text
-#+begin_src elisp :tangle no
+** Headers
+*** packages.el
+#+begin_src elisp :tangle packages.el
+;; -*- no-byte-compile: t; -*-
+;;; $DOOMDIR/packages.el
+#+end_src
+*** init.el
+#+begin_src elisp :tangle init.el
 ;;; init.el -*- lexical-binding: t; -*-
-
+#+end_src
+Additional help
+#+begin_src elisp :tangle no
 ;; This file controls what Doom modules are enabled and what order they load
 ;; in. Remember to run 'doom sync' after modifying it!
 
@@ -23,7 +28,31 @@ Can't find a source block mode for i3 config files
 ;;      Alternatively, press 'gd' (or 'C-c c d') on a module to browse its
 ;;      directory (for easy access to its source code).
 #+end_src
-*** Block
+
+*** config.el
+#+begin_src elisp
+;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
+#+end_src
+Additional help
+#+begin_src elisp :tangle no
+;; Here are some additional functions/macros that could help you configure Doom:
+;;
+;; - `load!' for loading external *.el files relative to this one
+;; - `use-package!' for configuring packages
+;; - `after!' for running code after a package has loaded
+;; - `add-load-path!' for adding directories to the `load-path', relative to
+;;   this file. Emacs searches the `load-path' when you load packages with
+;;   `require' or `use-package'.
+;; - `map!' for binding new keys
+;;
+;; To get information about any of these functions/macros, move the cursor over
+;; the highlighted symbol at press 'K' (non-evil users must press 'C-c c k').
+;; This will open documentation for it, including demos of how they are used.
+;;
+;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
+;; they are implemented.
+#+end_src
+** Init
 #+begin_src elisp :tangle init.el
 (doom! :input
        ;;chinese
@@ -64,8 +93,8 @@ Can't find a source block mode for i3 config files
 
        :editor
        (evil +everywhere)  ; come to the dark side, we have cookies
-       file-templates      ; auto-snippets for empty files
-       fold                ; (nigh) universal code folding
+        file-templates      ; auto-snippets for empty files
+       feld                ; (nigh) universal code folding
        (format +onsave)    ; automated prettiness
        ;;god               ; run Emacs commands without modifier keys
        lispy             ; vim for lisp, for people who don't like vim
@@ -79,7 +108,7 @@ Can't find a source block mode for i3 config files
        :emacs
        dired             ; making dired pretty [functional]
        electric          ; smarter, keyword-based electric-indent
-       ;;ibuffer         ; interactive buffer management
+       ibuffer         ; interactive buffer management
        undo              ; persistent, smarter undo for your inevitable mistakes
        vc                ; version-control and Emacs, sitting in a tree
 
@@ -97,12 +126,12 @@ Can't find a source block mode for i3 config files
        :tools
        ;;ansible
        ;;debugger          ; FIXME stepping through code, to help you add bugs
-       ;;direnv
+       direnv
        docker
        ;;editorconfig      ; let someone else argue about tabs vs spaces
        ;;ein               ; tame Jupyter notebooks with emacs
        (eval +overlay)     ; run code, run (also, repls)
-       ;;gist              ; interacting with github gists
+       gist              ; interacting with github gists
        lookup              ; navigate your code and its documentation
        (lsp +peek)
        magit               ; a git porcelain for Emacs
@@ -110,10 +139,10 @@ Can't find a source block mode for i3 config files
        ;;pass              ; password manager for nerds
        pdf                 ; pdf enhancements
        ;;prodigy           ; FIXME managing external services & code builders
-       ;;rgb               ; creating color strings
+       rgb               ; creating color strings
        ;;taskrunner        ; taskrunner for all your projects
        ;;terraform         ; infrastructure as code
-       ;;tmux              ; an API for interacting with tmux
+       tmux              ; an API for interacting with tmux
        ;;upload            ; map local to remote projects via ssh/ftp
 
        :os
@@ -128,12 +157,12 @@ Can't find a source block mode for i3 config files
        ;;coq               ; proofs-as-programs
        ;;crystal           ; ruby at the speed of c
        ;;csharp            ; unity, .NET, and mono shenanigans
-       ;;data              ; config/data formats
+       data              ; config/data formats
        ;;(dart +flutter)   ; paint ui and not much else
        ;;elixir            ; erlang done right
        ;;elm               ; care for a cup of TEA?
        emacs-lisp          ; drown in parentheses
-       ;;erlang            ; an elegant language for a more civilized age
+       erlang            ; an elegant language for a more civilized age
        ;;ess               ; emacs speaks statistics
        faust               ; dsp, but you get to keep your soul
        ;;fsharp            ; ML stands for Microsoft's Language
@@ -142,13 +171,13 @@ Can't find a source block mode for i3 config files
        ;;(go +lsp)         ; the hipster dialect
        (haskell +dante)    ; a language that's lazier than I am
        hy                  ; readability of scheme w/ speed of python
-       ;;idris             ; a language you can depend on
+       idris             ; a language you can depend on
        json                ; At least it ain't XML
        ;;(java +meghanada) ; the poster child for carpal tunnel syndrome
        ;;javascript        ; all(hope(abandon(ye(who(enter(here))))))
        ;;julia             ; a better, faster MATLAB
        ;;kotlin            ; a better, slicker Java(Script)
-       ;;latex             ; writing papers in Emacs has never been so fun
+       latex             ; writing papers in Emacs has never been so fun
        ;;lean
        ;;factor
        ;;ledger            ; an accounting system in Emacs
@@ -156,7 +185,7 @@ Can't find a source block mode for i3 config files
        markdown            ; writing docs for people to ignore
        nim                 ; python + lisp at the speed of c
        ;;nix               ; I hereby declare "nix geht mehr!"
-       ;;ocaml             ; an objective camel
+       ocaml             ; an objective camel
        (org +roam2 +dragndrop
             +hugo +journal +noter
             +pomodoro +pretty +present)                 ; organize your plain life in plain text
@@ -187,7 +216,7 @@ Can't find a source block mode for i3 config files
        ;;(wanderlust +gmail)
 
        :app
-       ;;calendar
+       calendar
        ;;emms
        ;;everywhere        ; *leave* Emacs!? You must be joking
        ;;irc               ; how neckbeards socialize
@@ -198,35 +227,42 @@ Can't find a source block mode for i3 config files
        literate
        (default +bindings +smartparens))
 #+end_src
-
 *** Re-tangle on save
 #+begin_src elisp :tangle init.el
 ;; (add-hook 'org-mode-hook #'+literate-enable-recompile-h)
 #+end_src
-** Config
+** User Config
 #+begin_src elisp
-;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 (setq user-full-name "w1n5t0n"
       user-mail-address "lm-w1n5t0n@protonmail.com")
-
-;; Here are some additional functions/macros that could help you configure Doom:
-;;
-;; - `load!' for loading external *.el files relative to this one
-;; - `use-package!' for configuring packages
-;; - `after!' for running code after a package has loaded
-;; - `add-load-path!' for adding directories to the `load-path', relative to
-;;   this file. Emacs searches the `load-path' when you load packages with
-;;   `require' or `use-package'.
-;; - `map!' for binding new keys
-;;
-;; To get information about any of these functions/macros, move the cursor over
-;; the highlighted symbol at press 'K' (non-evil users must press 'C-c c k').
-;; This will open documentation for it, including demos of how they are used.
-;;
-;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
-;; they are implemented.
 #+end_src
 * Packages
+** Org
+#+begin_src elisp :tangle packages.el
+;; ORG-ROAM stuff
+
+
+;; (package! emacsql)
+;; (package! emacsql-sqlite)
+;; (package! magit-section)
+;; (package! org-roam)
+
+;; (use-package! org-roam
+;;   :config
+;;   (setq org-roam-directory "~/phd/org-roam-files")
+;;   (org-roam-setup)
+;;   )
+
+(package! org-roam :pin "65ea325")
+
+(package! org-roam-ui)
+
+(package! org-bullets)
+
+(package! org-download)
+
+(package! org-transclusion)
+#+end_src
 ** Help
 #+begin_src elisp :tangle no
 ;; To install a package with Doom you must declare them here and run 'doom sync'
@@ -277,13 +313,19 @@ Can't find a source block mode for i3 config files
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;(unpin! t)
 #+end_src
+** General Aesthetics
+#+begin_src elisp :tangle packages.el
+(package! rainbow-mode)
+#+end_src
+** Command Log
+#+begin_src elisp :tangle packages.el
+(package! command-log-mode
+  :recipe (:host github :repo "lewang/command-log-mode"))
+#+end_src
 ** Misc
 #+begin_src elisp :tangle packages.el
 ;; -*- no-byte-compile: t; -*-
 ;;; $DOOMDIR/packages.el
-
-(package! command-log-mode
-  :recipe (:host github :repo "lewang/command-log-mode"))
 
 ;; (package! slime
 ;;   :recipe (:host github :repo "slime/slime"))
@@ -296,32 +338,8 @@ Can't find a source block mode for i3 config files
 
 
 
-;; ORG-ROAM stuff
-
-
-;; (package! emacsql)
-;; (package! emacsql-sqlite)
-;; (package! magit-section)
-;; (package! org-roam)
-
-;; (use-package! org-roam
-;;   :config
-;;   (setq org-roam-directory "~/phd/org-roam-files")
-;;   (org-roam-setup)
-;;   )
-
-
-(package! org-download)
 
 (package! aggressive-indent)
-
-(package! org-roam-ui)
-
-(package! org-bullets)
-
-(package! org-roam :pin "65ea325")
-
-(package! rainbow-mode)
 #+end_src
 ** Language Support
 #+begin_src elisp :tangle packages.el
@@ -332,15 +350,8 @@ Can't find a source block mode for i3 config files
 (package! gitignore-mode
 	  :recipe (:host github :repo "magit/git-modes"
 			 :files ("gitignore-mode.el")))
-(package! sclang-extensions)
-;; (package! scel)                         ;
 (package! v-mode)
-(unpin! tidal)
-(package! tidal)
 
-(package! extempore-mode
-  :recipe (:host github
-           :repo "extemporelang/extempore-emacs-mode"))
 
 (package! kbd-mode
   :recipe (:host github
@@ -348,8 +359,25 @@ Can't find a source block mode for i3 config files
 
 (package! edn)
 
-(package! org-transclusion)
 #+end_src
+** Live Coding
+*** Tidal
+#+begin_src elisp :tangle packages.el
+(unpin! tidal)
+(package! tidal)
+#+end_src
+*** Supercollider
+#+begin_src elisp :tangle packages.el
+(package! sclang-extensions)
+;; (package! scel)                         ;
+#+end_src
+*** Extempore
+#+begin_src elisp :tangle packages.el
+(package! extempore-mode
+  :recipe (:host github
+           :repo "extemporelang/extempore-emacs-mode"))
+#+end_src
+*** Overtone
 * Org
 ** Org
 #+begin_src elisp
@@ -849,21 +877,8 @@ Can't find a source block mode for i3 config files
 (map!
  ;; :states '(normal insert)
  :map 'tidal-mode-map
- :ni "C-c C-l" #'(lambda ()
-                   (interactive)
-                   (save-excursion
-                     (tidal-run-line)))
- ;; (evil-previous-visual-line))
+ :ni "C-c C-l" 'tidal-run-line
 
- ;; randomly change the prompt each time something evaluates
- ;; "C-c C-u" (lambda ()
- ;;             (interactive)
- ;;             (tidal-run-multiple-lines)
- ;;             (let (()))
- ;;             (tidal-)
- ;;             )
- ;;
- ;;
  :ni "C-c C-h" #'(lambda ()
                    (interactive)
                    (tidal-send-string "hush"))
@@ -871,10 +886,7 @@ Can't find a source block mode for i3 config files
  :ni "C-c C-p" #'(lambda ()
                    (interactive)
                    (tidal-send-string "panic"))
- ;; :ni "C-c C-e" #'(lambda ()
- ;;                   (interactive)
- ;;                   (save-excursion
- ;;                     (tidal-eval-multiple-lines)))
+  :ni "C-c C-e" 'tidal-run-multiple-lines
  )
 
 ;; (general-def
