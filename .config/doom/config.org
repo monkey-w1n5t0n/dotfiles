@@ -236,8 +236,52 @@ Additional help
 (setq user-full-name "w1n5t0n"
       user-mail-address "lm-w1n5t0n@protonmail.com")
 #+end_src
-* Packages
-** Org
+* Functions
+#+begin_src elisp
+(defun my/rename-current-buffer-file ()
+  "Renames current buffer and file it is visiting."
+  (interactive)
+  (let* ((name (buffer-name))
+         (filename (buffer-file-name))
+         (basename (file-name-nondirectory filename)))
+    (if (not (and filename (file-exists-p filename)))
+        (error "Buffer '%s' is not visiting a file!" name)
+      (let ((new-name (read-file-name "New name: " (file-name-directory filename) basename nil basename)))
+        (if (get-buffer new-name)
+            (error "A buffer named '%s' already exists!" new-name)
+          (rename-file filename new-name 1)
+          (rename-buffer new-name)
+          (set-visited-file-name new-name)
+          (set-buffer-modified-p nil)
+          (message "File '%s' successfully renamed to '%s'"
+                   name (file-name-nondirectory new-name)))))))
+
+;; based on http://emacsredux.com/blog/2013/04/03/delete-file-and-buffer/
+(defun my/delete-file-and-buffer ()
+  "Kill the current buffer and deletes the file it is visiting."
+  (interactive)
+  (let ((filename (buffer-file-name)))
+    (if filename
+        (if (y-or-n-p (concat "Do you really want to delete file " filename " ?"))
+            (progn
+              (delete-file filename)
+              (message "Deleted file %s." filename)
+              (kill-buffer)))
+      (message "Not a file visiting buffer!"))))
+#+end_src
+* Org
+** General Config
+#+begin_src elisp
+;; If you use `org' and don't want your org files in the default location below,
+;; change `org-directory'. It must be set before org loads!
+(setq org-directory "~/org/")
+
+
+;; (add-hook 'org-mode-hook '(lambda ()
+;;                             (visual-fill-column 1)
+;;                             (setq visual-fill-column-center-text t)))
+#+end_src
+** Packages
 #+begin_src elisp :tangle packages.el
 ;; ORG-ROAM stuff
 
@@ -262,6 +306,129 @@ Additional help
 (package! org-download)
 
 (package! org-transclusion)
+#+end_src
+*** Config
+#+begin_src elisp
+(use-package! org-bullets
+  :config
+  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+#+end_src
+** Org Roam
+#+begin_src elisp
+;; Fro  m https://systemcrafters.net/build-a-second-brain-in-emacs/5-org-roam-hacks/
+(defun org-roam-node-insert-immediate (arg &rest args)
+  (interactive "P")
+  (let ((args (cons arg args))
+        (org-roam-capture-templates (list (append (car org-roam-capture-templates)
+                                                  '(:immediate-finish t)))))
+    (apply #'org-roam-node-insert args)
+    ;;(evil-forward-word-end) FIXME: doesn't work
+    ))
+
+(use-package! org-roam
+  :init
+  (setq org-roam-v2-ack t)
+  :custom
+  (org-roam-directory "~/research/org-roam")
+  (org-roam-completion-everywhere t)
+  (org-roam-mode-section-functions
+   (list #'org-roam-backlinks-section
+         #'org-roam-reflinks-section
+         ;; #'org-roam-unlinked-references-section
+         ))
+  ;; :bind (("C-c n l" . org-roam-buffer-toggle)
+  ;;        ("C-c n f" . org-roam-node-find)
+  ;;        ("C-c n i" . org-roam-node-insert)
+  ;;        :map org-mode-map
+  ;;        ("C-M-i" . completion-at-point)
+  ;;        :map org-roam-dailies-map
+  ;;        ("Y" . org-roam-dailies-capture-yesterday)
+  ;;        ("T" . org-roam-dailies-capture-tomorrow))
+  ;; :bind-keymap
+  ;; ("C-c n d" . org-roam-dailies-map)
+  :config
+  (require 'org-roam-dailies) ;; Ensure the keymap is available
+  (require 'org-roam-protocol)
+  (org-roam-db-autosync-mode)
+  (map!
+   ;; :map org-mode-map
+   "C-M-h" 'completion-at-point
+   "C-c n i" 'org-roam-node-insert
+   "C-c n u" 'org-roam-node-insert-immediate)
+  )
+
+(use-package! websocket
+    :after org-roam)
+
+(use-package! org-roam-ui
+    :after org-roam ;; or :after org
+;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
+;;         a hookable mode anymore, you're advised to pick something yourself
+;;         if you don't care about startup time, use
+;;  :hook (after-init . org-roam-ui-mode)
+    :config
+    (setq org-roam-ui-sync-theme t
+          org-roam-ui-follow t
+          org-roam-ui-update-on-save t
+          org-roam-ui-open-on-start t))
+
+(use-package! org-transclusion
+              :after org
+              :init
+              (map!
+               :map global-map
+               "<f12>"   #'org-transclusion-add
+               "C-<f12>" #'org-transclusion-remove
+               :leader
+               :prefix "n"
+               :desc "Org Transclusion Mode" "t" #'org-transclusion-mode))
+#+end_src
+*** TODO: delete?
+#+begin_src elisp :tangle no
+;; (map!
+;;  :map override
+;;  "C-c n l" 'org-roam-buffer-toggle
+;;  "C-c n f" 'org-roam-node-find
+;;  "C-c n i" 'org-roam-node-insert
+;;  "C-c n g" 'org-roam-graph
+;;  "C-c n i" 'org-roam-node-insert
+;;  "C-c n c" 'org-roam-capture
+;;  ;; Dailies
+;;  "C-c n j" 'org-roam-dailies-capture-today
+
+;;  "C-M-s" 'completion-at-point
+;; )
+#+end_src
+** Org Noter
+#+begin_src elisp
+(use-package! org-noter
+  :after (:any org pdf-view)
+  :config
+  (setq
+   ;; The WM can handle splits
+   org-noter-notes-window-location 'other-frame;'horizontal-split;; 'other-frame
+   ;; Please stop opening frames
+   org-noter-always-create-frame nil
+   ;; I want to see the whole file
+   org-noter-hide-other nil
+   ;; Everything is relative to the main notes file
+   ;; org-noter-notes-search-path (list org_notes)
+   )
+  )
+
+#+end_src
+* Packages
+** Emacs stuff
+*** Ace Window
+#+begin_src elisp
+(use-package! ace-window
+  ;; :bind (("M-o" . ace-window))
+  :custom
+  (aw-scope 'frame)
+  (aw-keys '(?a ?o ?e ?u ?i ?d ?h ?t ?n))
+  (aw-minibuffer-flag t)
+  :config
+  (ace-window-display-mode 1))
 #+end_src
 ** Help
 #+begin_src elisp :tangle no
@@ -313,8 +480,19 @@ Additional help
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;(unpin! t)
 #+end_src
+** Git
+#+begin_src elisp :tangle packages.el
+;; Random fix to bug, see here: https://github.com/hlissner/doom-emacs/issues/5667
+(package! gitconfig-mode
+	  :recipe (:host github :repo "magit/git-modes"
+			 :files ("gitconfig-mode.el")))
+(package! gitignore-mode
+	  :recipe (:host github :repo "magit/git-modes"
+			 :files ("gitignore-mode.el")))
+#+end_src
 ** General Aesthetics
 #+begin_src elisp :tangle packages.el
+;; Colours in hex strings
 (package! rainbow-mode)
 #+end_src
 ** Command Log
@@ -341,30 +519,27 @@ Additional help
 
 (package! aggressive-indent)
 #+end_src
-** Language Support
+** Other Languages
 #+begin_src elisp :tangle packages.el
-;; Random fix to bug, see here: https://github.com/hlissner/doom-emacs/issues/5667
-(package! gitconfig-mode
-	  :recipe (:host github :repo "magit/git-modes"
-			 :files ("gitconfig-mode.el")))
-(package! gitignore-mode
-	  :recipe (:host github :repo "magit/git-modes"
-			 :files ("gitignore-mode.el")))
 (package! v-mode)
-
 
 (package! kbd-mode
   :recipe (:host github
            :repo "kmonad/kbd-mode"))
 
 (package! edn)
-
 #+end_src
 ** Live Coding
 *** Tidal
 #+begin_src elisp :tangle packages.el
 (unpin! tidal)
 (package! tidal)
+#+end_src
+**** Config
+#+begin_src elisp
+(use-package! tidal
+  :custom
+  (tidal-boot-script-path "/home/w1n5t0n/live/startup/tidal.hs"))
 #+end_src
 *** Supercollider
 #+begin_src elisp :tangle packages.el
@@ -377,149 +552,8 @@ Additional help
   :recipe (:host github
            :repo "extemporelang/extempore-emacs-mode"))
 #+end_src
-*** Overtone
-* Org
-** Org
-#+begin_src elisp
-;; If you use `org' and don't want your org files in the default location below,
-;; change `org-directory'. It must be set before org loads!
-(setq org-directory "~/org/")
-
-(use-package! org-bullets
-  :config
-  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
-
-;; (add-hook 'org-mode-hook '(lambda ()
-;;                             (visual-fill-column 1)
-;;                             (setq visual-fill-column-center-text t)))
-#+end_src
-** Org Roam
-#+begin_src elisp
-;; From https://systemcrafters.net/build-a-second-brain-in-emacs/5-org-roam-hacks/
-(defun org-roam-node-insert-immediate (arg &rest args)
-  (interactive "P")
-  (let ((args (cons arg args))
-        (org-roam-capture-templates (list (append (car org-roam-capture-templates)
-                                                  '(:immediate-finish t)))))
-    (apply #'org-roam-node-insert args)
-    ;;(evil-forward-word-end) FIXME: doesn't work
-    ))
-
-(use-package! org-roam
-  :init
-  (setq org-roam-v2-ack t)
-  :custom
-  (org-roam-directory "~/research/org-roam")
-  (org-roam-completion-everywhere t)
-  (org-roam-mode-section-functions
-   (list #'org-roam-backlinks-section
-         #'org-roam-reflinks-section
-         ;; #'org-roam-unlinked-references-section
-         ))
-  ;; :bind (("C-c n l" . org-roam-buffer-toggle)
-  ;;        ("C-c n f" . org-roam-node-find)
-  ;;        ("C-c n i" . org-roam-node-insert)
-  ;;        :map org-mode-map
-  ;;        ("C-M-i" . completion-at-point)
-  ;;        :map org-roam-dailies-map
-  ;;        ("Y" . org-roam-dailies-capture-yesterday)
-  ;;        ("T" . org-roam-dailies-capture-tomorrow))
-  ;; :bind-keymap
-  ;; ("C-c n d" . org-roam-dailies-map)
-  :config
-  (require 'org-roam-dailies) ;; Ensure the keymap is available
-  (require 'org-roam-protocol)
-  (org-roam-db-autosync-mode)
-  (map!
-   ;; :map org-mode-map
-   "C-M-h" 'completion-at-point
-   "C-c n i" 'org-roam-node-insert
-   "C-c n u" 'org-roam-node-insert-immediate)
-  )
-
-#+end_src
-*** TODO: delete?
-#+begin_src elisp :tangle no
-;; (map!
-;;  :map override
-;;  "C-c n l" 'org-roam-buffer-toggle
-;;  "C-c n f" 'org-roam-node-find
-;;  "C-c n i" 'org-roam-node-insert
-;;  "C-c n g" 'org-roam-graph
-;;  "C-c n i" 'org-roam-node-insert
-;;  "C-c n c" 'org-roam-capture
-;;  ;; Dailies
-;;  "C-c n j" 'org-roam-dailies-capture-today
-
-;;  "C-M-s" 'completion-at-point
-;; )
-#+end_src
-** Org Noter
-#+begin_src elisp
-(use-package! org-noter
-  :after (:any org pdf-view)
-  :config
-  (setq
-   ;; The WM can handle splits
-   org-noter-notes-window-location 'other-frame;'horizontal-split;; 'other-frame
-   ;; Please stop opening frames
-   org-noter-always-create-frame nil
-   ;; I want to see the whole file
-   org-noter-hide-other nil
-   ;; Everything is relative to the main notes file
-   ;; org-noter-notes-search-path (list org_notes)
-   )
-  )
-
-#+end_src
-* Package Config
-#+begin_src elisp
-(use-package! kbd-mode)
-
-(use-package! tidal
-  :custom
-  (tidal-boot-script-path "/home/w1n5t0n/live/startup/tidal.hs"))
-#+end_src
-** Ace Window
-#+begin_src elisp
-(use-package! ace-window
-  ;; :bind (("M-o" . ace-window))
-  :custom
-  (aw-scope 'frame)
-  (aw-keys '(?a ?o ?e ?u ?i ?d ?h ?t ?n))
-  (aw-minibuffer-flag t)
-  :config
-  (ace-window-display-mode 1))
-#+end_src
-** Org Roam
-#+begin_src elisp
-(use-package! websocket
-    :after org-roam)
-
-(use-package! org-roam-ui
-    :after org-roam ;; or :after org
-;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
-;;         a hookable mode anymore, you're advised to pick something yourself
-;;         if you don't care about startup time, use
-;;  :hook (after-init . org-roam-ui-mode)
-    :config
-    (setq org-roam-ui-sync-theme t
-          org-roam-ui-follow t
-          org-roam-ui-update-on-save t
-          org-roam-ui-open-on-start t))
-
-(use-package! org-transclusion
-              :after org
-              :init
-              (map!
-               :map global-map
-               "<f12>"   #'org-transclusion-add
-               "C-<f12>" #'org-transclusion-remove
-               :leader
-               :prefix "n"
-               :desc "Org Transclusion Mode" "t" #'org-transclusion-mode))
-#+end_src
-* Projects
+*** TODO Overtone
+* TODO Projects
 #+begin_src elisp
 (setq projectile-project-search-path '("~/dev"))
 #+end_src
@@ -614,39 +648,6 @@ Additional help
              (visual-fill-column-mode 0)
              (setq-local visual-fill-column-center-text nil)
              ))
-#+end_src
-* Functions
-#+begin_src elisp
-(defun my/rename-current-buffer-file ()
-  "Renames current buffer and file it is visiting."
-  (interactive)
-  (let* ((name (buffer-name))
-         (filename (buffer-file-name))
-         (basename (file-name-nondirectory filename)))
-    (if (not (and filename (file-exists-p filename)))
-        (error "Buffer '%s' is not visiting a file!" name)
-      (let ((new-name (read-file-name "New name: " (file-name-directory filename) basename nil basename)))
-        (if (get-buffer new-name)
-            (error "A buffer named '%s' already exists!" new-name)
-          (rename-file filename new-name 1)
-          (rename-buffer new-name)
-          (set-visited-file-name new-name)
-          (set-buffer-modified-p nil)
-          (message "File '%s' successfully renamed to '%s'"
-                   name (file-name-nondirectory new-name)))))))
-
-;; based on http://emacsredux.com/blog/2013/04/03/delete-file-and-buffer/
-(defun my/delete-file-and-buffer ()
-  "Kill the current buffer and deletes the file it is visiting."
-  (interactive)
-  (let ((filename (buffer-file-name)))
-    (if filename
-        (if (y-or-n-p (concat "Do you really want to delete file " filename " ?"))
-            (progn
-              (delete-file filename)
-              (message "Deleted file %s." filename)
-              (kill-buffer)))
-      (message "Not a file visiting buffer!"))))
 #+end_src
 * TODO Projects
 #+begin_src elisp
