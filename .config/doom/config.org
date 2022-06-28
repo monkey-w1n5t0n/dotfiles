@@ -956,9 +956,6 @@ Additional help
 ;; (require 'sclang)
 ;; (add-hook 'sclang-mode-hook 'sclang-extensions-mode)
 #+end_src
-
-#+RESULTS:
-
 *** Lisp
 #+begin_src elisp
 ;; FIXME: getting "error key sequence os starts with non-prefix key o"
