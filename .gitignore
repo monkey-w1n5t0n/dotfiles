@@ -1,1 +1,12 @@
 .config/dotfiles
+.dotfiles
+samples/*
+library/*
+src/*
+dev/*
+research/*
+notes/*
+lc/*
+live/*
+Downloads/*
+downloads/*

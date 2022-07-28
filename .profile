@@ -12,10 +12,6 @@ export KEYBOARD_CONFIG="$HOME/.config/keyboard"
 export DEV_DIR="$HOME/dev/"
 export SCRIPT_DIR="$DEV_DIR/scripts"
 
-# Scripts
-export PATH="$HOME/dev/scripts:$PATH"
-keyboard
-
 # Configs
 export CONFIG_DIR=$HOME/.config
 
@@ -27,9 +23,7 @@ export EMACS_DIR=$CONFIG_DIR/emacs
 export DOOM_DIR=$CONFIG_DIR/doom
 export PATH=$EMACS_DIR/bin:$PATH
 
-## Lang
-# V
-#export PATH=$HOME/dev/lang/v:$PATH
-##########
-
 export DOTPROFILE_TEST="mama"
+
+## Annoying bell
+xset -b
