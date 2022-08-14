@@ -44,12 +44,12 @@
   )
 
 (defsrc
-  LeftShift RightShift
+  ;; LeftShift RightShift
   Space
   CapsLock Esc)
 
 (deflayer default
-  @left-shift @right-shift
+  ;; @left-shift @right-shift
   @space
   @smart-caps CapsLock)
 

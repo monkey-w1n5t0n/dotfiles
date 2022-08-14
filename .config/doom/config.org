@@ -384,6 +384,7 @@ Can't find a source block mode for i3 config files
   (setq org-roam-v2-ack t)
   :custom
   (org-roam-directory "~/research/org-roam")
+  (org-roam-db-location "~/research/org-roam/org-roam.db")
   (org-roam-completion-everywhere t)
   (org-roam-mode-section-functions
    (list #'org-roam-backlinks-section

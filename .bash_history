@@ -1,7 +1,3 @@
-sudo nano /etc/makepkg.conf
-hdmi-connected 
-sudo restart
-sudo reboot
 hdmi-connected 
 cp /etc/default/grub /dev/scripts
 sudo cp /etc/default/grub /dev/scripts
@@ -498,3 +494,7 @@ git commit -am "Add prefix to project name"
 git push
 lein deps
 ffmpeg -i /run/media/w1n5t0n/Blade 15 HDD/20211210_190000.mp4 -vf yadif,format=yuv420p -force_key_frames expr:gte(t\,n_forced/2) -c:v libx264 -crf 18 -bf 2 -c:a aac -q:a 1 -ac 2 -ar 48000 -use_editlist 0 -movflags +faststart /run/media/w1n5t0n/Blade\ 15\ HDD/out.mp4
+which ifconfig
+git branch
+git branch -a
+exit

@@ -105,3 +105,7 @@ source $ZSH/oh-my-zsh.sh
 xset b off
 # visual bell too
 # vbell off
+
+
+alias notes="/usr/bin/git --git-dir=$HOME/.local/research-main --work-tree=$HOME/research"
+alias notes_ac="/usr/bin/git --git-dir=$HOME/.local/research-autocommit --work-tree=$HOME/research"
