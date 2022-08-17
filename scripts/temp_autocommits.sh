@@ -7,7 +7,7 @@ echo
 
 while true; do
 echo "**$(date)"
-inotifywait -e modify,create,move,delete -r $HOME/research && \
+inotifywait -e modify,create,move,delete -r $HOME/notes && \
 echo "**Changed" && \
 echo "$(date)" && \
 echo "Sleeping before commit..." && \

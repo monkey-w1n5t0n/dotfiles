@@ -106,5 +106,5 @@ xset b off
 # vbell off
 
 
-alias notes="/usr/bin/git --git-dir=$HOME/.local/notes-main --work-tree=$HOME/notes"
-alias notes_ac="/usr/bin/git --git-dir=$HOME/.local/notes-autocommit --work-tree=$HOME/notes"
+alias notes="/usr/bin/git --git-dir=$HOME/.local/notes-bare-repo --work-tree=$HOME/notes"
+alias notes_ac="/usr/bin/git --git-dir=$HOME/.local/notes-autocommit-bare-repo --work-tree=$HOME/notes"
