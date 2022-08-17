@@ -1,4 +1,4 @@
-source $CONFIG_HOME/path.sh
+# source $CONFIG_HOME/path.sh
 
 # Path to your oh-my-zsh installation.
 export ZSH="$CONFIG_HOME/oh-my-zsh"
@@ -106,5 +106,5 @@ xset b off
 # vbell off
 
 
-alias notes="/usr/bin/git --git-dir=$HOME/.local/research-main --work-tree=$HOME/research"
-alias notes_ac="/usr/bin/git --git-dir=$HOME/.local/research-autocommit --work-tree=$HOME/research"
+alias notes="/usr/bin/git --git-dir=$HOME/.local/notes-main --work-tree=$HOME/notes"
+alias notes_ac="/usr/bin/git --git-dir=$HOME/.local/notes-autocommit --work-tree=$HOME/notes"
