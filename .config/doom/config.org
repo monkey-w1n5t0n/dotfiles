@@ -313,9 +313,14 @@ Can't find a source block mode for i3 config files
 ;;   )
 
 
-(package! org-download)
 
 (package! aggressive-indent)
+
+(package! rainbow-mode)
+#+end_src
+** Org
+#+begin_src elisp :tangle packages.el
+(package! org-download)
 
 (package! org-roam-ui)
 
@@ -323,7 +328,12 @@ Can't find a source block mode for i3 config files
 
 (package! org-roam :pin "65ea325")
 
-(package! rainbow-mode)
+(package! dendroam
+  :recipe (:host github
+           :repo "vicrdguez/dendroam"
+           :branch "main"))
+
+(package! org-roam-timestamps)
 #+end_src
 ** Language Support
 #+begin_src elisp :tangle packages.el
@@ -391,6 +401,20 @@ Can't find a source block mode for i3 config files
          #'org-roam-reflinks-section
          ;; #'org-roam-unlinked-references-section
          ))
+  ;; DENDROAM stuff
+  (org-roam-node-display-template "${hierarchy}:${title}")
+  (org-roam-capture-templates
+   '(("d" "default" plain
+      "%?"
+      :if-new (file+head "${slug}.org"
+                         "#+title: ${hierarchy-title}\n")
+      :immediate-finish t
+      :unnarrowed t)))
+  (org-roam-dailies-capture-templates
+      '(("d" "default" entry
+         "* %?"
+         :if-new (file+head "journal.daily.%<%Y.%m.%d>.org"
+                            "#+title: %<%Y-%m-%d>\n"))))
   ;; :bind (("C-c n l" . org-roam-buffer-toggle)
   ;;        ("C-c n f" . org-roam-node-find)
   ;;        ("C-c n i" . org-roam-node-insert)
@@ -411,7 +435,6 @@ Can't find a source block mode for i3 config files
    "C-c n i" 'org-roam-node-insert
    "C-c n u" 'org-roam-node-insert-immediate)
   )
-
 #+end_src
 *** TODO: delete?
 #+begin_src elisp :tangle no
@@ -428,6 +451,40 @@ Can't find a source block mode for i3 config files
 
 ;;  "C-M-s" 'completion-at-point
 ;; )
+#+end_src
+*** Dendroam
+#+begin_src elisp
+(defun dendroam-node-find-initial-input ()
+  (interactive)
+  (org-roam-node-find nil (if (buffer-file-name)
+                         (file-name-base (buffer-file-name))
+                         "")))
+
+(use-package! dendroam
+  :after org-roam
+  :custom
+  (dendroam-capture-templates
+   '(("t" "Time note" entry
+      "* %?"
+      :if-new (file+head "${current-file}.%<%Y.%m.%d>.org"
+                         "#+title: %^{title}\n"))
+     ("s" "Scratch note" entry
+      "* %?"
+      :if-new (file+head "scratch.%<%Y.%m.%d.%.%M%S%3N>.org"
+                         "#+title: %^{title}\n"))))
+  )
+
+(setq org-roam-node-display-template "${hierarchy}:${title}")
+#+end_src
+*** Timestapms
+#+begin_src elisp
+(use-package! org-roam-timestamps
+  :after org-roam
+  :config (org-roam-timestamps-mode)
+  :custom
+  (org-roam-timestapms-remember-timestapms t)
+  (org-roam-timestapms-minimum-gap (* 60 5))
+  )
 #+end_src
 ** Org Noter
 #+begin_src elisp
