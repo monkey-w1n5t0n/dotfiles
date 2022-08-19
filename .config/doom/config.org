@@ -757,6 +757,9 @@ Can't find a source block mode for i3 config files
       :nvm "f p" 'my/open-private-config)
 
 (map! :nvmi "M-q" 'counsel-M-x)
+
+(map! :map emacs-lisp-mode-map
+      "C-c C-c" 'eros-eval-defun)
 #+end_src
 
 #+RESULTS:
