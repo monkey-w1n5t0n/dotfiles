@@ -336,6 +336,8 @@ Can't find a source block mode for i3 config files
 ;;            :branch "main"))
 
 (package! org-roam-timestamps)
+
+(package! org-modern)
 #+end_src
 ** Language Support
 #+begin_src elisp :tangle packages.el
@@ -369,11 +371,11 @@ Can't find a source block mode for i3 config files
 #+begin_src elisp
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
-(setq org-directory "~/org/")
+(setq org-directory "~/notes/")
 
-(use-package! org-bullets
-  :config
-  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+;; (use-package! org-bullets
+;;   :config
+;;   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 
 ;; (add-hook 'org-mode-hook '(lambda ()
 ;;                             (visual-fill-column 1)
@@ -507,6 +509,54 @@ Can't find a source block mode for i3 config files
   )
 
 #+end_src
+** Org-Modern
+#+begin_src elisp
+(use-package! org-modern
+  :config
+  (global-org-modern-mode)
+  )
+
+;; Choose some fonts
+;; (set-face-attribute 'default nil :family "Iosevka")
+;; (set-face-attribute 'variable-pitch nil :family "Iosevka Aile")
+;; (set-face-attribute 'org-modern-symbol nil :family "Iosevka")
+
+;; Add frame borders and window dividers
+(modify-all-frames-parameters
+ '((right-divider-width . 03)
+   (internal-border-width . 0)))
+
+(dolist (face '(window-divider
+                window-divider-first-pixel
+                window-divider-last-pixel))
+  (face-spec-reset-face face)
+  (set-face-foreground face (face-attribute 'default :background)))
+
+(set-face-background 'fringe (face-attribute 'default :background))
+
+(setq
+ ;; Edit settings
+ org-auto-align-tags nil
+ org-tags-column 0
+ org-catch-invisible-edits 'show-and-error
+ org-special-ctrl-a/e t
+ org-insert-heading-respect-content t
+
+ ;; Org styling, hide markup etc.
+ org-hide-emphasis-markers t
+ org-pretty-entities t
+ org-ellipsis "…"
+
+ ;; Agenda styling
+ org-agenda-tags-column 0
+ org-agenda-block-separator ?─
+ org-agenda-time-grid
+ '((daily today require-timed)
+   (800 1000 1200 1400 1600 1800 2000)
+   " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
+ org-agenda-current-time-string
+ "⭠ now ─────────────────────────────────────────────────")
+#+end_src
 * Package Config
 #+begin_src elisp
 (use-package! kbd-mode)
@@ -568,6 +618,10 @@ Can't find a source block mode for i3 config files
  evil-respect-visual-line-mode t
  evil-track-eol t ;; TODO what does this actually do?
  evil-start-of-line nil)
+
+(map! :map ivy-minibuffer-map
+      "C-t" 'ivy-next-line
+      "C-n" 'ivy-previous-line)
 #+end_src
 * Visuals
 ** Theme
