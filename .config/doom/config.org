@@ -300,6 +300,7 @@ Can't find a source block mode for i3 config files
 
 ;; ORG-ROAM stuff
 
+(package! pulsar)
 
 ;; (package! emacsql)
 ;; (package! emacsql-sqlite)
@@ -338,6 +339,8 @@ Can't find a source block mode for i3 config files
 (package! org-roam-timestamps)
 
 (package! org-modern)
+
+(package! helm-org-rifle)
 #+end_src
 ** Language Support
 #+begin_src elisp :tangle packages.el
@@ -371,7 +374,7 @@ Can't find a source block mode for i3 config files
 #+begin_src elisp
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
-(setq org-directory "~/notes/")
+(setq org-directory "~/notes/org")
 
 ;; (use-package! org-bullets
 ;;   :config
@@ -441,46 +444,6 @@ Can't find a source block mode for i3 config files
    "C-c n u" 'org-roam-node-insert-immediate)
   )
 #+end_src
-*** TODO: delete?
-#+begin_src elisp :tangle no
-;; (map!
-;;  :map override
-;;  "C-c n l" 'org-roam-buffer-toggle
-;;  "C-c n f" 'org-roam-node-find
-;;  "C-c n i" 'org-roam-node-insert
-;;  "C-c n g" 'org-roam-graph
-;;  "C-c n i" 'org-roam-node-insert
-;;  "C-c n c" 'org-roam-capture
-;;  ;; Dailies
-;;  "C-c n j" 'org-roam-dailies-capture-today
-
-;;  "C-M-s" 'completion-at-point
-;; )
-#+end_src
-*** Dendroam
-#+begin_src elisp
-;; (defun dendroam-node-find-initial-input ()
-;;   (interactive)
-;;   (org-roam-node-find nil (if (buffer-file-name)
-;;                          (file-name-base (buffer-file-name))
-;;                          "")))
-
-;; (use-package! dendroam
-;;   :after org-roam
-;;   :custom
-;;   (dendroam-capture-templates
-;;    '(("t" "Time note" entry
-;;       "* %?"
-;;       :if-new (file+head "${current-file}.%<%Y.%m.%d>.org"
-;;                          "#+title: %^{title}\n"))
-;;      ("s" "Scratch note" entry
-;;       "* %?"
-;;       :if-new (file+head "scratch.%<%Y.%m.%d.%.%M%S%3N>.org"
-;;                          "#+title: %^{title}\n"))))
-;;   )
-
-;; (setq org-roam-node-display-template "${hierarchy}:${title}")
-#+end_src
 *** Timestapms
 #+begin_src elisp
 (use-package! org-roam-timestamps
@@ -491,6 +454,7 @@ Can't find a source block mode for i3 config files
   (org-roam-timestapms-minimum-gap (* 60 5))
   )
 #+end_src
+*** TODO Dendroam
 ** Org Noter
 #+begin_src elisp
 (use-package! org-noter
@@ -609,6 +573,7 @@ Can't find a source block mode for i3 config files
 (setq projectile-project-search-path '("~/dev"))
 #+end_src
 * Cursor Behaviour
+** Movement
 #+begin_src elisp
 (setq
  evil-repeat-move-cursor t
@@ -622,6 +587,65 @@ Can't find a source block mode for i3 config files
 (map! :map ivy-minibuffer-map
       "C-t" 'ivy-next-line
       "C-n" 'ivy-previous-line)
+      #+end_src
+
+** Pulsing
+*** Pulsar
+#+begin_src elisp
+
+;; Check the default value of `pulsar-pulse-functions'.  That is where
+;; you add more commands that should cause a pulse after they are
+;; invoked
+
+(setq pulsar-pulse t)
+(setq pulsar-delay 0.055)
+(setq pulsar-iterations 10)
+(setq pulsar-face 'pulsar-magenta)
+(setq pulsar-highlight-face 'pulsar-yellow)
+
+(pulsar-global-mode 1)
+
+(add-to-list 'pulsar-pulse-functions 'ace-window)
+
+;; ;; TODO maybe add more here?
+;; (dolist (command '(recenter-top-bottom
+;;                    other-window
+;;                    ace-window
+;;                    ;; my-scroll-down-half
+;;                    ;; my-scroll-up-half
+;;                    ))
+;;   (advice-add command :after #'pulsar-pulse-line))
+
+
+;; OR use the local mode for select mode hooks
+
+;; (dolist (hook '(org-mode-hook emacs-lisp-mode-hook))
+;;   (add-hook hook #'pulsar-mode))
+
+;; pulsar does not define any key bindings.  This is just a sample that
+;; respects the key binding conventions.  Evaluate:
+;;
+;;     (info "(elisp) Key Binding Conventions")
+;;
+;; The author uses C-x l for `pulsar-pulse-line' and C-x L for
+;; `pulsar-highlight-line'.
+;;
+;; You can replace `pulsar-highlight-line' with the command
+;; `pulsar-highlight-dwim'.
+;; (let ((map global-map))
+;;   (define-key map (kbd "C-c h p") #'pulsar-pulse-line)
+;;   (define-key map (kbd "C-c h h") #'pulsar-highlight-line))
+#+end_src
+#+end_src
+*** TODO delete?
+#+begin_src elisp :tangle no
+;; from https://karl-voit.at/2021/04/10/GLT21-emacs-org-features/
+
+
+;; (defun my/pulse-current-line (&rest _)
+;;   "Pulse the current line."
+;;   (pulse-momentary-highlight-one-line (point)))
+
 #+end_src
 * Visuals
 ** Theme
