@@ -154,7 +154,7 @@ bindsym $mod+period layout toggle split
 bindsym $mod+Shift+space floating toggle
 
 # change focus between tiling / floating windows
-# bindsym $mod+space focus mode_toggle
+bindsym $mod+space focus mode_toggle
 
 # toggle sticky
 bindsym $mod+Shift+o sticky toggle
@@ -170,8 +170,10 @@ bindsym $mod+Shift+minus move scratchpad
 bindsym $mod+minus scratchpad show
 
 #navigate workspaces next / previous
-bindsym $mod+Ctrl+Right workspace next
+bindsym $mod+Ctrl+h workspace prev
+bindsym $mod+Ctrl+s workspace next
 bindsym $mod+Ctrl+Left workspace prev
+bindsym $mod+Ctrl+Right workspace next
 
 # Workspace names
 # to display names or symbols instead of plain workspace numbers you can use
@@ -297,11 +299,10 @@ mode "resize" {
         bindsym n resize shrink height 5 px or 5 ppt
         bindsym s resize grow width 5 px or 5 ppt
 
-        # same bindings, but for the arrow keys
-        bindsym Left resize shrink width 10 px or 10 ppt
-        bindsym Down resize grow height 10 px or 10 ppt
-        bindsym Up resize shrink height 10 px or 10 ppt
-        bindsym Right resize grow width 10 px or 10 ppt
+        bindsym Shift+h resize shrink width 10 px or 10 ppt
+        bindsym Shift+t resize grow height 10 px or 10 ppt
+        bindsym Shift+n resize shrink height 10 px or 10 ppt
+        bindsym Shift+s resize grow width 10 px or 10 ppt
 
         # exit resize mode: Enter or Escape
         bindsym Return mode "default"
@@ -398,7 +399,7 @@ set $color22 #CB4B16
   # client.focused          $color10-1    $color4      $color20      #A3BE8C
   client.focused          $color10-1    $color4      $color1      $color3
   # client.focused_inactive $color3       $color3      $color1      #45494
-  client.focused_inactive $color3       $color3      $color1      $color2
+  client.focused_inactive $color3       $color5      $color1      $color2
 
   client.unfocused        $color2       $color2      $color20      #454948
   client.urgent           $color22      #FDF6E3      $color1      #268BD2
@@ -420,11 +421,11 @@ gaps outer 0
 # gaps outer all plus 5
 
 # Smart gaps (gaps used if only more than one container on the workspace)
-#smart_gaps on
+smart_gaps on
 
 # Smart borders (draw borders around container only if it is not the only container on this workspace)
 # on|no_gaps (on=always activate and no_gaps=only activate if the gap size to the edge of the screen is 0)
-#smart_borders on
+smart_borders on
 
 # Press $mod+Shift+g to enter the gap mode. Choose o or i for modifying outer/inner gaps. Press one of + / - (in-/decrement for current workspace) or 0 (remove gaps for current workspace). If you also press Shift with these keys, the change will be global for all workspaces.
 set $mode_gaps Gaps: (o) outer, (i) inner
