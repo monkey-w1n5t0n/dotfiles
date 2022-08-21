@@ -1,11 +1,11 @@
 (defcfg
-  input  (device-file "/dev/input/by-path/pci-0000:00:14.0-usb-0:1:1.0-event-kbd")
+  input  (device-file "/dev/input/by-path/pci-0000:00:14.0-usb-0:2.1:1.0-event-kbd")
   output  (uinput-sink "kmonad-input"
                         ;; To understand the importance of the following line, see the section on
                         ;; Compose-key sequences at the near-bottom of this file.
                         "sleep 0.1 && xset r rate 200 30")
   cmp-seq ralt    ;; Set the compose key to `RightAlt'
-  cmp-seq-delay 5 ;; 5ms delay between each compose-key sequence press
+  ;; cmp-seq-delay 5 ;; 5ms delay between each compose-key sequence press
 
   ;; Comment this is you want unhandled events not to be emitted
   fallthrough true
@@ -23,26 +23,13 @@
 )
 
 (defalias
-  SC  (tap-hold-next 100 Esc LeftCtrl)
+  SC  (tap-hold-next 150 Esc LeftCtrl)
   )
 
 (deflayer default
-  grv  _    _    _    _    _    1    2    3    4    5    _    _    bspc
-  tab  _    _    _    _    tab  q    w    e    r    t    [    ]    \
-  caps _    _    _    _    @SC  a    s    d    f    g    '    ret
-  rsft _    _    _    _    lsft z    x    c    v    b    lsft
-  lctl lmet lalt           spc            ralt rctl del
+  grv  _    _    _    _    grv  1    2    3    4    5    _    _    bspc
+  tab  _    _    _    tab  tab  q    w    e    r    t    [    ]    \
+  caps _    _    _    _    @SC  a    s    d    f    g    ret  _
+  rsft _    _    _    lsft lsft z    x    c    v    b    lsft
+  lctl lmet lalt           lctl            ralt spc del
   )
-
-;; (defalias
-;;   parens      (tap-macro \( P5 \) P5 Left P5)
-;;   ;; FIXME
-;;   ;; curlies      (tap-macro { P5 } P5 Left P5)
-;;   ;; squares      (tap-macro [ P5 ] P5 Left P5)
-;;   ;; tap-hold-next rather than tap-next, to prevent accidental
-;;   ;; insertion of parentheses while typing capital letters
-;;   left-shift  (tap-hold-next 700 @parens LeftShift)
-;;   right-shift (tap-hold-next 700 @parens RightShift)
-;;   space       (tap-hold-next-release 200 Space LeftCtrl)
-;;   smart-caps  (tap-hold-next 200 Esc LeftCtrl)
-;;   )

@@ -7,6 +7,11 @@ exec .config/keyboard/setup_keyboard.sh
 exec emacs --daemon
 exec --no-startup-id kmonad $HOME/.config/kmonad/test.kbd
 exec --no-startup-id $HOME/scripts/temp_autocommits.sh &>> $HOME/.local/autocommit_logs.txt
+
+## KMONAD
+exec kmonad ~/.config/kmonad/twos_L.kbd
+exec kmonad ~/.config/kmonad/twos_R.kbd
+
 # exec --no-startup-id emacs --daemon
 # exec --no-startup-id /usr/lib/geoclue-2.0/demos/agent
 # exec --no-startup-id redshift-gtk

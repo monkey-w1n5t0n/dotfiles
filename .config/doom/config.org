@@ -532,13 +532,16 @@ Can't find a source block mode for i3 config files
 ** Ace Window
 #+begin_src elisp
 (use-package! ace-window
-  ;; :bind (("M-o" . ace-window))
+  :bind (("M-o" . ace-window))
   :custom
   (aw-scope 'frame)
-  (aw-keys '(?a ?o ?e ?u ?i ?d ?h ?t ?n))
+  ;; (aw-keys '(?a ?o ?e ?u ?i ?d ?h ?t ?n))
   (aw-minibuffer-flag t)
   :config
-  (ace-window-display-mode 1))
+  (ace-window-display-mode 1)
+  (setq aw-keys '(?h ?t ?n ?s ?g ?c ?r ?l)))
+
+
 #+end_src
 ** Org Roam
 #+begin_src elisp
@@ -592,7 +595,6 @@ Can't find a source block mode for i3 config files
 ** Pulsing
 *** Pulsar
 #+begin_src elisp
-
 ;; Check the default value of `pulsar-pulse-functions'.  That is where
 ;; you add more commands that should cause a pulse after they are
 ;; invoked
