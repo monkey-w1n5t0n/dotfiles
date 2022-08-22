@@ -24,12 +24,23 @@
 
 (defalias
   SC  (tap-hold-next 150 Esc LeftCtrl)
+  nav (layer-toggle navigation)
+  nav-switch (layer-switch navigation)
+  nrm (layer-switch default)
   )
 
 (deflayer default
   grv  6    7    8    9    0    _    _    _    _    _    -    =    bspc
   bspc y    u    i    o    p    [    ]    _    o    p    [    ]    \
   ret  h    j    k    l    ;    '    ret  _    l    ;    '    ret
-  lctl n    m    ,    .    /    _    _    _    _    _    rsft
-  lctl spc lmet           bspc            ralt rctl rmet cmp
+  @nav n    m    ,    .    /    _    _    _    _    _    rsft
+  lctl spc lmet           @nav-switch     ralt rctl rmet cmp
+  )
+
+(deflayer navigation
+  _    _    _    _    _    _    _    _    _    _    _    -    =    bspc
+  _    _    _    _    _    _    _    _    _    o    p    [    ]    \
+  _    _    left down up   rght _    _    _    l    ;    '    ret
+  _    _    _    _    _    _    _    _    _    _    _    rsft
+  _    _    _              @nrm             ralt rctl rmet cmp
   )

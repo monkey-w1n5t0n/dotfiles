@@ -27,7 +27,7 @@
   )
 
 (deflayer default
-  grv  _    _    _    _    grv  1    2    3    4    5    _    _    bspc
+  grv  _    _    _    _    grv  1    2    3    4    5    _    _    esc
   tab  _    _    _    tab  tab  q    w    e    r    t    [    ]    \
   caps _    _    _    _    @SC  a    s    d    f    g    ret  _
   rsft _    _    _    lsft lsft z    x    c    v    b    lsft

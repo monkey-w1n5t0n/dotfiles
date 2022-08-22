@@ -1,0 +1,5 @@
+#!/usr/bin/sh
+$HOME/scripts/virtual-midi &
+pw-jack scide &
+pw-jack bitwig-studio &
+helvum

@@ -1,0 +1,20 @@
+#!/usr/bin/sh
+
+
+dotfile_dir="$HOME/.config
+
+git clone --bare https://bitbucket.org/durdn/cfg.git /home/w1n5t0n/.cfg
+
+function config {
+   /usr/bin/git --git-dir=/home/w1n5t0n/.cfg/ --work-tree=/home/w1n5t0n 
+}
+mkdir -p .config-backup
+config checkout
+if [ 0 = 0 ]; then
+  echo Checked out config.;
+  else
+    echo Backing up pre-existing dot files.;
+    config checkout 2>&1 | egrep s+. | awk {'print '} | xargs -I{} mv {} .config-backup/{}
+fi;
+config checkout
+config config status.showUntrackedFiles no

@@ -1,0 +1,2 @@
+#!/usr/bin/sh
+sudo modprobe snd_virmidi && a2jmidid

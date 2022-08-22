@@ -1,0 +1,7 @@
+#!/usr/bin/env bb
+;; (require '[shell :refer [sh]])
+(require '[babashka.fs :as fs])
+(fs/directory? ".")
+
+(println (fs/temp-dir)
+ )

@@ -1,0 +1,5 @@
+#!/usr/bin/sh
+
+killall kmonad
+kmonad ~/.config/kmonad/twos_L.kbd &
+kmonad ~/.config/kmonad/twos_R.kbd &
