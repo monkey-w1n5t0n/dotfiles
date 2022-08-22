@@ -371,10 +371,19 @@ Can't find a source block mode for i3 config files
 #+end_src
 * Org
 ** Org
+:LOGBOOK:
+CLOCK: [2022-08-22 Mon 21:01]
+:END:
 #+begin_src elisp
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory "~/notes/org")
+
+;; Add logs into :LOGBOOK: drawer instead of under the headline
+(setq org-log-into-drawer t)
+
+(setq org-archive-directory (concat org-directory "/archive"))
+(setq org-archive-location (concat org-archive-directory "/%s_archive.org::"))
 
 ;; (use-package! org-bullets
 ;;   :config

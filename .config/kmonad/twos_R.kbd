@@ -39,7 +39,7 @@
 
 (deflayer navigation
   _    _    _    _    _    _    _    _    _    _    _    -    =    bspc
-  _    _    _    _    _    _    _    _    _    o    p    [    ]    \
+  del    _    _    _    _    _    _    _    _    o    p    [    ]    \
   _    _    left down up   rght _    _    _    l    ;    '    ret
   _    _    _    _    _    _    _    _    _    _    _    rsft
   _    _    _              @nrm             ralt rctl rmet cmp
