@@ -1,5 +1,14 @@
+#+TITLE: w1n5t0n's config of Doom
 #+PROPERTY: header-args:elisp :tangle ./config.el
 #+STARTUP: fold
+* Introduction
+Welcome. This file is the result of many hours spent in front of a computer. Sometimes multiple computers. Simultaneously.
+
+Shoutout to [[https://github.com/hlissner/][hlissner (Henrik Lissner)]], [[https://github.com/daviwil][daviwil (David Wilson)]], [[https://github.com/elken][elken (Ellis
+Kenyő)]], and those who (wisely) spend their limited time here on Earth on Emacs forums, subreddits, and Discord servers.
+
+None of them know me, but they may recognise some snippets of code here
+and there in this document. Everyone needs a shoulder to stand on.
 * i3
 #+begin_src conf :tangle ~/.config/i3/config
 # i3 config file (v4)
@@ -473,6 +482,11 @@ mode "$mode_gaps_outer" {
 #+end_src
 ** TODO split into sections
 * Doom-specific
+** TODO Variables
+Is this needed?
+#+begin_src elisp
+;; (setq )
+#+end_src
 ** Init
 *** Helper Text
 #+begin_src elisp :tangle no
@@ -736,20 +750,39 @@ mode "$mode_gaps_outer" {
 ;; change `org-directory'. It must be set before org loads!
 (setq my/notes-directory "~/notes")
 
+
 (use-package! org
   :init
   (setq
    ;; DIRECTORIES
-   org-directory (concat my/notes-directory "/org")
+   org-directory (expand-file-name "org" my/notes-directory)
    ;; Add logs into :LOGBOOK: drawer instead of under the headline
    org-log-into-drawer t
    ;; ARCHIVING
-   org-archive-directory (concat org-directory "/archive")
-   org-archive-location (concat org-archive-directory "/%s_archive.org::")
-   )
-  :config
+   org-archive-directory (expand-file-name "archive" org-directory)
+   org-archive-location (expand-file-name "/%s_archive.org::" org-archive-directory)
+  )
+  :custom
+   ;; CUSTOMS
+   org-use-property-inheritance t
+   org-startup-folded 'content
+   org-startup-with-inline-images t
+   org-image-actual-width 600
   )
 #+end_src
+** Capture Templates
+*** TODO Declarative Templates
+Incorporate the rest too
+https://github.com/elken/doom#prettify
+#+begin_src elisp :tangle packages.el
+(package! doct)
+#+end_src
+-
+  #+begin_src elisp
+(use-package! doct
+  :defer t
+  :commands (doct))
+ #+end_src
 ** Org Roam
 *** Functions
 #+begin_src elisp
@@ -770,9 +803,9 @@ mode "$mode_gaps_outer" {
   (setq org-roam-v2-ack t)
   :custom
   (org-roam-directory
-   (concat my/notes-directory "/org-roam"))
+   (expand-file-name "org-roam" my/notes-directory))
   (org-roam-db-location
-   (concat org-roam-directory "/org-roam.db"))
+   (expand-file-name "org-roam.db" org-roam-directory))
   ;; (org-roam-completion-everywhere t)
   ;; TODO not exactly sure what this does...
   (org-roam-mode-section-functions
@@ -797,10 +830,12 @@ mode "$mode_gaps_outer" {
   (org-roam-db-autosync-mode)
   )
 
-(use-package! websocket
-    :after org-roam)
 #+end_src
 *** Timestamps
+#+begin_src elisp :tangle packages.el
+(package! org-roam-timestamps)
+#+end_src
+-
 #+begin_src elisp
 (use-package! org-roam-timestamps
   :after org-roam
@@ -811,6 +846,10 @@ mode "$mode_gaps_outer" {
   )
 #+end_src
 *** UI
+#+begin_src elisp :tangle packages.el
+(package! org-roam-ui)
+#+end_src
+-
 #+begin_src elisp
 (use-package! org-roam-ui
     :after org-roam
@@ -826,6 +865,10 @@ mode "$mode_gaps_outer" {
 
 #+end_src
 *** Transclusion
+#+begin_src elisp :tangle packages.el
+(package! org-transclusion)
+#+end_src
+-
 #+begin_src elisp
 (use-package! org-transclusion
               :after org
@@ -866,12 +909,28 @@ mode "$mode_gaps_outer" {
   ;;                           "#+title: %<%Y-%m-%d>\n"))))
   ;; /DENDROAM stuff
 #+end_src
+*** Misc
+#+begin_src elisp :tangle packages.el
+(package! websocket)
+#+end_src
+-
+  #+begin_src elisp
+(use-package! websocket
+    :after org-roam)
+  #+end_src
 ** Appearance
 *** Modern
+#+begin_src elisp :tangle packages.el
+(package! org-modern)
+#+end_src
+-
 #+begin_src elisp
 (use-package! org-modern
   :config
-  (global-org-modern-mode))
+  (global-org-modern-mode)
+  :custom
+  (org-modern-star '("◉" "◈" "○" "◇" "✳"))
+  )
 
 ;; Choose some fonts
 ;; (set-face-attribute 'default nil :family "Iosevka")
@@ -917,6 +976,96 @@ mode "$mode_gaps_outer" {
 *** Bullets
 #+begin_src elisp :tangle packages.el
 (package! org-bullets)
+#+end_src
+*** Ligatures
+#+begin_src elisp
+(setq-hook! org-mode
+  prettify-symbols-alist '(("#+end_quote" . "”")
+                           ("#+END_QUOTE" . "”")
+                           ("#+begin_quote" . "“")
+                           ("#+BEGIN_QUOTE" . "“")
+                           ("#+end_src" . "«")
+                           ("#+END_SRC" . "«")
+                           ("#+begin_src" . "»")
+                           ("#+BEGIN_SRC" . "»")
+                           ("#+name:" . "»")
+                           ("#+NAME:" . "»")))
+#+end_src
+*** Visual Fill Column
+#+begin_src elisp
+(use-package! visual-fill-column
+  :custom
+  ;; (visual-fill-column-width 300)
+  (visual-fill-column-width 90)
+  (visual-fill-column-center-text t)
+  :hook (org-mode . visual-fill-column-mode))
+
+
+;; (add-hook 'minibuffer-mode-hook
+;;           #'(lambda ()
+;;              ;; (setq-local visual-fill-column-center-text nil)
+;;              (visual-fill-column-mode 0)
+;;              (setq-local visual-fill-column-center-text nil)
+;;              ))
+
+
+;;(setq-default fill-column 78)
+#+end_src
+*** TODO Appear
+#+begin_src elisp :tangle packages.el
+(package! org-appear
+  :recipe (:host github :repo "awth13/org-appear"))
+#+end_src
+-
+#+begin_src elisp
+(use-package! org-appear
+  :after org
+  :hook (org-mode . org-appear-mode)
+  :custom
+  (org-appear-autoemphasis t)
+  (org-appear-autolinks t)
+  (org-appear-autosubmarkers t)
+  (org-appear-inside-latex t)
+  (org-appear-delay 2)
+  ;; (org-appear-trigger 'manual)
+  :config
+  ;; TODO this doesn't really work
+  ;; (add-hook 'org-mode-hook
+  ;;           (lambda ()
+  ;;             (add-hook 'evil-insert-state-entry-hook
+  ;;                       (lambda ()
+  ;;                         (org-appear-manual-start)
+  ;;                         (org-appear-set-delay 0))
+  ;;                       ;; nil
+  ;;                       ;; t
+  ;;                       )
+  ;;             (add-hook 'evil-insert-state-exit-hook
+  ;;                       (lambda ()
+  ;;                         (org-appear-manual-stop)
+  ;;                         (org-appear-set-delay org-appear-desired-delay)
+  ;;                         )
+  ;;                       ;; nil
+  ;;                       ;; t
+  ;;                       )))
+  )
+#+end_src
+*** Header Minimap
+#+begin_src elisp :tangle packages.el
+(package! org-ol-tree
+  :recipe (:host github :repo "Townk/org-ol-tree"))
+#+end_src
+-
+#+begin_src elisp
+(use-package! org-ol-tree
+  :after org
+  :commands org-ol-tree
+  :config
+  (setq org-ol-tree-ui-window-position 'left))
+
+(map! :map org-mode-map
+      :after org
+      :localleader
+      :desc "Outline" "O" #'org-ol-tree)
 #+end_src
 ** PDF
 *** Org Noter
@@ -1110,10 +1259,24 @@ Automatically set a script's execution permissions (TODO: good idea?)
 ;; (package! emacsql-sqlite)
 ;; (package! magit-section)
 #+end_src
+*** Auto-Revert
+Auto revert plain text files, which should mostly be logs and script outputs
+#+begin_src elisp
+(add-hook! 'text-mode (lambda () (auto-revert-mode 1)))
+#+end_src
+*** Reload env after reload
+#+begin_src elisp
+(add-hook! 'doom-after-reload-hook (doom-load-envvars-file (expand-file-name "env" doom-local-dir) t))
+#+end_src
+*** Scratch buffer default mode
+#+begin_src elisp
+(setq doom-scratch-initial-major-mode 'clojure-mode)
+#+end_src
 * Keyboard
 Configs related to system-wide keyboard behaviour - not just Emacs.
 ** Twos
-A config with two keyboards. You have two hands, don't you?
+A config with two keyboards. Most people have two hands, why should they have to share?
+
 Currently using Kmonad.
 *** Left
 :PROPERTIES:
@@ -1218,119 +1381,6 @@ Currently using Kmonad.
   _    _    _              @nrm             ralt rctl cmp
   )
 #+end_src
-* Appearance
-** Frame
-#+begin_src 
-
-#+end_src
-** Theme
-#+begin_src elisp
-;; Doom exposes five (optional) variables for controlling fonts in Doom. Here
-;; are the three important ones:
-;;
-;; + `doom-font'
-;; + `doom-variable-pitch-font'
-;; + `doom-big-font' -- used for `doom-big-font-mode'; use this for
-;;   presentations or streaming.
-;;
-;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
-;; font string. You generally only need these two:
-;; (setq doom-font (font-spec :family "monospace" :size 12 :weight 'semi-light)
-;;       doom-variable-pitch-font (font-spec :family "sans" :size 13))
-(set-face-attribute 'default nil :height 130)
-
-;; This determines the style of line numbers in effect. If set to `nil', line
-;; numbers are disabled. For relative line numbers, set this to `relative'.
-(setq display-line-numbers-type t)
-
-;; There are two ways to load a theme. Both assume the theme is installed and
-;; available. You can either set `doom-theme' or manually load a theme with the
-;; `load-theme' function. This is the default:
-;; (setq doom-theme 'doom-nord)
-
-(setq doom-theme 'doom-tomorrow-night)
-;; (setq doom-theme 'doom-material)
-
-#+end_src
-*** Cursor Appearance
-#+begin_src elisp
-;; Other colours:
-;; "#00ffa9"
-;; "#C0E8F9"
-;;  #88C0D0
-;; From tomorrow night theme
-;;  #6d9fa1 complimented by "#FF6B6B"
-
-;; (setq normal-cursor-color   "#1BE7FF")
-;; (setq operator-cursor-color "#ff0054")
-
-;; (setq operator-cursor-color "#bf616a")
-
-
-
-(setq normal-cursor-color   "#FF6B6B")
-(setq operator-cursor-color "#6d9fa1")
-
-(setq evil-normal-state-cursor   `(box    ,normal-cursor-color)
-      evil-insert-state-cursor   `(bar    ,normal-cursor-color)
-      evil-visual-state-cursor   `(hollow ,normal-cursor-color)
-      evil-motion-state-cursor   `(bar    ,normal-cursor-color)
-      evil-replace-state-cursor  `(bar    ,normal-cursor-color)
-      evil-operator-state-cursor `(evil-half-cursor ,operator-cursor-color))
-#+end_src
-** Rainbow Mode
-Show colour of hex literals
-#+begin_src elisp :tangle packages.el
-(package! rainbow-mode)
-#+end_src
--
-#+begin_src elisp
-(use-package! rainbow-mode
-  :hook
-  (prog-mode . rainbow-mode))
-#+end_src
-** Line wrapping
-#+begin_src elisp
-;; (add-hook 'org-mode-hook 'visual-fill-column-mode)
-;; (add-hook 'minibuffer-mode-hook '(lambda () (visual-fill-column-mode 0)))
-(global-visual-fill-column-mode 1)
-(setq-default fill-column 78)
-(setq-default visual-fill-column-width 90)
-(setq-default visual-fill-column-center-text t)
-;; (set-fill-column 90)
-;; (setq-local visual-fill-column-center-text t)
-(add-hook 'org-mode-hook 'turn-on-auto-fill)
-
-(add-hook 'minibuffer-mode-hook
-          #'(lambda ()
-             ;; (setq-local visual-fill-column-center-text nil)
-             (visual-fill-column-mode 0)
-             (setq-local visual-fill-column-center-text nil)
-             ))
-#+end_src
-* Functions
-** Lists
-#+begin_src elisp
-(defun add-list-to-list (dst src)
-  "Similar to `add-to-list', but accepts a list as 2nd argument"
-  (set dst
-       (append (eval dst) src)))
-#+end_src
-** Files & Buffers
-* TODO Projects
-#+begin_src elisp
-(use-package! projectile
-  :config
-  (setq projectile-project-search-path '("~/dev" "~/src" "~/live"))
-  (add-list-to-list 'projectile-project-root-files '("CMakeLists.txt"
-                                                     "build.sh"
-                                                     ;; "run.sh"
-                                                     )))
-
-;; (projectile-add-known-project "")
-;; (projectile-add-known-project "~/dev/lang/v")
-;; (projectile-add-known-project "~/dev/lang/mal")
-#+end_src
 * TODO Key Bindings
 ** TODO Emacs
 #+begin_src elisp
@@ -1354,6 +1404,8 @@ Show colour of hex literals
       "t" 'next-buffer
       "n" 'previous-buffer
       )
+
+(map! :g "C-o" #'save-buffer)
 #+end_src
 ** TODO Big Picture
 #+begin_src elisp :tangle no
@@ -1426,6 +1478,21 @@ Show colour of hex literals
 ;;       "C-t" 'next-line
 ;;       "C-n" 'previous-line
 ;;       )
+#+end_src
+*** Key Chords
+#+begin_src elisp :tangle packages.el
+(package! use-package-chords)
+#+end_src
+-
+#+begin_src elisp
+(use-package! use-package-chords
+  :config
+  (key-chord-define evil-insert-state-map "jd" 'evil-delete-backward-word)
+  (key-chord-define evil-insert-state-map "jg" 'evil-beginning-of-visual-line)
+  (key-chord-define evil-insert-state-map "jr" 'evil-end-of-line-or-visual-line)
+  (key-chord-define evil-insert-state-map "jh" 'evil-backward-word-begin)
+  (key-chord-define evil-insert-state-map "js" 'evil-forward-word-end)
+  (key-chord-mode 1))
 #+end_src
 ** Modes
 #+begin_src elisp
@@ -1695,6 +1762,108 @@ Read proper list of project paths from somewhere.
 ** TODO Notes
 #+begin_src elisp
 #+end_src
+* Appearance
+** Frame
+#+begin_src 
+
+#+end_src
+** Theme
+#+begin_src elisp
+;; Doom exposes five (optional) variables for controlling fonts in Doom. Here
+;; are the three important ones:
+;;
+;; + `doom-font'
+;; + `doom-variable-pitch-font'
+;; + `doom-big-font' -- used for `doom-big-font-mode'; use this for
+;;   presentations or streaming.
+;;
+;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
+;; font string. You generally only need these two:
+;; (setq doom-font (font-spec :family "monospace" :size 12 :weight 'semi-light)
+;;       doom-variable-pitch-font (font-spec :family "sans" :size 13))
+(set-face-attribute 'default nil :height 130)
+
+;; This determines the style of line numbers in effect. If set to `nil', line
+;; numbers are disabled. For relative line numbers, set this to `relative'.
+(setq display-line-numbers-type t)
+
+;; There are two ways to load a theme. Both assume the theme is installed and
+;; available. You can either set `doom-theme' or manually load a theme with the
+;; `load-theme' function. This is the default:
+;; (setq doom-theme 'doom-nord)
+
+(setq doom-theme 'doom-tomorrow-night)
+;; (setq doom-theme 'doom-material)
+
+#+end_src
+*** Cursor Appearance
+#+begin_src elisp
+;; Other colours:
+;; "#00ffa9"
+;; "#C0E8F9"
+;;  #88C0D0
+;; From tomorrow night theme
+;;  #6d9fa1 complimented by "#FF6B6B"
+
+;; (setq normal-cursor-color   "#1BE7FF")
+;; (setq operator-cursor-color "#ff0054")
+
+;; (setq operator-cursor-color "#bf616a")
+
+
+
+(setq normal-cursor-color   "#FF6B6B")
+(setq operator-cursor-color "#6d9fa1")
+
+(setq evil-normal-state-cursor   `(box    ,normal-cursor-color)
+      evil-insert-state-cursor   `(bar    ,normal-cursor-color)
+      evil-visual-state-cursor   `(hollow ,normal-cursor-color)
+      evil-motion-state-cursor   `(bar    ,normal-cursor-color)
+      evil-replace-state-cursor  `(bar    ,normal-cursor-color)
+      evil-operator-state-cursor `(evil-half-cursor ,operator-cursor-color))
+#+end_src
+** Rainbow Mode
+Show colour of hex literals
+#+begin_src elisp :tangle packages.el
+(package! rainbow-mode)
+#+end_src
+-
+#+begin_src elisp
+(use-package! rainbow-mode
+  :hook
+  (prog-mode . rainbow-mode))
+#+end_src
+** Line wrapping
+#+begin_src elisp
+#+end_src
+* Functions
+** Lists
+#+begin_src elisp
+(defun add-list-to-list (dst src)
+  "Similar to `add-to-list', but accepts a list as 2nd argument"
+  (set dst
+       (append (eval dst) src)))
+#+end_src
+** Files & Buffers
+* TODO Projects
+#+begin_src elisp
+(use-package! projectile
+  :config
+  (setq projectile-project-search-path '("~/dev" "~/src" "~/live"))
+  (add-list-to-list 'projectile-project-root-files '("CMakeLists.txt"
+                                                     "build.sh"
+                                                     ;; "run.sh"
+                                                     )))
+
+;; (projectile-add-known-project "")
+;; (projectile-add-known-project "~/dev/lang/v")
+;; (projectile-add-known-project "~/dev/lang/mal")
+#+end_src
 * TODO Future Plans
 ** Multiple Cursors
 ** Direct navigation to files
+* Local Config
+#+begin_src elisp
+(when (file-exists-p! "local-config.el" doom-private-dir)
+  (load! "local-config.el" doom-private-dir))
+#+end_src
