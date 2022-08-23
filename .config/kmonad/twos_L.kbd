@@ -28,8 +28,8 @@
 
 (deflayer default
   grv  _    _    _    _    grv  1    2    3    4    5    _    _    del
-  tab  _    _    _    tab  tab  q    w    e    r    t    [    ]    \
-  caps _    _    _    _    @SC  a    s    d    f    g    ret  _
-  rsft _    _    _    lsft lsft z    x    c    v    b    lsft
-  lctl lmet lalt           lctl            ralt spc esc
+  tab  _    _    tab  tab  tab  q    w    e    r    t    [    ]    \
+  caps _    _    _    @SC  @SC  a    s    d    f    g    ret  _
+  rsft _    _    lsft lsft lsft z    x    c    v    b    lsft
+  lctl lmet lalt           lctl            lalt spc esc
   )

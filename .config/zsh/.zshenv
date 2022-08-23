@@ -8,4 +8,5 @@ export DOTFILES_GIT_DIR="$HOME/.local/dotfiles/"
 alias dotfiles="/usr/bin/git --git-dir=$DOTFILES_GIT_DIR --work-tree=$HOME"
 alias dot=dotfiles
 
+export JAVA_HOME=/usr/lib/jvm/java-18-openjdk
 # source $CONFIG_HOME/housekeeping/xdg-compliance.sh

@@ -1,8 +1,477 @@
-#+TITLE: w1n5t0n's Config of Doom
 #+PROPERTY: header-args:elisp :tangle ./config.el
 #+STARTUP: fold
-* TODO i3
-Can't find a source block mode for i3 config files
+* i3
+#+begin_src conf :tangle ~/.config/i3/config
+# i3 config file (v4)
+# Please see http://i3wm.org/docs/userguide.html for a complete reference!
+
+# Set keyboard layout and background picture
+exec .config/keyboard/setup_keyboard.sh
+exec emacs --daemon
+exec --no-startup-id kmonad $HOME/.config/kmonad/test.kbd
+exec --no-startup-id $HOME/scripts/temp_autocommits.sh &>> $HOME/.local/autocommit_logs.txt
+
+## KMONAD
+exec ./scripts/restart_kmonad/twos
+
+# exec --no-startup-id emacs --daemon
+# exec --no-startup-id /usr/lib/geoclue-2.0/demos/agent
+# exec --no-startup-id redshift-gtk
+
+# exec --no-startup-id picom
+# Default terminal:
+set $terminal alacritty
+set $editor emacsclient -c -a '' # alias for emacsclient
+set $file pcmanfm
+# Set mod key (Mod1=<Alt>, Mod4=<Super>)
+set $mod Mod4
+
+#border_radius 10
+
+# set default desktop layout (default is tiling)
+# workspace_layout tabbed <stacking|tabbed>
+
+# Configure border style <normal|1pixel|pixel xx|none|pixel>
+default_border pixel 2
+default_floating_border normal
+
+for_window [class="^.*"] border pixel 2
+
+# Hide borders
+hide_edge_borders none
+
+# change borders
+#bindsym $mod+f border none
+
+
+# Font for window titles. Will also be used by the bar unless a different font
+# is used in the bar {} block below.
+font xft:URWGothic-Book 11
+
+# Use Mouse+$mod to drag floating windows
+floating_modifier $mod
+
+# start a terminal
+bindsym $mod+Return exec $terminal
+bindsym $mod+Shift+Return exec $terminal --title "Terminal - Floating"
+
+bindsym $mod+c exec $terminal --command calcurse
+
+
+# Start emacs
+bindsym $mod+m exec $editor
+
+# Start file browser
+bindsym $mod+f exec $file
+
+# kill focused window
+bindsym $mod+w kill
+
+# start program launcher
+# bindsym $mod+e exec --no-startup-id dmenu_recency
+bindsym $mod+e exec --no-startup-id ~/scripts/launch_rofi
+# bindsym $mod+d exec --no-startup-id rofi -show drun -run-shell-command '{terminal} -e zsh -ic "{cmd} && read"'
+# launch categorized menu
+bindsym $mod+z exec --no-startup-id morc_menu
+
+################################################################################################
+## sound-section - DO NOT EDIT if you wish to automatically upgrade Alsa -> Pulseaudio later! ##
+################################################################################################
+
+exec --no-startup-id volumeicon
+bindsym $mod+Ctrl+m exec pavucontrol
+#exec --no-startup-id pulseaudio
+#exec --no-startup-id pa-applet
+#bindsym $mod+Ctrl+m exec pavucontrol
+# bindsym $mod+Ctrl+m exec pavucontrol
+
+################################################################################################
+
+# Screen brightness controls
+bindsym XF86MonBrightnessUp exec "xbacklight -inc 3; notify-send 'brightness up'"
+bindsym XF86MonBrightnessDown exec "xbacklight -dec 3; notify-send 'brightness down'"
+
+# Start Applications
+bindsym $mod+Ctrl+b exec terminal -e 'bmenu'
+
+
+bindsym $mod+b exec firefox
+bindsym $mod+F3 exec pcmanfm
+# bindsym $mod+F3 exec ranger
+bindsym $mod+Shift+F3 exec pcmanfm_pkexec
+bindsym $mod+F5 exec terminal -e 'mocp'
+#bindsym $mod+y exec --no-startup-id pkill picom
+# bindsym $mod+Ctrl+t exec --no-startup-id picom -b
+#bindsym $mod+Shift+d --release exec "killall dunst; exec notify-send 'restart dunst'"
+
+
+# Screenshots
+bindsym Print exec --no-startup-id i3-scrot
+# bindsym --release $mod+Print exec screenshot-select
+bindsym $mod+Print --release exec --no-startup-id i3-scrot -w
+bindsym $mod+Shift+Print --release exec --no-startup-id i3-scrot -s
+bindsym $mod+Shift+d exec xdg-open /usr/share/doc/manjaro/i3_help.pdf
+bindsym $mod+Ctrl+x --release exec --no-startup-id xkill
+
+focus_follows_mouse no
+
+# change focus
+bindsym $mod+h focus left
+bindsym $mod+t focus down
+bindsym $mod+n focus up
+bindsym $mod+s focus right
+
+# alternatively, you can use the cursor keys:
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+# move focused window
+bindsym $mod+Shift+h move left
+bindsym $mod+Shift+t move down
+bindsym $mod+Shift+n move up
+bindsym $mod+Shift+s move right
+
+# alternatively, you can use the cursor keys:
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+# workspace back and forth (with/without active container)
+workspace_auto_back_and_forth yes
+bindsym $mod+y workspace back_and_forth
+bindsym $mod+Shift+b move container to workspace back_and_forth; workspace back_and_forth
+
+# split orientation
+bindsym $mod+k split h;exec notify-send 'tile horizontally'
+bindsym $mod+j split v;exec notify-send 'tile vertically'
+bindsym $mod+q split toggle
+
+# toggle fullscreen mode for the focused container
+bindsym $mod+u fullscreen toggle
+
+# change container layout (stacked, tabbed, toggle split)
+bindsym $mod+o layout stacking
+bindsym $mod+comma layout tabbed
+bindsym $mod+period layout toggle split
+
+# toggle tiling / floating
+bindsym $mod+Shift+space floating toggle
+
+# change focus between tiling / floating windows
+bindsym $mod+space focus mode_toggle
+
+# toggle sticky
+bindsym $mod+Shift+o sticky toggle
+
+# focus the parent container
+bindsym $mod+a focus parent
+
+# move the currently focused window to the scratchpad
+bindsym $mod+Shift+minus move scratchpad
+
+# Show the next scratchpad window or hide the focused scratchpad window.
+# If there are multiple scratchpad windows, this command cycles through them.
+bindsym $mod+minus scratchpad show
+
+#navigate workspaces next / previous
+bindsym $mod+Ctrl+h workspace prev
+bindsym $mod+Ctrl+s workspace next
+bindsym $mod+Ctrl+Left workspace prev
+bindsym $mod+Ctrl+Right workspace next
+
+# Workspace names
+# to display names or symbols instead of plain workspace numbers you can use
+# something like: set $ws1 1:mail
+#                 set $ws2 2:
+set $ws1 1
+set $ws2 2
+set $ws3 3
+set $ws4 4
+set $ws5 5
+set $ws6 6
+set $ws7 7
+set $ws8 8
+
+# switch to workspace
+bindsym $mod+1 workspace $ws1
+bindsym $mod+2 workspace $ws2
+bindsym $mod+3 workspace $ws3
+bindsym $mod+4 workspace $ws4
+bindsym $mod+5 workspace $ws5
+bindsym $mod+6 workspace $ws6
+bindsym $mod+7 workspace $ws7
+bindsym $mod+8 workspace $ws8
+
+# Move focused container to workspace
+bindsym $mod+Ctrl+1 move container to workspace $ws1
+bindsym $mod+Ctrl+2 move container to workspace $ws2
+bindsym $mod+Ctrl+3 move container to workspace $ws3
+bindsym $mod+Ctrl+4 move container to workspace $ws4
+bindsym $mod+Ctrl+5 move container to workspace $ws5
+bindsym $mod+Ctrl+6 move container to workspace $ws6
+bindsym $mod+Ctrl+7 move container to workspace $ws7
+bindsym $mod+Ctrl+8 move container to workspace $ws8
+
+# Move to workspace with focused container
+bindsym $mod+Shift+1 move container to workspace $ws1; workspace $ws1
+bindsym $mod+Shift+2 move container to workspace $ws2; workspace $ws2
+bindsym $mod+Shift+3 move container to workspace $ws3; workspace $ws3
+bindsym $mod+Shift+4 move container to workspace $ws4; workspace $ws4
+bindsym $mod+Shift+5 move container to workspace $ws5; workspace $ws5
+bindsym $mod+Shift+6 move container to workspace $ws6; workspace $ws6
+bindsym $mod+Shift+7 move container to workspace $ws7; workspace $ws7
+bindsym $mod+Shift+8 move container to workspace $ws8; workspace $ws8
+
+# Open applications on specific workspaces
+# assign [class="Thunderbird"] $ws1
+# assign [class="Pale moon"] $ws2
+# assign [class="Pcmanfm"] $ws3
+# assign [class="Skype"] $ws5
+
+# Open specific applications in floating mode
+for_window [title="alsamixer"] floating enable border pixel 1
+for_window [title="Terminal - Floating"] floating enable border pixel 1
+for_window [title="QjackCtl"] floating enable border pixel 1
+for_window [class="calamares"] floating enable border normal
+for_window [class="Clipgrab"] floating enable
+for_window [title="File Transfer*"] floating enable
+for_window [class="fpakman"] floating enable
+for_window [class="Galculator"] floating enable border pixel 1
+for_window [class="GParted"] floating enable border normal
+for_window [title="i3_help"] floating enable sticky enable border normal
+for_window [class="Lightdm-settings"] floating enable
+for_window [class="Lxappearance"] floating enable sticky enable border normal
+for_window [class="Manjaro-hello"] floating enable
+for_window [class="Manjaro Settings Manager"] floating enable border normal
+for_window [title="MuseScore: Play Panel"] floating enable
+for_window [class="Nitrogen"] floating enable sticky enable border normal
+for_window [class="Oblogout"] fullscreen enable
+for_window [class="octopi"] floating enable
+for_window [title="About Pale Moon"] floating enable
+for_window [class="Pamac-manager"] floating enable
+for_window [class="Pavucontrol"] floating enable
+for_window [class="qt5ct"] floating enable sticky enable border normal
+for_window [class="Qtconfig-qt4"] floating enable sticky enable border normal
+for_window [class="Simple-scan"] floating enable border normal
+for_window [class="(?i)System-config-printer.py"] floating enable border normal
+for_window [class="Skype"] floating enable border normal
+for_window [class="Timeset-gui"] floating enable border normal
+for_window [class="(?i)virtualbox"] floating enable border normal
+for_window [class="Xfburn"] floating enable
+for_window [class="java"] floating enable
+for_window [title="(float).*"] floating enable
+
+# switch to workspace with urgent window automatically
+for_window [urgent=latest] focus
+
+# reload the configuration file
+bindsym $mod+Shift+c reload
+
+# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
+bindsym $mod+Shift+r restart
+
+# exit i3 (logs you out of your X session)
+bindsym $mod+Shift+0 exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
+
+# Set shut down, restart and locking features
+bindsym $mod+0 mode "$mode_system"
+set $mode_system (l)ock, (e)xit, switch_(u)ser, (s)uspend, (h)ibernate, (r)eboot, (Shift+s)hutdown
+mode "$mode_system" {
+    bindsym l exec --no-startup-id i3exit lock, mode "default"
+    bindsym s exec --no-startup-id i3exit suspend, mode "default"
+    bindsym u exec --no-startup-id i3exit switch_user, mode "default"
+    bindsym e exec --no-startup-id i3exit logout, mode "default"
+    bindsym h exec --no-startup-id i3exit hibernate, mode "default"
+    bindsym r exec --no-startup-id i3exit reboot, mode "default"
+    bindsym Shift+s exec --no-startup-id i3exit shutdown, mode "default"
+
+    # exit system mode: "Enter" or "Escape"
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+
+# Resize window (you can also use the mouse for that)
+bindsym $mod+r mode "resize"
+mode "resize" {
+        # These bindings trigger as soon as you enter the resize mode
+        # Pressing left will shrink the window’s width.
+        # Pressing right will grow the window’s width.
+        # Pressing up will shrink the window’s height.
+        # Pressing down will grow the window’s height.
+        bindsym h resize shrink width 5 px or 5 ppt
+        bindsym t resize grow height 5 px or 5 ppt
+        bindsym n resize shrink height 5 px or 5 ppt
+        bindsym s resize grow width 5 px or 5 ppt
+
+        bindsym Shift+h resize shrink width 10 px or 10 ppt
+        bindsym Shift+t resize grow height 10 px or 10 ppt
+        bindsym Shift+n resize shrink height 10 px or 10 ppt
+        bindsym Shift+s resize grow width 10 px or 10 ppt
+
+        # exit resize mode: Enter or Escape
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+
+# Lock screen
+bindsym $mod+9 exec --no-startup-id blurlock
+
+# Autostart applications
+exec_always --no-startup-id ~/.config/polybar/launch.sh #--material
+#exec        --no-startup-id xset r rate 250 40
+
+exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
+exec --no-startup-id nitrogen --restore; #sleep 1; picom -b --corenr-radius 10
+exec --no-startup-id nm-applet
+exec --no-startup-id xfce4-power-manager
+exec --no-startup-id pamac-tray
+exec --no-startup-id clipit
+exec --no-startup-id blueman-applet
+# exec_always --no-startup-id sbxkb
+#exec --no-startup-id start_conky_maia
+# exec --no-startup-id start_conky_green
+exec --no-startup-id xautolock -time 40 -locker blurlock
+exec_always --no-startup-id ff-theme-util
+exec_always --no-startup-id fix_xcursor
+
+# Color palette used for the terminal ( ~/.Xresources file )
+
+
+# Colors are gathered based on the documentation:
+# https://i3wm.org/docs/userguide.html#xresources
+# Change the variable name at the place you want to match the color
+# of your terminal like this:
+# [example]
+# If you want your bar to have the same background color as your
+# terminal background change the line 362 from:
+# background #14191D
+# to:
+# background $term_background
+# Same logic applied to everything else.
+# set_from_resource $term_background background
+# set_from_resource $term_foreground foreground
+# set_from_resource $term_color0     color0
+# set_from_resource $term_color1     color1
+# set_from_resource $term_color2     color2
+# set_from_resource $term_color3     color3
+# set_from_resource $term_color4     color4
+# set_from_resource $term_color5     color5
+# set_from_resource $term_color6     color6
+# set_from_resource $term_color7     color7
+# set_from_resource $term_color8     color8
+# set_from_resource $term_color9     color9
+# set_from_resource $term_color10    color10
+# set_from_resource $term_color11    color11
+# set_from_resource $term_color12    color12
+# set_from_resource $term_color13    color13
+# set_from_resource $term_color14    color14
+# set_from_resource $term_color15    color15
+
+# Start i3bar to display a workspace bar (plus the system information i3status if available)
+
+
+# hide/unhide i3status bar
+#bindsym $mod+m bar mode toggle
+
+set $color1  #1d1f21
+set $color2  #282a2e
+set $color3  #373b41
+set $color4  #c5c8c6
+set $color5  #969896
+set $color6  #cc6666
+set $color7  #de935f
+set $color8  #f0c674
+set $color9  #b5bd68
+set $color10 #8abeb7
+set $color10-1 #519189
+set $color11 #81a2be
+set $color12 #b294bb
+set $color13 #aeafad
+set $color14 #000000
+set $color15 #666666
+set $color16 #FF3334
+set $color17 #9ec400
+set $color18 #b777e0
+set $color19 #54ced6
+set $color20 #ECEFF4
+set $color21 #8FBCBB
+set $color22 #CB4B16
+
+# Theme colors
+# class                   border        backgr.      text          indic.   child_border
+  # client.focused          $color10-1    $color10-1   $color20      #A3BE8C
+  # client.focused          $color10-1    $color4      $color20      #A3BE8C
+  client.focused          $color10-1    $color4      $color1      $color3
+  # client.focused_inactive $color3       $color3      $color1      #45494
+  client.focused_inactive $color3       $color5      $color1      $color2
+
+  client.unfocused        $color2       $color2      $color20      #454948
+  client.urgent           $color22      #FDF6E3      $color1      #268BD2
+  client.placeholder      #000000       #0c0c0c      $color20      #000000
+
+  client.background       #2E3440
+
+#############################
+### settings for i3-gaps: ###
+#############################
+
+# Set inner/outer gaps
+gaps inner 10
+gaps outer 0
+
+# Additionally, you can issue commands with the following syntax. This is useful to bind keys to changing the gap size.
+# gaps inner|outer current|all set|plus|minus <px>
+# gaps inner all set 10
+# gaps outer all plus 5
+
+# Smart gaps (gaps used if only more than one container on the workspace)
+smart_gaps on
+
+# Smart borders (draw borders around container only if it is not the only container on this workspace)
+# on|no_gaps (on=always activate and no_gaps=only activate if the gap size to the edge of the screen is 0)
+smart_borders on
+
+# Press $mod+Shift+g to enter the gap mode. Choose o or i for modifying outer/inner gaps. Press one of + / - (in-/decrement for current workspace) or 0 (remove gaps for current workspace). If you also press Shift with these keys, the change will be global for all workspaces.
+set $mode_gaps Gaps: (o) outer, (i) inner
+set $mode_gaps_outer Outer Gaps: +|-|0 (local), Shift + +|-|0 (global)
+set $mode_gaps_inner Inner Gaps: +|-|0 (local), Shift + +|-|0 (global)
+bindsym $mod+Shift+g mode "$mode_gaps"
+
+mode "$mode_gaps" {
+        bindsym o      mode "$mode_gaps_outer"
+        bindsym i      mode "$mode_gaps_inner"
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+mode "$mode_gaps_inner" {
+        bindsym plus  gaps inner current plus 5
+        bindsym minus gaps inner current minus 5
+        bindsym 0     gaps inner current set 0
+
+        bindsym Shift+plus  gaps inner all plus 5
+        bindsym Shift+minus gaps inner all minus 5
+        bindsym Shift+0     gaps inner all set 0
+
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+mode "$mode_gaps_outer" {
+        bindsym plus  gaps outer current plus 5
+        bindsym minus gaps outer current minus 5
+        bindsym 0     gaps outer current set 0
+
+        bindsym Shift+plus  gaps outer all plus 5
+        bindsym Shift+minus gaps outer all minus 5
+        bindsym Shift+0     gaps outer all set 0
+
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+#+end_src
+** TODO split into sections
 * Doom-specific
 ** Init
 *** Helper Text
@@ -23,187 +492,168 @@ Can't find a source block mode for i3 config files
 ;;      Alternatively, press 'gd' (or 'C-c c d') on a module to browse its
 ;;      directory (for easy access to its source code).
 #+end_src
-*** Block
+*** Doom Block
 #+begin_src elisp :tangle init.el
-(doom! :input
-       ;;chinese
-       ;;japanese
-       ;;layout            ; auie,ctsrnm is the superior home row
+(doom!
+        :completion
+        company                                ; the ultimate code completion backend
+        ivy                                    ; a search engine for love and life
 
-       :completion
-       company           ; the ultimate code completion backend
-       ;;helm              ; the *other* search engine for love and life
-       ;;ido               ; the other *other* search engine...
-       ivy               ; a search engine for love and life
+        :ui
+        doom                       ; what makes DOOM look the way it does
+        (emoji +unicode)           ; 🙂
+        fill-column                ; a `fill-column' indicator
+        hl-todo                    ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
+        hydra
+        indent-guides          ; highlighted indent columns
+        ligatures              ; ligatures and symbols to make your code pretty again
+        modeline               ; snazzy, Atom-inspired modeline, plus API
+        nav-flash              ; blink cursor line after big motions
+        ;;neotree           ; a project drawer, like NERDTree for vim
+        ophints                    ; highlight the region an operation acts on
+        (popup +defaults)          ; tame sudden yet inevitable temporary windows
+        ;;tabs              ; a tab bar for Emacs
+        treemacs                   ; a project drawer, like neotree but cooler
+        unicode                    ; extended unicode support for various languages
+        vc-gutter                  ; vcs diff in the fringe
+        vi-tilde-fringe            ; fringe tildes to mark beyond EOB
+        window-select              ; visually switch windows
+        workspaces                 ; tab emulation, persistence & separate workspaces
+        zen                        ; distraction-free coding or writing
 
-       :ui
-       ;;deft              ; notational velocity for Emacs
-       doom              ; what makes DOOM look the way it does
-       ;;doom-dashboard    ; a nifty splash screen for Emacs
-       ;;doom-quit         ; DOOM quit-message prompts when you quit Emacs
-       (emoji +unicode)  ; 🙂
-       fill-column       ; a `fill-column' indicator
-       hl-todo           ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
-       hydra
-       indent-guides     ; highlighted indent columns
-       ligatures         ; ligatures and symbols to make your code pretty again
-       ;;minimap           ; show a map of the code on the side
-       modeline          ; snazzy, Atom-inspired modeline, plus API
-       nav-flash         ; blink cursor line after big motions
-       ;;neotree           ; a project drawer, like NERDTree for vim
-       ophints           ; highlight the region an operation acts on
-       (popup +defaults)   ; tame sudden yet inevitable temporary windows
-       ;;tabs              ; a tab bar for Emacs
-       treemacs          ; a project drawer, like neotree but cooler
-       unicode           ; extended unicode support for various languages
-       vc-gutter         ; vcs diff in the fringe
-       vi-tilde-fringe   ; fringe tildes to mark beyond EOB
-       window-select     ; visually switch windows
-       workspaces        ; tab emulation, persistence & separate workspaces
-       zen               ; distraction-free coding or writing
+        :editor
+        (evil +everywhere)                   ; come to the dark side, we have cookies
+        file-templates                       ; auto-snippets for empty files
+        fold                                 ; (nigh) universal code folding
+        (format +onsave)                     ; automated prettiness
+        ;;god               ; run Emacs commands without modifier keys
+        lispy                           ; vim for lisp, for people who don't like vim
+        multiple-cursors                ; editing in many places at once
+        ;; objed             ; text object editing for the innocent
+        ;;parinfer            ; turn lisp into python, sort of
+        rotate-text                   ; cycle region at point between text candidates
+        snippets                      ; my elves. They type so I don't have to
+        ;;word-wrap         ; soft wrapping with language-aware indent
 
-       :editor
-       (evil +everywhere)  ; come to the dark side, we have cookies
-       file-templates      ; auto-snippets for empty files
-       fold                ; (nigh) universal code folding
-       (format +onsave)    ; automated prettiness
-       ;;god               ; run Emacs commands without modifier keys
-       lispy             ; vim for lisp, for people who don't like vim
-       multiple-cursors    ; editing in many places at once
-       ;; objed             ; text object editing for the innocent
-       ;;parinfer            ; turn lisp into python, sort of
-       rotate-text       ; cycle region at point between text candidates
-       snippets            ; my elves. They type so I don't have to
-       ;;word-wrap         ; soft wrapping with language-aware indent
+        :emacs
+        dired                 ; making dired pretty [functional]
+        electric              ; smarter, keyword-based electric-indent
+        ;;ibuffer         ; interactive buffer management
+        undo                  ; persistent, smarter undo for your inevitable mistakes
+        vc                    ; version-control and Emacs, sitting in a tree
 
-       :emacs
-       dired             ; making dired pretty [functional]
-       electric          ; smarter, keyword-based electric-indent
-       ;;ibuffer         ; interactive buffer management
-       undo              ; persistent, smarter undo for your inevitable mistakes
-       vc                ; version-control and Emacs, sitting in a tree
+        :term
+        ;;eshell              ; the elisp shell that works everywhere
+        ;;shell             ; simple shell REPL for Emacs
+        ;;term              ; basic terminal emulator for Emacs
+        vterm                                  ; the best terminal emulation in Emacs
 
-       :term
-       eshell              ; the elisp shell that works everywhere
-       ;;shell             ; simple shell REPL for Emacs
-       ;;term              ; basic terminal emulator for Emacs
-       ;;vterm             ; the best terminal emulation in Emacs
+        :checkers
+        syntax            ; tasing you for every semicolon you forget
+        ;;(spell +flyspell) ; tasing you for misspelling mispelling
+        ;;grammar           ; tasing grammar mistake every you make
 
-       :checkers
-       syntax              ; tasing you for every semicolon you forget
-       ;;(spell +flyspell) ; tasing you for misspelling mispelling
-       ;;grammar           ; tasing grammar mistake every you make
+        :tools
+        ;;ansible
+        debugger                  ; FIXME stepping through code, to help you add bugs
+        direnv
+        docker
+        ;;editorconfig      ; let someone else argue about tabs vs spaces
+        ;;ein               ; tame Jupyter notebooks with emacs
+        (eval +overlay)           ; run code, run (also, repls)
+        ;;gist              ; interacting with github gists
+        lookup                             ; navigate your code and its documentation
+        (lsp +peek)
+        magit                        ; a git porcelain for Emacs
+        make                         ; run make tasks from Emacs
+        ;;pass              ; password manager for nerds
+        pdf    ; pdf enhancements
+        ;;prodigy           ; FIXME managing external services & code builders
+        rgb                    ; creating color strings
+        ;;taskrunner        ; taskrunner for all your projects
+        ;;terraform         ; infrastructure as code
+        tmux                               ; an API for interacting with tmux
+        upload                             ; map local to remote projects via ssh/ftp
 
-       :tools
-       ;;ansible
-       ;;debugger          ; FIXME stepping through code, to help you add bugs
-       ;;direnv
-       docker
-       ;;editorconfig      ; let someone else argue about tabs vs spaces
-       ;;ein               ; tame Jupyter notebooks with emacs
-       (eval +overlay)     ; run code, run (also, repls)
-       ;;gist              ; interacting with github gists
-       lookup              ; navigate your code and its documentation
-       (lsp +peek)
-       magit               ; a git porcelain for Emacs
-       make                ; run make tasks from Emacs
-       ;;pass              ; password manager for nerds
-       pdf                 ; pdf enhancements
-       ;;prodigy           ; FIXME managing external services & code builders
-       ;;rgb               ; creating color strings
-       ;;taskrunner        ; taskrunner for all your projects
-       ;;terraform         ; infrastructure as code
-       ;;tmux              ; an API for interacting with tmux
-       ;;upload            ; map local to remote projects via ssh/ftp
+        :os
+        (:if IS-MAC macos)                     ; improve compatibility with macOS
+        ;;tty               ; improve the terminal Emacs experience
 
-       :os
-       (:if IS-MAC macos)  ; improve compatibility with macOS
-       ;;tty               ; improve the terminal Emacs experience
+        :lang
+        ;;agda              ; types of types of types of types...
+        (cc +lsp)             ; C/C++/Obj-C madness
+        clojure               ; java with a lisp
+        common-lisp           ; if you've seen one lisp, you've seen them all
+        ;;coq               ; proofs-as-programs
+        ;;crystal           ; ruby at the speed of c
+        ;;csharp            ; unity, .NET, and mono shenanigans
+        ;;data              ; config/data formats
+        ;;(dart +flutter)   ; paint ui and not much else
+        ;;elixir            ; erlang done right
+        ;;elm               ; care for a cup of TEA?
+        emacs-lisp ; drown in parentheses
+        ;;erlang            ; an elegant language for a more civilized age
+        ;;ess               ; emacs speaks statistics
+        faust    ; dsp, but you get to keep your soul
+        ;;fsharp            ; ML stands for Microsoft's Language
+        ;;fstar             ; (dependent) types and (monadic) effects and Z3
+        ;;gdscript          ; the language you waited for
+        ;;(go +lsp)         ; the hipster dialect
+        (haskell +dante)           ; a language that's lazier than I am
+        hy                         ; readability of scheme w/ speed of python
+        ;;idris             ; a language you can depend on
+        json        ; At least it ain't XML
+        ;;(java +meghanada) ; the poster child for carpal tunnel syndrome
+        javascript               ; all(hope(abandon(ye(who(enter(here))))))
+        ;;julia             ; a better, faster MATLAB
+        ;;kotlin            ; a better, slicker Java(Script)
+        latex                     ; writing papers in Emacs has never been so fun
+        ;;lean
+        ;;factor
+        ;;ledger            ; an accounting system in Emacs
+        lua                                    ; one-based indices? one-based indices
+        markdown                               ; writing docs for people to ignore
+        nim                                    ; python + lisp at the speed of c
+        nix                                    ; I hereby declare "nix geht mehr!"
+        ocaml                                  ; an objective camel
+        (org +roam2 +dragndrop
+             +hugo +journal +noter +pandoc
+             +pomodoro +pretty +present)     ; organize your plain life in plain text
+        ;;php               ; perl's insecure younger brother
+        ;;plantuml          ; diagrams for confusing people more
+        ;;purescript        ; javascript, but functional
+        python               ; beautiful is better than ugly
+        ;;qt                ; the 'cutest' gui framework ever
+        racket               ; a DSL for DSLs
+        ;;raku              ; the artist formerly known as perl6
+        ;;rest              ; Emacs as a REST client
+        ;;rst               ; ReST in peace
+        ;;(ruby +rails)     ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
+        rust                     ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
+        ;;scala             ; java, but good
+        scheme     ; a fully conniving family of lisps
+        sh         ; she sells {ba,z,fi}sh shells on the C xor
+        ;;sml
+        ;;solidity          ; do you need a blockchain? No.
+        ;;swift             ; who asked for emoji variables?
+        ;;terra             ; Earth and Moon in alignment for performance.
+        ;;web               ; the tubes
+        yaml                                   ; JSON, but readable
 
-       :lang
-       ;;agda              ; types of types of types of types...
-       (cc +lsp)                 ; C/C++/Obj-C madness
-       clojure             ; java with a lisp
-       common-lisp         ; if you've seen one lisp, you've seen them all
-       ;;coq               ; proofs-as-programs
-       ;;crystal           ; ruby at the speed of c
-       ;;csharp            ; unity, .NET, and mono shenanigans
-       ;;data              ; config/data formats
-       ;;(dart +flutter)   ; paint ui and not much else
-       ;;elixir            ; erlang done right
-       ;;elm               ; care for a cup of TEA?
-       emacs-lisp          ; drown in parentheses
-       ;;erlang            ; an elegant language for a more civilized age
-       ;;ess               ; emacs speaks statistics
-       faust               ; dsp, but you get to keep your soul
-       ;;fsharp            ; ML stands for Microsoft's Language
-       ;;fstar             ; (dependent) types and (monadic) effects and Z3
-       ;;gdscript          ; the language you waited for
-       ;;(go +lsp)         ; the hipster dialect
-       (haskell +dante)    ; a language that's lazier than I am
-       hy                  ; readability of scheme w/ speed of python
-       ;;idris             ; a language you can depend on
-       json                ; At least it ain't XML
-       ;;(java +meghanada) ; the poster child for carpal tunnel syndrome
-       ;;javascript        ; all(hope(abandon(ye(who(enter(here))))))
-       ;;julia             ; a better, faster MATLAB
-       ;;kotlin            ; a better, slicker Java(Script)
-       ;;latex             ; writing papers in Emacs has never been so fun
-       ;;lean
-       ;;factor
-       ;;ledger            ; an accounting system in Emacs
-       lua                 ; one-based indices? one-based indices
-       markdown            ; writing docs for people to ignore
-       nim                 ; python + lisp at the speed of c
-       ;;nix               ; I hereby declare "nix geht mehr!"
-       ;;ocaml             ; an objective camel
-       (org +roam2 +dragndrop
-            +hugo +journal +noter
-            +pomodoro +pretty +present)                 ; organize your plain life in plain text
-       ;;php               ; perl's insecure younger brother
-       ;;plantuml          ; diagrams for confusing people more
-       ;;purescript        ; javascript, but functional
-       python              ; beautiful is better than ugly
-       ;;qt                ; the 'cutest' gui framework ever
-       racket              ; a DSL for DSLs
-       ;;raku              ; the artist formerly known as perl6
-       ;;rest              ; Emacs as a REST client
-       ;;rst               ; ReST in peace
-       ;;(ruby +rails)     ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
-       rust                ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
-       ;;scala             ; java, but good
-       scheme              ; a fully conniving family of lisps
-       sh                  ; she sells {ba,z,fi}sh shells on the C xor
-       ;;sml
-       ;;solidity          ; do you need a blockchain? No.
-       ;;swift             ; who asked for emoji variables?
-       ;;terra             ; Earth and Moon in alignment for performance.
-       ;;web               ; the tubes
-       yaml              ; JSON, but readable
+        :email
+        ;;(mu4e +gmail)
+        ;;notmuch
+        ;;(wanderlust +gmail)
 
-       :email
-       ;;(mu4e +gmail)
-       ;;notmuch
-       ;;(wanderlust +gmail)
-
-       :app
-       ;;calendar
-       ;;emms
-       ;;everywhere        ; *leave* Emacs!? You must be joking
-       ;;irc               ; how neckbeards socialize
-       ;;(rss +org)        ; emacs as an RSS reader
-       ;;twitter           ; twitter client https://twitter.com/vnought
-
-       :config
-       literate
-       (default +bindings +smartparens))
+        :config
+        literate
+        (default +bindings +smartparens))
 #+end_src
-
-*** Re-tangle on save
+*** KILL Re-tangle on save
 #+begin_src elisp :tangle init.el
 ;; (add-hook 'org-mode-hook #'+literate-enable-recompile-h)
 #+end_src
-** Config
+** Config Header
 #+begin_src elisp
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 (setq user-full-name "w1n5t0n"
@@ -226,9 +676,11 @@ Can't find a source block mode for i3 config files
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
 #+end_src
-* Packages
-** Help
-#+begin_src elisp :tangle no
+** Packages
+*** Help
+#+begin_src elisp :tangle packages.el
+;; -*- no-byte-compile: t; -*-
+;;; $DOOMDIR/packages.el
 ;; To install a package with Doom you must declare them here and run 'doom sync'
 ;; on the command line, then restart Emacs for the changes to take effect -- or
 ;; use 'M-x doom/reload'.
@@ -236,8 +688,6 @@ Can't find a source block mode for i3 config files
 
 ;; To install SOME-PACKAGE from MELPA, ELPA or emacsmirror:
 ;(package! some-package)
-
-(package! org-bullets)
 
 ;; To install a package directly from a remote git repo, you must specify a
 ;; `:recipe'. You'll find documentation on what `:recipe' accepts here:
@@ -279,266 +729,64 @@ Can't find a source block mode for i3 config files
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;(unpin! t)
 #+end_src
-** Misc
+
+* Languages
+** C & C++
+** Lisps
+*** Clojure
 #+begin_src elisp :tangle packages.el
-;; -*- no-byte-compile: t; -*-
-;;; $DOOMDIR/packages.el
-
-(package! command-log-mode
-  :recipe (:host github :repo "lewang/command-log-mode"))
-
-;; (package! slime
-;;   :recipe (:host github :repo "slime/slime"))
-
-;; (package! tree-sitter
-;;   :recipe (:host github :repo "tree-sitter/tree-sitter"))
-
-;; (package! tree-sitter-langs)
-
-
-(package! speed-type)
-
-;; ORG-ROAM stuff
-
-(package! pulsar)
-
-;; (package! emacsql)
-;; (package! emacsql-sqlite)
-;; (package! magit-section)
-;; (package! org-roam)
-
-;; (use-package! org-roam
-;;   :config
-;;   (setq org-roam-directory "~/phd/org-roam-files")
-;;   (org-roam-setup)
-;;   )
-
-
-
-(package! aggressive-indent)
-
-(package! rainbow-mode)
+(package! edn)
 #+end_src
-** Org
+*** Emacs Lisp
+*** Common Lisp
+*** Extempore
 #+begin_src elisp :tangle packages.el
-(package! org-download)
-
-(package! org-roam-ui)
-
-(package! org-bullets)
-
-;; (package! org-roam :pin "65ea325")
-;; (package! org-roam :pin "69116a4")
-(package! org-roam)
-
-;; (package! dendroam
-;;   :recipe (:host github
-;;            :repo "vicrdguez/dendroam"
-;;            :branch "main"))
-
-(package! org-roam-timestamps)
-
-(package! org-modern)
-
-(package! helm-org-rifle)
-#+end_src
-** Language Support
-#+begin_src elisp :tangle packages.el
-;; Random fix to bug, see here: https://github.com/hlissner/doom-emacs/issues/5667
-(package! gitconfig-mode
-	  :recipe (:host github :repo "magit/git-modes"
-			 :files ("gitconfig-mode.el")))
-(package! gitignore-mode
-	  :recipe (:host github :repo "magit/git-modes"
-			 :files ("gitignore-mode.el")))
-(package! sclang-extensions)
-;; (package! scel)                         ;
-(package! v-mode)
-(unpin! tidal)
-(package! tidal)
-
 (package! extempore-mode
   :recipe (:host github
            :repo "extemporelang/extempore-emacs-mode"))
-
-(package! kbd-mode
-  :recipe (:host github
-           :repo "kmonad/kbd-mode"))
-
-(package! edn)
-
-(package! org-transclusion)
 #+end_src
-* Org
-** Org
-:LOGBOOK:
-CLOCK: [2022-08-22 Mon 21:01]
-:END:
-#+begin_src elisp
-;; If you use `org' and don't want your org files in the default location below,
-;; change `org-directory'. It must be set before org loads!
-(setq org-directory "~/notes/org")
-
-;; Add logs into :LOGBOOK: drawer instead of under the headline
-(setq org-log-into-drawer t)
-
-(setq org-archive-directory (concat org-directory "/archive"))
-(setq org-archive-location (concat org-archive-directory "/%s_archive.org::"))
-
-;; (use-package! org-bullets
-;;   :config
-;;   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
-
-;; (add-hook 'org-mode-hook '(lambda ()
-;;                             (visual-fill-column 1)
-;;                             (setq visual-fill-column-center-text t)))
+** Python
+** Bash
+** Tidal
+#+begin_src elisp :tangle packages.el
+(unpin! tidal)
+(package! tidal)
 #+end_src
-** Org Roam
+-
 #+begin_src elisp
-;; From https://systemcrafters.net/build-a-second-brain-in-emacs/5-org-roam-hacks/
-(defun org-roam-node-insert-immediate (arg &rest args)
-  (interactive "P")
-  (let ((args (cons arg args))
-        (org-roam-capture-templates (list (append (car org-roam-capture-templates)
-                                                  '(:immediate-finish t)))))
-    (apply #'org-roam-node-insert args)
-    ;;(evil-forward-word-end) FIXME: doesn't work
-    ))
-
-(use-package! org-roam
-  :init
-  (setq org-roam-v2-ack t)
-  :custom
-  (org-roam-directory "~/notes/org-roam")
-  (org-roam-db-location "~/notes/org-roam/org-roam.db")
-  (org-roam-completion-everywhere t)
-  (org-roam-mode-section-functions
-   (list #'org-roam-backlinks-section
-         #'org-roam-reflinks-section
-         ;; #'org-roam-unlinked-references-section
-         ))
-  ;; DENDROAM stuff
-  ;; (org-roam-node-display-template "${hierarchy}:${title}")
-  ;; (org-roam-capture-templates
-  ;;  '(("d" "default" plain
-  ;;     "%?"
-  ;;     :if-new (file+head "${slug}.org"
-  ;;                        "#+title: ${hierarchy-title}\n")
-  ;;     :immediate-finish t
-  ;;     :unnarrowed t)))
-  ;; (org-roam-dailies-capture-templates
-  ;;     '(("d" "default" entry
-  ;;        "* %?"
-  ;;        :if-new (file+head "journal.daily.%<%Y.%m.%d>.org"
-  ;;                           "#+title: %<%Y-%m-%d>\n"))))
-  ;; /DENDROAM stuff
-  ;; :bind (("C-c n l" . org-roam-buffer-toggle)
-  ;;        ("C-c n f" . org-roam-node-find)
-  ;;        ("C-c n i" . org-roam-node-insert)
-  ;;        :map org-mode-map
-  ;;        ("C-M-i" . completion-at-point)
-  ;;        :map org-roam-dailies-map
-  ;;        ("Y" . org-roam-dailies-capture-yesterday)
-  ;;        ("T" . org-roam-dailies-capture-tomorrow))
-  ;; :bind-keymap
-  ;; ("C-c n d" . org-roam-dailies-map)
-  :config
-  (require 'org-roam-dailies) ;; Ensure the keymap is available
-  (require 'org-roam-protocol)
-  (org-roam-db-autosync-mode)
-  (map!
-   ;; :map org-mode-map
-   "C-M-h" 'completion-at-point
-   "C-c n i" 'org-roam-node-insert
-   "C-c n u" 'org-roam-node-insert-immediate)
-  )
-#+end_src
-*** Timestapms
-#+begin_src elisp
-(use-package! org-roam-timestamps
-  :after org-roam
-  :config (org-roam-timestamps-mode)
-  :custom
-  (org-roam-timestapms-remember-timestapms t)
-  (org-roam-timestapms-minimum-gap (* 60 5))
-  )
-#+end_src
-*** TODO Dendroam
-** Org Noter
-#+begin_src elisp
-(use-package! org-noter
-  :after (:any org pdf-view)
-  :config
-  (setq
-   ;; The WM can handle splits
-   org-noter-notes-window-location 'other-frame;'horizontal-split;; 'other-frame
-   ;; Please stop opening frames
-   org-noter-always-create-frame nil
-   ;; I want to see the whole file
-   org-noter-hide-other nil
-   ;; Everything is relative to the main notes file
-   ;; org-noter-notes-search-path (list org_notes)
-   )
-  )
-
-#+end_src
-** Org-Modern
-#+begin_src elisp
-(use-package! org-modern
-  :config
-  (global-org-modern-mode)
-  )
-
-;; Choose some fonts
-;; (set-face-attribute 'default nil :family "Iosevka")
-;; (set-face-attribute 'variable-pitch nil :family "Iosevka Aile")
-;; (set-face-attribute 'org-modern-symbol nil :family "Iosevka")
-
-;; Add frame borders and window dividers
-(modify-all-frames-parameters
- '((right-divider-width . 03)
-   (internal-border-width . 0)))
-
-(dolist (face '(window-divider
-                window-divider-first-pixel
-                window-divider-last-pixel))
-  (face-spec-reset-face face)
-  (set-face-foreground face (face-attribute 'default :background)))
-
-(set-face-background 'fringe (face-attribute 'default :background))
-
-(setq
- ;; Edit settings
- org-auto-align-tags nil
- org-tags-column 0
- org-catch-invisible-edits 'show-and-error
- org-special-ctrl-a/e t
- org-insert-heading-respect-content t
-
- ;; Org styling, hide markup etc.
- org-hide-emphasis-markers t
- org-pretty-entities t
- org-ellipsis "…"
-
- ;; Agenda styling
- org-agenda-tags-column 0
- org-agenda-block-separator ?─
- org-agenda-time-grid
- '((daily today require-timed)
-   (800 1000 1200 1400 1600 1800 2000)
-   " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
- org-agenda-current-time-string
- "⭠ now ─────────────────────────────────────────────────")
-#+end_src
-* Package Config
-#+begin_src elisp
-(use-package! kbd-mode)
-
 (use-package! tidal
   :custom
   (tidal-boot-script-path "/home/w1n5t0n/live/startup/tidal.hs"))
 #+end_src
-** Ace Window
+** V
+#+begin_src elisp :tangle packages.el
+(package! v-mode)
+#+end_src
+** SuperCollider
+#+begin_src elisp :tangle packages.el
+(package! sclang-extensions)
+;; (package! scel)                         ;
+#+end_src
+** Config Files
+*** Git
+#+begin_src elisp :tangle packages.el
+;; Random fix to bug, see here: https://github.com/hlissner/doom-emacs/issues/5667
+(package! gitconfig-mode
+  :recipe (:host github :repo "magit/git-modes"
+           :files ("gitconfig-mode.el")))
+(package! gitignore-mode
+  :recipe (:host github :repo "magit/git-modes"
+           :files ("gitignore-mode.el")))
+#+end_src
+*** Kmonad
+#+begin_src elisp :tangle packages.el
+(package! kbd-mode
+  :recipe (:host github
+           :repo "kmonad/kbd-mode"))
+#+end_src
+* Emacs
+Emacs-specific and (more or less) global settings.
+** Window Management
 #+begin_src elisp
 (use-package! ace-window
   :bind (("M-o" . ace-window))
@@ -549,43 +797,10 @@ CLOCK: [2022-08-22 Mon 21:01]
   :config
   (ace-window-display-mode 1)
   (setq aw-keys '(?h ?t ?n ?s ?g ?c ?r ?l)))
-
-
 #+end_src
-** Org Roam
-#+begin_src elisp
-(use-package! websocket
-    :after org-roam)
-
-(use-package! org-roam-ui
-    :after org-roam ;; or :after org
-;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
-;;         a hookable mode anymore, you're advised to pick something yourself
-;;         if you don't care about startup time, use
-;;  :hook (after-init . org-roam-ui-mode)
-    :config
-    (setq org-roam-ui-sync-theme t
-          org-roam-ui-follow t
-          org-roam-ui-update-on-save t
-          org-roam-ui-open-on-start t))
-
-(use-package! org-transclusion
-              :after org
-              :init
-              (map!
-               :map global-map
-               "<f12>"   #'org-transclusion-add
-               "C-<f12>" #'org-transclusion-remove
-               :leader
-               :prefix "n"
-               :desc "Org Transclusion Mode" "t" #'org-transclusion-mode))
-#+end_src
-* Projects
-#+begin_src elisp
-(setq projectile-project-search-path '("~/dev"))
-#+end_src
-* Cursor Behaviour
-** Movement
+** Cursor Behaviour
+Various settings that concern how the cursor behaves.
+*** Movement
 #+begin_src elisp
 (setq
  evil-repeat-move-cursor t
@@ -599,11 +814,18 @@ CLOCK: [2022-08-22 Mon 21:01]
 (map! :map ivy-minibuffer-map
       "C-t" 'ivy-next-line
       "C-n" 'ivy-previous-line)
+
+(map! :map company-active-map
+      "C-h" 'company-previous-page
+      "C-s" 'company-next-page
+      "C-t" 'company-select-next
+      "C-n" 'company-select-previous
+      )
       #+end_src
 
-** Pulsing
-*** Pulsar
-#+begin_src elisp
+*** Pulsing
+**** KILL Pulsar
+#+begin_src elisp :tangle no
 ;; Check the default value of `pulsar-pulse-functions'.  That is where
 ;; you add more commands that should cause a pulse after they are
 ;; invoked
@@ -648,17 +870,32 @@ CLOCK: [2022-08-22 Mon 21:01]
 ;;   (define-key map (kbd "C-c h h") #'pulsar-highlight-line))
 #+end_src
 #+end_src
-*** TODO delete?
-#+begin_src elisp :tangle no
-;; from https://karl-voit.at/2021/04/10/GLT21-emacs-org-features/
-
-
-;; (defun my/pulse-current-line (&rest _)
-;;   "Pulse the current line."
-;;   (pulse-momentary-highlight-one-line (point)))
-
+** Misc
+*** Auto chmod +x
+Automatically set a script's execution permissions (TODO: good idea?)
+#+begin_src elisp
+(add-hook 'after-save-hook
+          'executable-make-buffer-file-executable-if-script-p)
 #+end_src
-* Visuals
+*** Packages
+#+begin_src elisp :tangle packages.el
+(package! command-log-mode
+  :recipe (:host github :repo "lewang/command-log-mode"))
+
+(package! aggressive-indent)
+(package! speed-type)
+
+;; (package! slime
+;;   :recipe (:host github :repo "slime/slime"))
+;; (package! tree-sitter
+;;   :recipe (:host github :repo "tree-sitter/tree-sitter"))
+;; (package! tree-sitter-langs)
+;; (package! pulsar)
+;; (package! emacsql)
+;; (package! emacsql-sqlite)
+;; (package! magit-section)
+#+end_src
+* Aesthetics
 ** Theme
 #+begin_src elisp
 ;; Doom exposes five (optional) variables for controlling fonts in Doom. Here
@@ -714,7 +951,12 @@ CLOCK: [2022-08-22 Mon 21:01]
       evil-replace-state-cursor  `(bar    ,normal-cursor-color)
       evil-operator-state-cursor `(evil-half-cursor ,operator-cursor-color))
 #+end_src
-** Others
+** Rainbow Mode
+Show colour of hex literals
+#+begin_src elisp :tangle packages.el
+(package! rainbow-mode)
+#+end_src
+-
 #+begin_src elisp
 (use-package! rainbow-mode
   :hook
@@ -740,49 +982,33 @@ CLOCK: [2022-08-22 Mon 21:01]
              ))
 #+end_src
 * Functions
+** Lists
 #+begin_src elisp
-(defun my/rename-current-buffer-file ()
-  "Renames current buffer and file it is visiting."
-  (interactive)
-  (let* ((name (buffer-name))
-         (filename (buffer-file-name))
-         (basename (file-name-nondirectory filename)))
-    (if (not (and filename (file-exists-p filename)))
-        (error "Buffer '%s' is not visiting a file!" name)
-      (let ((new-name (read-file-name "New name: " (file-name-directory filename) basename nil basename)))
-        (if (get-buffer new-name)
-            (error "A buffer named '%s' already exists!" new-name)
-          (rename-file filename new-name 1)
-          (rename-buffer new-name)
-          (set-visited-file-name new-name)
-          (set-buffer-modified-p nil)
-          (message "File '%s' successfully renamed to '%s'"
-                   name (file-name-nondirectory new-name)))))))
-
-;; based on http://emacsredux.com/blog/2013/04/03/delete-file-and-buffer/
-(defun my/delete-file-and-buffer ()
-  "Kill the current buffer and deletes the file it is visiting."
-  (interactive)
-  (let ((filename (buffer-file-name)))
-    (if filename
-        (if (y-or-n-p (concat "Do you really want to delete file " filename " ?"))
-            (progn
-              (delete-file filename)
-              (message "Deleted file %s." filename)
-              (kill-buffer)))
-      (message "Not a file visiting buffer!"))))
+(defun add-list-to-list (dst src)
+  "Similar to `add-to-list', but accepts a list as 2nd argument"
+  (set dst
+       (append (eval dst) src)))
 #+end_src
+** Files & Buffers
 * TODO Projects
 #+begin_src elisp
-(projectile-add-known-project "~/dev/lang/carp")
-(projectile-add-known-project "~/dev/lang/v")
-(projectile-add-known-project "~/dev/lang/mal")
+(use-package! projectile
+  :config
+  (setq projectile-project-search-path '("~/dev"))
+  (add-list-to-list 'projectile-project-root-files '("CMakeLists.txt"
+                                                     "build.sh"
+                                                     ;; "run.sh"
+                                                     )))
+
+;; (projectile-add-known-project "")
+;; (projectile-add-known-project "~/dev/lang/v")
+;; (projectile-add-known-project "~/dev/lang/mal")
 #+end_src
 * TODO Key Bindings
 ** TODO Emacs
 #+begin_src elisp
 (defun my/open-private-config ()
-  (find-file  "~/.config/doom/config.org"))
+  (find-file "~/.config/doom/config.org"))
 
 ;; FIXME don't work
 (map! :map doom-leader-file-map
@@ -791,15 +1017,18 @@ CLOCK: [2022-08-22 Mon 21:01]
 (map! :map doom-leader-map
       :nvm "f p" 'my/open-private-config)
 
-(map! :nvmi "M-q" 'counsel-M-x)
+(map! :nvmi "M-j" 'counsel-M-x)
 
 (map! :map emacs-lisp-mode-map
       "C-c C-c" 'eros-eval-defun)
+
+;; (map! :map doom-leader-buffer-map "o" 'save-buffer)
+(map! :map doom-leader-buffer-map
+      "t" 'next-buffer
+      "n" 'previous-buffer
+      )
 #+end_src
-
-#+RESULTS:
-
-** Big Picture
+** TODO Big Picture
 #+begin_src elisp :tangle no
 ;; TODO
 #+end_src
@@ -1136,16 +1365,9 @@ Read proper list of project paths from somewhere.
   (map! [remap projectile-compile-project] nil))
 #+end_src
 
-** Notes
+** TODO Notes
 #+begin_src elisp
 #+end_src
-* TODO More
+* TODO Future Plans
 ** Multiple Cursors
 ** Direct navigation to files
-* Auto chmod +x
-Automatically set a script's execution permissions (TODO: good idea?)
-#+begin_src elisp
-(add-hook 'after-save-hook
-          'executable-make-buffer-file-executable-if-script-p)
-#+end_src
-
