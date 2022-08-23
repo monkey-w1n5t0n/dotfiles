@@ -729,7 +729,222 @@ mode "$mode_gaps_outer" {
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;(unpin! t)
 #+end_src
+* Org
+** Org Mode
+#+begin_src elisp
+;; If you use `org' and don't want your org files in the default location below,
+;; change `org-directory'. It must be set before org loads!
+(setq my/notes-directory "~/notes")
 
+(use-package! org
+  :init
+  (setq
+   ;; DIRECTORIES
+   org-directory (concat my/notes-directory "/org")
+   ;; Add logs into :LOGBOOK: drawer instead of under the headline
+   org-log-into-drawer t
+   ;; ARCHIVING
+   org-archive-directory (concat org-directory "/archive")
+   org-archive-location (concat org-archive-directory "/%s_archive.org::")
+   )
+  :config
+  )
+#+end_src
+** Org Roam
+*** Functions
+#+begin_src elisp
+;; From https://systemcrafters.net/build-a-second-brain-in-emacs/5-org-roam-hacks/
+(defun org-roam-node-insert-immediate (arg &rest args)
+  (interactive "P")
+  (let ((args (cons arg args))
+        (org-roam-capture-templates (list (append (car org-roam-capture-templates)
+                                                  '(:immediate-finish t)))))
+    (apply #'org-roam-node-insert args)
+    ;;(evil-forward-word-end) FIXME: doesn't work
+    ))
+#+end_src
+*** Config
+#+begin_src elisp
+(use-package! org-roam
+  :init
+  (setq org-roam-v2-ack t)
+  :custom
+  (org-roam-directory
+   (concat my/notes-directory "/org-roam"))
+  (org-roam-db-location
+   (concat org-roam-directory "/org-roam.db"))
+  ;; (org-roam-completion-everywhere t)
+  ;; TODO not exactly sure what this does...
+  (org-roam-mode-section-functions
+   (list #'org-roam-backlinks-section
+         #'org-roam-reflinks-section
+         #'org-roam-unlinked-references-section
+         ))
+  ;; :bind (("C-c n l" . org-roam-buffer-toggle)
+  ;;        ("C-c n f" . org-roam-node-find)
+  ;;        ("C-c n i" . org-roam-node-insert)
+  ;;        :map org-mode-map
+  ;;        ("C-M-i" . completion-at-point)
+  ;;        :map org-roam-dailies-map
+  ;;        ("Y" . org-roam-dailies-capture-yesterday)
+  ;;        ("T" . org-roam-dailies-capture-tomorrow))
+  ;; :bind-keymap
+  ;; ("C-c n d" . org-roam-dailies-map)
+  :config
+  ;; TODO are all these necessary?
+  (require 'org-roam-dailies) ;; Ensure the keymap is available
+  (require 'org-roam-protocol)
+  (org-roam-db-autosync-mode)
+  )
+
+(use-package! websocket
+    :after org-roam)
+#+end_src
+*** Timestamps
+#+begin_src elisp
+(use-package! org-roam-timestamps
+  :after org-roam
+  :config (org-roam-timestamps-mode)
+  :custom
+  (org-roam-timestapms-remember-timestapms t)
+  (org-roam-timestapms-minimum-gap (* 60 5))
+  )
+#+end_src
+*** UI
+#+begin_src elisp
+(use-package! org-roam-ui
+    :after org-roam
+;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
+;;         a hookable mode anymore, you're advised to pick something yourself
+;;         if you don't care about startup time, use
+ ;; :hook (after-init . org-roam-ui-mode)
+ :config
+    (setq org-roam-ui-sync-theme t
+          org-roam-ui-follow t
+          org-roam-ui-update-on-save t
+          org-roam-ui-open-on-start t))
+
+#+end_src
+*** Transclusion
+#+begin_src elisp
+(use-package! org-transclusion
+              :after org
+              :init
+              (map!
+               :map global-map
+               "<f12>"   #'org-transclusion-add
+               "C-<f12>" #'org-transclusion-remove
+               :leader
+               :prefix "n"
+               :desc "Org Transclusion Mode" "t" #'org-transclusion-mode))
+#+end_src
+*** TODO Key Bindings
+#+begin_src elisp
+(map!
+ ;; :map org-mode-map
+ "C-M-h" 'completion-at-point
+ "C-c n i" 'org-roam-node-insert
+ "C-c n u" 'org-roam-node-insert-immediate)
+
+;; For transclusion too
+#+end_src
+*** TODO Dendroam
+#+begin_src elisp
+  ;; DENDROAM stuff
+  ;; (org-roam-node-display-template "${hierarchy}:${title}")
+  ;; (org-roam-capture-templates
+  ;;  '(("d" "default" plain
+  ;;     "%?"
+  ;;     :if-new (file+head "${slug}.org"
+  ;;                        "#+title: ${hierarchy-title}\n")
+  ;;     :immediate-finish t
+  ;;     :unnarrowed t)))
+  ;; (org-roam-dailies-capture-templates
+  ;;     '(("d" "default" entry
+  ;;        "* %?"
+  ;;        :if-new (file+head "journal.daily.%<%Y.%m.%d>.org"
+  ;;                           "#+title: %<%Y-%m-%d>\n"))))
+  ;; /DENDROAM stuff
+#+end_src
+** Appearance
+*** Modern
+#+begin_src elisp
+(use-package! org-modern
+  :config
+  (global-org-modern-mode))
+
+;; Choose some fonts
+;; (set-face-attribute 'default nil :family "Iosevka")
+;; (set-face-attribute 'variable-pitch nil :family "Iosevka Aile")
+;; (set-face-attribute 'org-modern-symbol nil :family "Iosevka")
+
+;; Add frame borders and window dividers
+;; (modify-all-frames-parameters
+;;  '((right-divider-width . 03)
+;;    (internal-border-width . 0)))
+
+(dolist (face '(window-divider
+                window-divider-first-pixel
+                window-divider-last-pixel))
+  (face-spec-reset-face face)
+  (set-face-foreground face (face-attribute 'default :background)))
+
+(set-face-background 'fringe (face-attribute 'default :background))
+
+(setq
+ ;; Edit settings
+ org-auto-align-tags nil
+ org-tags-column 0
+ org-catch-invisible-edits 'show-and-error
+ org-special-ctrl-a/e t
+ org-insert-heading-respect-content t
+
+ ;; Org styling, hide markup etc.
+ org-hide-emphasis-markers t
+ org-pretty-entities t
+ org-ellipsis "…"
+
+ ;; Agenda styling
+ org-agenda-tags-column 0
+ org-agenda-block-separator ?─
+ org-agenda-time-grid
+ '((daily today require-timed)
+   (800 1000 1200 1400 1600 1800 2000)
+   " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
+ org-agenda-current-time-string
+ "⭠ now ─────────────────────────────────────────────────")
+#+end_src
+*** Bullets
+#+begin_src elisp :tangle packages.el
+(package! org-bullets)
+#+end_src
+** PDF
+*** Org Noter
+#+begin_src elisp
+(use-package! org-noter
+  :after (:any org pdf-view)
+  :config
+  (setq
+   ;; The WM can handle splits
+   org-noter-notes-window-location 'other-frame;'horizontal-split;; 'other-frame
+   ;; Please stop opening frames
+   org-noter-always-create-frame nil
+   ;; I want to see the whole file
+   org-noter-hide-other nil
+   ;; Everything is relative to the main notes file
+   ;; org-noter-notes-search-path (list org_notes)
+   )
+  )
+#+end_src
+** Extras
+*** Download
+#+begin_src elisp :tangle packages.el
+(package! org-download)
+#+end_src
+*** Helm Rifle
+#+begin_src elisp :tangle packages.el
+(package! helm-org-rifle)
+#+end_src
 * Languages
 ** C & C++
 ** Lisps
@@ -898,6 +1113,8 @@ Automatically set a script's execution permissions (TODO: good idea?)
 * Keyboard
 Configs related to system-wide keyboard behaviour - not just Emacs.
 ** Twos
+A config with two keyboards. You have two hands, don't you?
+Currently using Kmonad.
 *** Left
 :PROPERTIES:
 :header-args:kbd: :tangle ~/.config/kmonad/twos_L.kbd
@@ -1001,7 +1218,11 @@ Configs related to system-wide keyboard behaviour - not just Emacs.
   _    _    _              @nrm             ralt rctl cmp
   )
 #+end_src
-* Aesthetics
+* Appearance
+** Frame
+#+begin_src 
+
+#+end_src
 ** Theme
 #+begin_src elisp
 ;; Doom exposes five (optional) variables for controlling fonts in Doom. Here
@@ -1100,7 +1321,7 @@ Show colour of hex literals
 #+begin_src elisp
 (use-package! projectile
   :config
-  (setq projectile-project-search-path '("~/dev"))
+  (setq projectile-project-search-path '("~/dev" "~/src" "~/live"))
   (add-list-to-list 'projectile-project-root-files '("CMakeLists.txt"
                                                      "build.sh"
                                                      ;; "run.sh"
