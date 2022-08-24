@@ -996,7 +996,7 @@ https://github.com/elken/doom#prettify
 (use-package! visual-fill-column
   :custom
   ;; (visual-fill-column-width 300)
-  (visual-fill-column-width 90)
+  (visual-fill-column-width 88)
   (visual-fill-column-center-text t)
   :hook (org-mode . visual-fill-column-mode))
 
@@ -1383,6 +1383,7 @@ Currently using Kmonad.
 #+end_src
 * TODO Key Bindings
 ** TODO Emacs
+*** Files & Buffers
 #+begin_src elisp
 (defun my/open-private-config ()
   (find-file "~/.config/doom/config.org"))
@@ -1401,11 +1402,21 @@ Currently using Kmonad.
 
 ;; (map! :map doom-leader-buffer-map "o" 'save-buffer)
 (map! :map doom-leader-buffer-map
-      "t" 'next-buffer
-      "n" 'previous-buffer
+      "t" 'previous-buffer
+      "n" 'next-buffer
       )
 
 (map! :g "C-o" #'save-buffer)
+#+end_src
+*** Macros
+#+begin_src elisp
+(map! :map evil-normal-state-map
+      "," 'evil-record-macro
+      "#" 'evil-execute-macro
+      "g #" '+evil:apply-macro ;; apply to selection TODO does the macro need to move to next line?
+
+    )
+
 #+end_src
 ** TODO Big Picture
 #+begin_src elisp :tangle no
