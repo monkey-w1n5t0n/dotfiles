@@ -1,0 +1,45 @@
+#!/usr/bin/bb --main
+(require '[clojure.java.shell :refer [sh with-sh-dir]]
+         '[clojure.pprint :refer [pprint]])
+
+(defn usage []
+  (println "autogit <WORK TREE> <GIT DIR> <LOG FILE>"))
+
+(def watch-dir "/home/w1n5t0n/DELETEME/test")
+
+(defn append-to-file [f s]
+  (spit f s :append true))
+
+(defn clear-file [f]
+  (spit f ""))
+
+(def log-file-path "/tmp/autogit-watcher-log.txt")
+
+(defn setup-watcher [d]
+  (sh "inotifywait"))
+
+
+(defn git-bare-repo-command [git-dir work-tree & rest]
+  (str ))
+
+(defn git-autocommit [git-dir work-tree]
+  (sh "bash" "-c" (git-bare-repo-command git-dir work-tree "add ."))
+  (sh "bash" "-c" (git-bare-repo-command git-dir work-tree "add ."))
+  )
+
+(defn start-watching [d]
+  (let [output (sh "inotifywait" "-e" "modify,create,move,delete" "-r" watch-dir)]
+    (if (= 0 (:exit output))
+      (do
+        ;; Watcher was established and something was changed!
+
+        )
+      (do
+        ;; Watcher failed to establish
+        (append-to-file log-file-path
+                        (with-out-str (pprint output)))
+        (sh "notify-send" "--wait"
+            (str "Autogit failed: " d))))))
+
+(defn -main [& args]
+  (apply println "Hello from autogit!" args))

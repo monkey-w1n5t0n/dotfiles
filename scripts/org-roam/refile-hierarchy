@@ -1,0 +1,3 @@
+#!/usr/bin/bb
+(require '[babashka.fs :as fs]
+         '[clojure.java.shell :refer [sh with-sh-dir]])
