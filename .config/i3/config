@@ -3,12 +3,12 @@
 
 # Set keyboard layout and background picture
 exec .config/keyboard/setup_keyboard.sh
-exec emacs --daemon
+exec --no-startup-id emacs --daemon
 exec --no-startup-id kmonad $HOME/.config/kmonad/test.kbd
-exec --no-startup-id $HOME/scripts/temp_autocommits.sh &>> $HOME/.local/autocommit_logs.txt
+exec --no-startup-id $HOME/scripts/autogit $HOME/.local/notes-autocommit-bare-repo $HOME/notes
 
 ## KMONAD
-exec ./scripts/restart_kmonad/twos
+exec --no-startup-id restart_kmonad/twos
 
 # exec --no-startup-id emacs --daemon
 # exec --no-startup-id /usr/lib/geoclue-2.0/demos/agent
