@@ -785,9 +785,7 @@ Start the week on Monday instead of Sunday.
   (let ((args (cons arg args))
         (org-roam-capture-templates (list (append (car org-roam-capture-templates)
                                                   '(:immediate-finish t)))))
-    (apply #'org-roam-node-insert args)
-    ;;(evil-forward-word-end) FIXME: doesn't work
-    ))
+    (apply #'org-roam-node-insert args)))
 #+end_src
 *** Config
 #+begin_src elisp
@@ -1049,12 +1047,12 @@ https://github.com/elken/doom#prettify
   :hook (org-mode . visual-fill-column-mode))
 
 
-;; (add-hook 'minibuffer-mode-hook
-;;           #'(lambda ()
-;;              ;; (setq-local visual-fill-column-center-text nil)
-;;              (visual-fill-column-mode 0)
-;;              (setq-local visual-fill-column-center-text nil)
-;;              ))
+(add-hook 'minibuffer-mode-hook
+          (lambda ()
+             ;; (setq-local visual-fill-column-center-text nil)
+             (visual-fill-column-mode 0)
+             (setq-local visual-fill-column-center-text nil)
+             ))
 
 
 ;;(setq-default fill-column 78)
@@ -1283,6 +1281,9 @@ Various settings that concern how the cursor behaves.
 #+end_src
 #+end_src
 ** Misc
+#+begin_src elisp
+(setq ivy-truncate-lines nil)
+#+end_src
 *** Auto chmod +x
 Automatically set a script's execution permissions (TODO: good idea?)
 #+begin_src elisp
@@ -1319,6 +1320,18 @@ Auto revert plain text files, which should mostly be logs and script outputs
 *** Scratch buffer default mode
 #+begin_src elisp
 (setq doom-scratch-initial-major-mode 'clojure-mode)
+#+end_src
+** Completion
+#+begin_src elisp :tangle packages.el
+(package! orderless)
+#+end_src
+-
+#+begin_src elisp
+(use-package! orderless
+  :ensure t
+  :custom
+  (completion-styles '(orderless basic))
+  (completion-category-overrides '((file (styles basic partial-completion)))))
 #+end_src
 * Keyboard
 Configs related to system-wide keyboard behaviour - not just Emacs.
@@ -1959,3 +1972,5 @@ Show colour of hex literals
 (when (file-exists-p! "local-config.el" doom-private-dir)
   (load! "local-config.el" doom-private-dir))
 #+end_src
+* Issues
+** The variable ~minibuffer-completion-table~ is so large that it hangs the whole system every time I search for a variable in a way that this may come

@@ -1,3 +1,14 @@
 #!/usr/bin/bb
-(require '[babashka.fs :as fs]
-         '[clojure.java.shell :refer [sh with-sh-dir]])
+(require '[babashka.fs :as fs :refer [home]]
+         '[clojure.java.shell :refer [sh with-sh-dir]]
+         '[luna.core :as l])
+
+(def notes-dir (fs/path (home) "notes"))
+(def org-roam-dir (fs/path notes-dir "org-roam"))
+
+(def org-files
+  (fs/glob notes-dir "**.org"))
+
+(defn potentially-refile-file! [file from to]
+  (let [contents (slurp file)]
+    (re-find contents)))

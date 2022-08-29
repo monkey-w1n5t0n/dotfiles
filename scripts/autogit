@@ -160,21 +160,21 @@
         *anything-changed? (atom false)
         *f (future
              (loop []
-               ;; (log log-file "Thread: Sleeping...")
+               (log log-file "Thread: Sleeping...")
                (Thread/sleep
                 (if @*anything-changed?
                   (how-long-to-sleep? @*last-change-time (now))
                   time-to-wait))
-               ;; (log log-file "Thread: Awake...")
+               (log log-file "Thread: Awake...")
                (when (and @*anything-changed?
                           (should-commit? @*last-change-time (now)))
                  (do
-                   ;; (log log-file "Thread: Committing...")
+                   (log log-file "Thread: Committing...")
                    (commit-and-log! git-dir work-tree log-file)
                    (reset! *anything-changed? false)))
                (recur)))]
     (loop []
-      ;; (log log-file "Starting watcher...")
+      (log log-file "Starting watcher...")
       (let [result (start-watching! work-tree)]
         (when-not (process-suceeded? result)
           ;; [Exit #2]
@@ -182,7 +182,7 @@
           (print-error-and-exit! log-file result git-dir))
         ;; If we're here, it means that watchers were set up
         ;; properly and that a change was detected
-        ;; (log log-file "Change detected!")
+        (log log-file "Change detected!")
         (reset! *anything-changed? true)
         (reset! *last-change-time (now))
         (recur)))))
