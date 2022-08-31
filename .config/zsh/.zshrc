@@ -1,9 +1,7 @@
 # source $CONFIG_HOME/path.sh
 
 # Path to your oh-my-zsh installation.
-export ZSH="$CONFIG_HOME/oh-my-zsh"
-
-export ZSHRC_TEST="heeyy"
+export ZSH="$HOME/.config/oh-my-zsh"
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
@@ -73,6 +71,7 @@ ZSH_THEME="robbyrussell"
 plugins=(git)
 
 source $ZSH/oh-my-zsh.sh
+source $HOME/.config/shell/startup.sh
 
 # User configuration
 
@@ -99,8 +98,3 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-
-# turn off bell
-xset b off
-# visual bell too
-# vbell off

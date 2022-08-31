@@ -10,7 +10,14 @@ Kenyő)]], and those who choose to spend their limited time here on Earth on Ema
 None of them know me, but they may recognise some snippets of code here and there in this document. Everyone needs a shoulder to stand on.
 * SYS
 ** Startup
-#+begin_src bash :tangle ~/.profile
+
+#+begin_src bash :tangle ~/.config/shell/startup.sh
+# Ensure XDG_CONFIG_HOME
+if [[ -z "$XDG_CONFIG_HOME" ]]
+then
+    export XDG_CONFIG_HOME="$HOME/.config"
+fi
+
 export CONFIG_DIR=$HOME/.config
 export CONFIG_SHELL_DIR=$CONFIG_DIR/shell
 
@@ -26,16 +33,18 @@ function source_config() {
 
 source_config
 
-
-
 ## Annoying bell
 xset -b
-## Lang
-# V
-#export PATH=$HOME/dev/lang/v:$PATH
-##########
-source $HOME/.config/keyboard/setup_keyboard.sh
 #+end_src
+-
+  #+begin_src bash :tangle ~/.profile
+source $HOME/.config/shell/startup.sh
+
+if [[ -d "$XDG_CONFIG_HOME/zsh" ]]
+then
+    export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
+fi
+  #+end_src
 ** Environment
 *** Programs
 #+begin_src bash :tangle ~/.config/shell/env.sh
