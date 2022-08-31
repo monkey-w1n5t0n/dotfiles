@@ -2,21 +2,16 @@
 (require '[babashka.fs :as fs]
          '[clojure.java.shell :refer [sh with-sh-dir]])
 
-(def usage-str "USAGE: autogit <GIT DIR> <WORK TREE> [<LOG FILE>]")
+(def usage-str "USAGE: autogit <NAME> <GIT DIR> <WORK TREE> [<LOG FILE>]")
 (def default-log-file-name "autogit_log.txt")
 
 ;; Amount of time that needs to pass from last edit for Autogit to commit.
-(def default-time-to-wait (* 60 5 1000))
+(def default-time-to-wait (* 0.1 60 1000))
 ;; TODO read this from CLI args
 (def time-to-wait default-time-to-wait)
 
 ;;;; UTILS
-;; TODO also check if git-dir is actually a repo
-(defn valid-args? [args]
-  (and (<= 2 (count args) 3)
-       (fs/directory? (nth args 0))
-       (fs/directory? (nth args 1))))
-
+;; LOG utils
 (defn pprint-str [obj]
   (with-out-str (pprint obj)))
 
@@ -27,22 +22,9 @@
   (spit f ""))
 
 (defn get-formated-time []
-  (.format (java.text.SimpleDateFormat. "yyy-mm-dd-HH:mm:ss")
+  (.format (java.text.SimpleDateFormat. "yyyy-MM-dd HH:mm:ss")
            (new java.util.Date)))
 
-(defn seconds-between-dates [a b]
-  (->
-   (abs (/ (- (.getTime a)
-              (.getTime b))
-           1000))
-   float))
-
-(defn process-suceeded? [output]
-  (= 0 (:exit output)))
-
-(def process-failed? (complement process-suceeded?))
-
-;; LOG utils
 (defn wrap-with [s wrapper]
   (let [known-pairs {:curly  [\{ \}]
                      :square [\[ \]]
@@ -78,6 +60,25 @@
                    msg
                    "\n")]
      (append-to-file log-file line))))
+
+;; TODO also check if git-dir is actually a repo
+(defn valid-args? [args]
+  (and (<= 3 (count args) 4)
+       (fs/directory? (nth args 1))
+       (fs/directory? (nth args 2))))
+
+(defn now []
+  (new java.util.Date))
+
+(defn seconds-between-dates [a b]
+  (float (abs (- (.getTime a)
+                 (.getTime b)))))
+
+(defn process-suceeded? [output]
+  (= 0 (:exit output)))
+
+(def process-failed? (complement process-suceeded?))
+
 ;;;; /UTILS
 
 ;;;; STATE
@@ -102,15 +103,18 @@
   (sh "inotifywait" "-e" "modify,create,move,delete" "-r" d))
 
 (defn git-autocommit!
-  "Execute an autocommit "
+  "Execute an autocommit"
   [git-dir work-tree]
   (let [git (str "git --git-dir=" git-dir " --work-tree=" work-tree " ")
         add "add ."
         commit (str "commit -am 'Automatic Commit: " (get-formated-time) "'")
-        cmd-seq [(str git add)
-                 (str git commit)]]
-    (doall (for [cmd cmd-seq]
-             (sh "bash" "-c" cmd)))))
+        ;; cmd-seq [(str git add)
+        ;;          (str git commit)]
+        cmd (str (str git add) " && " (str git commit))
+        ]
+    ;; (doall (for [cmd cmd-seq]
+    ;;          (sh "bash" "-c" cmd)))
+    (sh "bash" "-c" cmd)))
 
 (defn print-error-and-exit! [log-file result git-dir]
   (log :error
@@ -120,35 +124,24 @@
   (sh "notify-send" "--wait" (str "Autogit failed: " git-dir))
   (System/exit 1))
 
-(defn now []
-  (new java.util.Date))
 
-(defn should-commit? [last-change-time current-time]
-  (-> (seconds-between-dates last-change-time current-time)
+(defn should-commit? [last-change-time]
+  (-> (seconds-between-dates last-change-time (now))
       (>= time-to-wait)))
 
-(defn how-long-to-sleep? [last-change-time current-time]
-  (->> (seconds-between-dates last-change-time current-time)
-       (- time-to-wait)
-       (* 1000)))
+(defn how-long-to-sleep? [last-change-time]
+  (->> (seconds-between-dates last-change-time (now))
+       (- time-to-wait)))
 
 (defn cheeky-extra-log-file [log-file]
   (clojure.string/replace log-file #"([^\/]*)(\..*)" "$1_extra$2"))
 
 ;; TODO: DRY
-(defn log-git-result! [results log-file]
-  (-> log-file cheeky-extra-log-file (log (pprint-str results)))
-  (if (every? process-suceeded? results)
-    (log :info log-file
-         (str "Commit successful:\n"
-              "git add: " (:out (nth results 0))
-              "\n"
-              "git commit: " (:out (nth results 1))))
-    (log :warning log-file
-         (str "Commit failed:"
-              "git add: " (:err (nth results 0))
-              "\n"
-              "git commit: " (:err (nth results 1))))))
+(defn log-git-result! [result log-file]
+  (let [[out tag msg] (if (process-suceeded? result)
+                        [:out :info "Commit successful:\n"]
+                        [:err :warn "Commit failed:\n"])]
+    (log tag log-file (str msg (out result)))))
 
 (defn commit-and-log! [git-dir work-tree log-file]
   (-> (git-autocommit! git-dir work-tree)
@@ -157,42 +150,33 @@
 ;; TODO: surely there's a more functional way to do this
 (defn main-loop [git-dir work-tree log-file]
   (let [*last-change-time (atom (now))
-        *anything-changed? (atom false)
-        *f (future
-             (loop []
-               (log log-file "Thread: Sleeping...")
-               (Thread/sleep
-                (if @*anything-changed?
-                  (how-long-to-sleep? @*last-change-time (now))
-                  time-to-wait))
-               (log log-file "Thread: Awake...")
-               (when (and @*anything-changed?
-                          (should-commit? @*last-change-time (now)))
-                 (do
-                   (log log-file "Thread: Committing...")
-                   (commit-and-log! git-dir work-tree log-file)
-                   (reset! *anything-changed? false)))
-               (recur)))]
+        *new-changes? (atom false)
+        *watcher (future
+                   (loop []
+                     (let [result (start-watching! work-tree)]
+                       (when-not (process-suceeded? result)
+                         (print-error-and-exit! log-file result git-dir))
+                       (log log-file "Change detected!")
+                       (reset! *new-changes? true)
+                       (reset! *last-change-time (now))
+                       (recur))))]
     (loop []
-      (log log-file "Starting watcher...")
-      (let [result (start-watching! work-tree)]
-        (when-not (process-suceeded? result)
-          ;; [Exit #2]
-          ;; If we're here, `inotifywait` failed to set up watchers :(
-          (print-error-and-exit! log-file result git-dir))
-        ;; If we're here, it means that watchers were set up
-        ;; properly and that a change was detected
-        (log log-file "Change detected!")
-        (reset! *anything-changed? true)
-        (reset! *last-change-time (now))
-        (recur)))))
+      (when (and @*new-changes?
+                 (should-commit? @*last-change-time))
+        (commit-and-log! git-dir work-tree log-file)
+        (reset! *new-changes? false))
+      (Thread/sleep (if @*new-changes?
+                      (how-long-to-sleep? @*last-change-time)
+                      time-to-wait))
+      (recur))))
 
+;; TODO use name somehow?
 (defn -main [& args]
   (let [args (first args)]
     (when-not (valid-args? args)
       ;; [Exit #1]
       (print-usage-and-exit!))
-    (let [[git-dir work-tree log-file] args
+    (let [[name git-dir work-tree log-file] args
           log-file (or log-file
                        (str git-dir "/" default-log-file-name))
           log-start-header (str "============== Starting Autogit...")]

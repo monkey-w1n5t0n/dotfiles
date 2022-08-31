@@ -1,12 +1,7 @@
-.config/dotfiles
-.dotfiles
+.local/*
 samples/*
 library/*
-src/*
 dev/*
-research/*
 notes/*
-lc/*
-live/*
 Downloads/*
 downloads/*

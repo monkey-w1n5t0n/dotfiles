@@ -104,9 +104,3 @@ source $ZSH/oh-my-zsh.sh
 xset b off
 # visual bell too
 # vbell off
-
-
-alias notes="/usr/bin/git --git-dir=$HOME/.local/notes-bare-repo --work-tree=$HOME/notes"
-alias notes_ac="/usr/bin/git --git-dir=$HOME/.local/notes-autocommit-bare-repo --work-tree=$HOME/notes"
-
-export PATH=$HOME/.emacs.d/bin:$PATH
