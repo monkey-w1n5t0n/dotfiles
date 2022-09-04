@@ -71,7 +71,15 @@ ZSH_THEME="robbyrussell"
 plugins=(git)
 
 source $ZSH/oh-my-zsh.sh
-source $HOME/.config/shell/startup.sh
+source $HOME/.config/shell/init.sh
+
+source $HOME/.config/zsh/manjaro-config.zsh
+
+#Use manjaro zsh prompt
+# TODO delete if slow startup gets annoying
+if [[ -e /usr/share/zsh/manjaro-zsh-prompt ]]; then
+  source /usr/share/zsh/manjaro-zsh-prompt
+fi
 
 # User configuration
 

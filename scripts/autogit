@@ -2,11 +2,13 @@
 (require '[babashka.fs :as fs]
          '[clojure.java.shell :refer [sh with-sh-dir]])
 
+(import '(java.util.concurrent Executors TimeUnit))
+
 (def usage-str "USAGE: autogit <NAME> <GIT DIR> <WORK TREE> [<LOG FILE>]")
 (def default-log-file-name "autogit_log.txt")
 
-;; Amount of time that needs to pass from last edit for Autogit to commit.
-(def default-time-to-wait (* 0.1 60 1000))
+;; Amount of time that needs to pass from last edit for Autogit to commit
+(def default-time-to-wait (* 5 60 1000))
 ;; TODO read this from CLI args
 (def time-to-wait default-time-to-wait)
 
@@ -169,6 +171,24 @@
                       (how-long-to-sleep? @*last-change-time)
                       time-to-wait))
       (recur))))
+
+
+;;;;; TODO Using scheduled executors
+;; (defn main-loop [git-dir work-tree log-file]
+;;   (let [*scheduler (atom
+;;                     (Executors/newSingleThreadScheduledExecutor))
+;;         *unsaved-changes? (atom false)]
+;;     (loop [last-change (now)]
+;;       (let [result (start-watching! work-tree)]
+;;         (when-not (process-suceeded? result)
+;;           (print-error-and-exit! log-file result git-dir))
+;;         (log log-file "Change detected!")
+;;         (reset! *new-changes? true)
+;;         (reset! *last-change-time (now))
+;;         (recur))
+;;       (recur (now) true))))
+
+
 
 ;; TODO use name somehow?
 (defn -main [& args]
