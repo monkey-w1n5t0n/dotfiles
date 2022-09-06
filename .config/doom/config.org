@@ -1301,22 +1301,32 @@ https://github.com/elken/doom#prettify
 * Emacs
 Emacs-specific and (more or less) global settings.
 ** Appearance
-*** Buffers
-#+begin_src elisp
+*** TODO Buffers
+Fix this nonsense
+#+begin_src elisp :tangle no
 ;; Not sure if I'll keep this, let's see
 (display-line-numbers-mode 0)
 (global-hl-line-mode -1)
 ;;Highlight visual lines instead of logical ones
-;; (defun highlight-visual-line ()
-;;   (save-excursion
-;;     (let* ((left (progn (beginning-of-visual-line) (point)))
-;;            (line-length (- left (progn (end-of-visual-line)
-;;                                        (point))))
-;;            ;; (left a)
-;;            (right (+ left line-length)))
-;;       (cons left right))))
+(defun highlight-visual-line ()
+  (save-excursion
+    (let* ((left (progn (beginning-of-visual-line) (point)))
+           (line-length (- left (progn (end-of-visual-line)
+                                       (point))))
+           ;; (left a)
+           (right (+ left line-length)))
+      (cons left right))))
 
-;; (setq hl-line-range-function 'highlight-visual-line) ;
+(setq hl-line-range-function 'highlight-visual-line) ;
+#+end_src
+.
+#+begin_src elisp :tangle no
+(defun my-hl-line-range-function ()
+  (cons
+    (line-end-position)
+    (line-beginning-position 2)))
+
+(setq hl-line-range-function #'my-hl-line-range-function)
 #+end_src
 *** Frame
 #+begin_src
@@ -2122,11 +2132,12 @@ Read proper list of project paths from somewhere.
 #+begin_src elisp
 (use-package! projectile
   :config
-  (setq projectile-project-search-path '("~/dev" "~/src" "~/live"))
+  (setq projectile-project-search-path '("~/dev" "~/src" "~/live" "~/scripts"))
   (add-list-to-list 'projectile-project-root-files '("CMakeLists.txt"
                                                      "build.sh"
                                                      ;; "run.sh"
-                                                     )))
+                                                     ))
+  (add-list-to-list 'projectile-globally-ignored-directories '("^targets?$")))
 
 ;; (projectile-add-known-project "")
 ;; (projectile-add-known-project "~/dev/lang/v")
