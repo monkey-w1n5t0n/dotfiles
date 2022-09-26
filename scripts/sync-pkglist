@@ -1,0 +1,18 @@
+#!/usr/bin/env bb
+(require '[babashka.fs :as fs])
+
+(def d (fs/path
+        (System/getenv "CONFIG_DIR")
+        "sys"))
+
+(fs/create-dirs d)
+
+(->>
+ (shell/sh "pacman" "-Qqen")
+ :out
+ (spit (.toString (fs/path d "pkglist-native.txt"))))
+
+(->>
+ (shell/sh "pacman" "-Qqem")
+ :out
+ (spit (.toString (fs/path d "pkglist-foreign.txt"))))

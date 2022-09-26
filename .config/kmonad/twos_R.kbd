@@ -30,10 +30,10 @@
   )
 
 (deflayer default
-  grv  6    7    8    9    0    _    _    _    _    _    -    =    bspc
+  grv  6    7    8    9    0    -    =    _    _    _    -    =    bspc
   bspc y    u    i    o    p    [    ]    _    o    p    [    ]    \
-  ret  h    j    k    l    ;    '    \\  _    l    ;    '    ret
-  @nav n    m    ,    .    /    _    _    _    _    _    rsft
+  ret  h    j    k    l    ;    '    \\   _    l    ;    '    ret
+  @nav n    m    ,    .    /    rsft rsft _    _    _    rsft
   lctl spc lmet           @nav-switch     ralt rctl cmp
   )
 

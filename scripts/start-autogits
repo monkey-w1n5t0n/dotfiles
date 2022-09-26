@@ -1,0 +1,2 @@
+#!/usr/bin/bash
+autogit autogit-notes $NOTES_AUTOGIT_DIR $NOTES_WORK_TREE &

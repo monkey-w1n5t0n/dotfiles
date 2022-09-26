@@ -33,9 +33,5 @@ IDE:
     lineWrap: false
     scrollback: 1000
   recentDocuments: !QVariantList
-# <<<<<<< HEAD
-#     - /home/w1n5t0n/live/supercollider/tidal_boot.scd
-#   startWithSession: last
-# =======
     - /home/w1n5t0n/live/startup/superdirt.scd
   startWithSession: SuperDirt

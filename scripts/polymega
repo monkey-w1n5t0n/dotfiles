@@ -1,0 +1,29 @@
+#!/usr/bin/env bb
+(ns polymega
+  (:require [clojure.edn :as edn]
+            [babashka.fs :as fs]
+            [clojure.java.io :as io]))
+
+;; TODO
+;; - read from CLI
+;; - prompt to initialise un-initialised instances
+;; - start intances
+
+(def mega-root (fs/expand-home "~/sync/MEGA"))
+
+(def state-file-name "mega-instance.edn")
+
+(defn instance-state [dir]
+  (let [state-file (fs/path dir state-file-name)]
+    (and (fs/exists? state-file)
+         (-> state-file, .toString, slurp, edn/read-string))))
+
+(defn initialised? [instance]
+  (and (:state instance)
+       (get-in instance [:state :initialised?])))
+
+(defn instances [root]
+  (for [d (fs/list-dir (fs/expand-home root))]
+    {:name (-> d, fs/components, last, .toString)
+     :path d
+     :state (instance-state d)}))

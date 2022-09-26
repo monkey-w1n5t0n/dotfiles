@@ -1,0 +1,6 @@
+#!/usr/bin/sh
+pkill -f autogit
+start-autogits
+
+pkill -f kmonad
+kmonad-twos

@@ -1,0 +1,3 @@
+#!/usr/bin/sh
+# TODO use ENV variables
+autogit $HOME/.local/notes-autocommit-bare-repo $HOME/notes
