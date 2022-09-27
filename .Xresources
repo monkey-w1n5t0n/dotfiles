@@ -1,6 +1,6 @@
-#include "/home/w1n5t0n/sys/Xresources-themes/TomorrowNight.Xresources"
+#include "/home/w1n5t0n/.config/Xresources-themes/TomorrowNight.Xresources"
 
-Xft.dpi:       190
+Xft.dpi:       160
 Xft.antialias: true
 Xft.hinting:   true
 Xft.rgba:      rgb
