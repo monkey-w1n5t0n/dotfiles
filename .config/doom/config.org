@@ -9,6 +9,7 @@ Kenyő)]], and those who choose to spend their limited time here on Earth on Ema
 
 None of them know me, but they may recognise some snippets of code here and there in this document. Everyone needs a shoulder to stand on.
 * SYS
+System-wide scripts, mostly shell-related.
 ** System Startup
 Runs only once at login.
   #+begin_src bash :tangle ~/.profile
@@ -59,7 +60,7 @@ export FILE=/usr/bin/pcmanfm
 export DOOM_DIR="$HOME/.emacs.d"
 export DOOM_USER_DIR="$HOME/.config/doom"
 
-export DOTFILES_GIT_DIR="$HOME/.local/dotfiles"
+export DOTFILES_GIT_DIR="$HOME/.local/dotfiles-git"
 
 # NOTES
 export NOTES_DIR="$HOME/notes"
@@ -240,7 +241,7 @@ Currently using Kmonad.
   )
 #+end_src
 * i3
-Clean up some more.
+My config for the i3 window manager.
 ** Header
 #+begin_src conf :tangle no
 # i3 config file (v4)
@@ -722,6 +723,7 @@ workspace 8 output DP-1-0 eDP-1
 * Doom-specific
 ** Init
 *** Helper Text
+Here just for reference.
 #+begin_src elisp :tangle no
 ;;; init.el -*- lexical-binding: t; -*-
 
@@ -920,8 +922,14 @@ workspace 8 output DP-1-0 eDP-1
 ;; they are implemented.
 #+end_src
 ** Packages
-*** Help
+Package entries to ~packages.el~ are inlined in the appropriate section, this is just the file header (for the ~no-byte-compile~ flag) and the help blurb for reference.
+*** Header
 #+begin_src elisp :tangle packages.el
+;; -*- no-byte-compile: t; -*-
+;;; $DOOMDIR/packages.el
+#+end_src
+*** Help
+#+begin_src elisp :tangle no
 ;; -*- no-byte-compile: t; -*-
 ;;; $DOOMDIR/packages.el
 ;; To install a package with Doom you must declare them here and run 'doom sync'
@@ -974,6 +982,7 @@ workspace 8 output DP-1-0 eDP-1
 #+end_src
 * Org
 ** Paths
+Just setting up some paths. ~org-directory~ must be set before Org mode loads.
 #+begin_src elisp
 (setq my/notes-directory "~/notes")
 (setq my/org-directory (expand-file-name "org" my/notes-directory))
@@ -986,28 +995,26 @@ workspace 8 output DP-1-0 eDP-1
 #+end_src
 ** Org Mode
 #+begin_src elisp
-;; If you use `org' and don't want your org files in the default location below,
-;; change `org-directory'. It must be set before org loads!
 (use-package! org
   :init
   (setq
-   ;; DIRECTORIES
-   ;; org-directory (expand-file-name "org" my/notes-directory)
    ;; Add logs into :LOGBOOK: drawer instead of under the headline
    org-log-into-drawer t
    ;; ARCHIVING
-   org-archive-directory (expand-file-name "archive" org-directory)
-   org-archive-location (expand-file-name "/%s_archive.org::" org-archive-directory)
-  )
+   org-archive-directory
+     (expand-file-name "archive" org-directory)
+   org-archive-location
+     (expand-file-name "/%s_archive.org::" org-archive-directory)
+   )
   :custom
-   ;; CUSTOMS
+   ;; Misc customisations
    org-use-property-inheritance t
    org-startup-folded 'content
    org-startup-with-inline-images t
    org-image-actual-width 300
   )
 ;; TODO is this needed here? seems to not work above
-(setq org-image-actual-width 800)
+;; (setq org-image-actual-width 800)
 #+end_src
 ** Agenda
 Start the week on Monday instead of Sunday.
@@ -1018,6 +1025,8 @@ Start the week on Monday instead of Sunday.
 *** Functions
 #+begin_src elisp
 ;; From https://systemcrafters.net/build-a-second-brain-in-emacs/5-org-roam-hacks/
+;; Insert a link to a node, and if it doesn't
+;; exist create it without navigating to it.
 (defun org-roam-node-insert-immediate (arg &rest args)
   (interactive "P")
   (let ((args (cons arg args))
@@ -1042,6 +1051,7 @@ Start the week on Monday instead of Sunday.
          #'org-roam-reflinks-section
          #'org-roam-unlinked-references-section
          ))
+  ;; Bindings are handled in the `bindings` section below
   ;; :bind (("C-c n l" . org-roam-buffer-toggle)
   ;;        ("C-c n f" . org-roam-node-find)
   ;;        ("C-c n i" . org-roam-node-insert)
@@ -1065,6 +1075,7 @@ Start the week on Monday instead of Sunday.
              (expand-file-name org-roam-dailies-directory org-roam-directory))
 #+end_src
 *** Timestamps
+Minor mode for adding timestamps when files are created and modified.
 #+begin_src elisp :tangle packages.el
 (package! org-roam-timestamps)
 #+end_src
@@ -1078,7 +1089,7 @@ Start the week on Monday instead of Sunday.
   (org-roam-timestapms-minimum-gap (* 60 5))
   )
 #+end_src
-*** Search
+*** TODO Search
 #+begin_src elisp :tangle packages.el
 (package! org-roam-search
   :recipe (:host github
@@ -1163,6 +1174,7 @@ Start the week on Monday instead of Sunday.
 ;; For transclusion too
 #+end_src
 *** TODO Dendroam
+Dendroam is inspired by Dendron, another note taking system based on hierarchical notetaking. It aims to introduce hierarchies to Org Roam, to be used whenever appropriate, but I haven't managed to get it to work as I'd like yet.
 #+begin_src elisp
   ;; DENDROAM stuff
   ;; (org-roam-node-display-template "${hierarchy}:${title}")
@@ -1181,6 +1193,7 @@ Start the week on Monday instead of Sunday.
   ;; /DENDROAM stuff
 #+end_src
 *** Misc
+I think this is needed for Org Roam UI.
 #+begin_src elisp :tangle packages.el
 (package! websocket)
 #+end_src
@@ -1189,7 +1202,7 @@ Start the week on Monday instead of Sunday.
 (use-package! websocket
     :after org-roam)
   #+end_src
-** Capture Templates
+** TODO Capture Templates
 *** TODO Declarative Templates
 Incorporate the rest too
 https://github.com/elken/doom#prettify
@@ -1369,7 +1382,6 @@ https://github.com/elken/doom#prettify
 (package! helm-org-rifle)
 #+end_src
 * Languages
-** C & C++
 ** Lisps
 *** Clojure
 #+begin_src elisp :tangle packages.el
@@ -1415,6 +1427,7 @@ https://github.com/elken/doom#prettify
 (package! gitconfig-mode
   :recipe (:host github :repo "magit/git-modes"
            :files ("gitconfig-mode.el")))
+
 (package! gitignore-mode
   :recipe (:host github :repo "magit/git-modes"
            :files ("gitignore-mode.el")))
@@ -1429,11 +1442,12 @@ https://github.com/elken/doom#prettify
 Emacs-specific and (more or less) global settings.
 ** Appearance
 *** TODO Buffers
-Fix this nonsense
+Fix this nonsense.
 #+begin_src elisp :tangle no
 ;; Not sure if I'll keep this, let's see
 (display-line-numbers-mode 0)
 (global-hl-line-mode -1)
+
 ;;Highlight visual lines instead of logical ones
 (defun highlight-visual-line ()
   (save-excursion
@@ -1712,7 +1726,57 @@ Auto revert plain text files, which should mostly be logs and script outputs
 (package! mode-minder
   :recipe (:host github :repo "jdtsmith/mode-minder"))
 #+end_src
+* Functions
+** Lists
+#+begin_src elisp
+(defun add-list-to-list (dst src)
+  "Similar to `add-to-list', but accepts a list as 2nd argument"
+  (set dst
+       (append (eval dst) src)))
+#+end_src
+** Files & Buffers
+#+begin_src elisp
+(defun my/rename-current-buffer-file ()
+  "Renames current buffer and file it is visiting."
+  (interactive)
+  (let* ((name (buffer-name))
+         (filename (buffer-file-name))
+         (basename (file-name-nondirectory filename)))
+    (if (not (and filename (file-exists-p filename)))
+        (error "Buffer '%s' is not visiting a file!" name)
+      (let ((new-name (read-file-name "New name: " (file-name-directory filename) basename nil basename)))
+        (if (get-buffer new-name)
+            (error "A buffer named '%s' already exists!" new-name)
+          (rename-file filename new-name 1)
+          (rename-buffer new-name)
+          (set-visited-file-name new-name)
+          (set-buffer-modified-p nil)
+          (message "File '%s' successfully renamed to '%s'"
+                   name (file-name-nondirectory new-name)))))))
+
+;; based on http://emacsredux.com/blog/2013/04/03/delete-file-and-buffer/
+(defun my/delete-file-and-buffer ()
+  "Kill the current buffer and deletes the file it is visiting."
+  (interactive)
+  (let ((filename (buffer-file-name)))
+    (if filename
+        (if (y-or-n-p (concat "Do you really want to delete file " filename " ?"))
+            (progn
+              (delete-file filename)
+              (message "Deleted file %s." filename)
+              (kill-buffer)))
+      (message "Not a file visiting buffer!"))))
+#+end_src
+** Notetaking (Org & Org Roam)
+#+begin_src elisp
+(defun my/insert-org-link-item ()
+  (interactive)
+  (progn
+    (+org/insert-item-below 1)
+    (org-cliplink)))
+#+end_src
 * TODO Key Bindings
+I should probably collect all key bindings here...
 ** TODO Emacs
 *** Files & Buffers
 #+begin_src elisp
@@ -1745,9 +1809,12 @@ Auto revert plain text files, which should mostly be logs and script outputs
       "," 'evil-record-macro
       "#" 'evil-execute-macro
       "g #" '+evil:apply-macro ;; apply to selection TODO does the macro need to move to next line?
-
     )
 
+#+end_src
+*** General
+#+begin_src elisp
+(map! "M-q" 'counsel-M-x)
 #+end_src
 ** TODO Big Picture
 #+begin_src elisp :tangle no
@@ -2109,47 +2176,9 @@ Read proper list of project paths from somewhere.
 
 ** TODO Notes
 #+begin_src elisp
-#+end_src
-* Functions
-** Lists
-#+begin_src elisp
-(defun add-list-to-list (dst src)
-  "Similar to `add-to-list', but accepts a list as 2nd argument"
-  (set dst
-       (append (eval dst) src)))
-#+end_src
-** Files & Buffers
-#+begin_src elisp
-(defun my/rename-current-buffer-file ()
-  "Renames current buffer and file it is visiting."
-  (interactive)
-  (let* ((name (buffer-name))
-         (filename (buffer-file-name))
-         (basename (file-name-nondirectory filename)))
-    (if (not (and filename (file-exists-p filename)))
-        (error "Buffer '%s' is not visiting a file!" name)
-      (let ((new-name (read-file-name "New name: " (file-name-directory filename) basename nil basename)))
-        (if (get-buffer new-name)
-            (error "A buffer named '%s' already exists!" new-name)
-          (rename-file filename new-name 1)
-          (rename-buffer new-name)
-          (set-visited-file-name new-name)
-          (set-buffer-modified-p nil)
-          (message "File '%s' successfully renamed to '%s'"
-                   name (file-name-nondirectory new-name)))))))
-
-;; based on http://emacsredux.com/blog/2013/04/03/delete-file-and-buffer/
-(defun my/delete-file-and-buffer ()
-  "Kill the current buffer and deletes the file it is visiting."
-  (interactive)
-  (let ((filename (buffer-file-name)))
-    (if filename
-        (if (y-or-n-p (concat "Do you really want to delete file " filename " ?"))
-            (progn
-              (delete-file filename)
-              (message "Deleted file %s." filename)
-              (kill-buffer)))
-      (message "Not a file visiting buffer!"))))
+(map! :map org-mode-map
+      :localleader
+      "l i" #'my/insert-org-link-item)
 #+end_src
 * TODO Projects
 #+begin_src elisp
@@ -2175,6 +2204,4 @@ Read proper list of project paths from somewhere.
   (load! "local-config.el" doom-private-dir))
 #+end_src
 * Issues
-** The variable ~minibuffer-completion-table~ is so large that it hangs the whole system every time I search for a variable in a way that this may come
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+** The variable ~minibuffer-completion-table~ is so large that it hangs the whole system every time I search for a variable in a way that this may come up
