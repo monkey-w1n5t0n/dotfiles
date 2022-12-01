@@ -203,7 +203,6 @@ _comps=(
 'cmus-remote' '_cmus'
 'co' '_rcs'
 'code' '_code'
-'codium' '_codium'
 'coffee' '_coffee'
 'column' '_column'
 'comb' '_sccs'
@@ -655,6 +654,7 @@ _comps=(
 'hello' '_hello'
 'help' '_sccs'
 'hexdump' '_hexdump'
+'highlight' '_highlight'
 'hilite' '_precommand'
 'histed' '_zed'
 'history' '_fc'
@@ -1876,15 +1876,15 @@ autoload -Uz _afew _alacritty _android _archlinux-java _artisan \
             _bundle _busctl _bwrap _caffeinate _calibre \
             _cap _cargo _cask _ccache _cf \
             _checkupdates _choc _chromium _cmake _cmus \
-            _codium _coffee _composer _conan _concourse \
-            _console _coredumpctl _cppcheck _curl _dad \
-            _debuild _dget _dhcpcd _diana _docpad \
-            _drush _ecdsautil _emulator _envdir _etckeeper \
-            _exportfs _fab _fail2ban-client _ffind _flatpak \
-            _fleetctl _flutter _force _fwupdmgr _gas \
-            _ghc _gist _git-flow _git-journal _git-pulls \
-            _git-revise _git-wtf _glances _golang _google \
-            _gpgconf _gtk-launch _hello _hledger _homestead \
+            _coffee _composer _conan _concourse _console \
+            _coredumpctl _cppcheck _curl _dad _debuild \
+            _dget _dhcpcd _diana _docpad _drush \
+            _ecdsautil _emulator _envdir _etckeeper _exportfs \
+            _fab _fail2ban-client _ffind _flatpak _fleetctl \
+            _flutter _force _fwupdmgr _gas _ghc \
+            _gist _git-flow _git-journal _git-pulls _git-revise \
+            _git-wtf _glances _golang _google _gpgconf \
+            _gtk-launch _hello _highlight _hledger _homestead \
             _hostnamectl _httpie _ibus _include-what-you-use _inxi \
             _jmeter _jmeter-plugins _jonas _journalctl _jrnl \
             _kak _kernel-install _kitchen _knife _language_codes \
