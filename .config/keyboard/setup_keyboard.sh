@@ -2,9 +2,10 @@
 
 # Languages
 setxkbmap 'us(dvorak), gr(simple)' \
-  -option grp:alt_shift_toggle \
+  -option grp:alt_shift_toggle
 
-#setxkbmap -device 26 -layout 'us,gr' -variant 'dvorak,simple' -option grp:alt_shift_toggle
+setxkbmap -device 21 -layout 'us,gr' \
+  -option grp:alt_shift_toggle
 
 # Misc keyboard stuff
 

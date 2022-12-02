@@ -1,9 +1,44 @@
-#!/bin/sh
+#!/usr/bin/bb
+(require '[babashka.fs :as fs]
+         '[clojure.java.shell :refer [sh with-sh-dir]])
 
-# Set keyboard languages
-setxkbmap -model pc105 -layout us,gr -variant 'dvorak,simple' -option grp:alt_shift_toggle
+(def kyria-name "splitkb Kyria rev2")
 
-# Swap caps and esc
-#xmodmap -e "keycode 66 = Escape"
-#xmodmap -e "keycode 9 = Caps_Lock"
+;; TODO read from input?
+(def keyboard-name kyria-name)
 
+(defn make-regex [keyboard-name]
+  (re-pattern (str (str/replace keyboard-name #"\s" "\\\\s")
+                    "\\s+id=(\\d+)")))
+
+(defn get-keyboard-id [keyboard-name]
+  (let [command ["xinput" "-list"]
+        regex (make-regex keyboard-name)
+        output (:out (apply sh command))]
+    (->> output
+         (re-find regex)
+         second
+         Integer/parseInt)))                    ;
+
+(defn set-keyboard-config [keyboard-name]
+  (sh "setxkbmap"
+      "-device"
+      (str (get-keyboard-id keyboard-name))
+      "-layout"
+      "'us,gr'"
+      "-option"
+      "grp:alt_shift_toggle")
+  (sh "xset" "r" "rate" "220" "35"))
+
+(let [output (set-keyboard-config kyria-name)]
+  (if (= 0  (:exit output))
+    "Keyboard configured successfuly."
+    (str "Error: " output)))
+
+
+;; # Set keyboard languages
+;; setxkbmap -model pc105 -layout us,gr -variant 'dvorak,simple' -option grp:alt_shift_toggle
+
+;; # Swap caps and esc
+;; #xmodmap -e "keycode 66 = Escape"
+;; #xmodmap -e "keycode 9 = Caps_Lock"

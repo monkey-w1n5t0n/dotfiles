@@ -23,7 +23,7 @@
       <PARAM id="mainreverbmodel" value="1.0"/>
       <PARAM id="mainreverbpredelay" value="20.0"/>
       <PARAM id="mainreverbsize" value="0.1500000059604645"/>
-      <PARAM id="mastinmute" value="0.0"/>
+      <PARAM id="mastinmute" value="1.0"/>
       <PARAM id="mastmonsolo" value="0.0"/>
       <PARAM id="mastrecvmute" value="0.0"/>
       <PARAM id="mastsendmute" value="0.0"/>
@@ -41,6 +41,18 @@
       <PARAM id="syncMetHost" value="0.0"/>
       <PARAM id="wet" value="0.8026044368743896"/>
       <RecentConnections>
+        <ServerConnectionInfo userName="w1n5t0n123123123 2" userPassword="" groupName="Mjaz"
+                              groupPassword="" serverHost="aoo.sonobus.net" serverPort="10998"
+                              timestamp="1666202341205" groupIsPublic="1"/>
+        <ServerConnectionInfo userName="w1n5t0n123123123" userPassword="" groupName="monkeys"
+                              groupPassword="taltokes" serverHost="aoo.sonobus.net" serverPort="10998"
+                              timestamp="1666202254127" groupIsPublic="0"/>
+        <ServerConnectionInfo userName="w1n5t0n 2" userPassword="" groupName="monkeys" groupPassword="taltokes"
+                              serverHost="aoo.sonobus.net" serverPort="10998" timestamp="1666202180595"
+                              groupIsPublic="0"/>
+        <ServerConnectionInfo userName="w1n5t0n" userPassword="" groupName="monkeys" groupPassword="taltokes"
+                              serverHost="aoo.sonobus.net" serverPort="10998" timestamp="1666202012624"
+                              groupIsPublic="0"/>
         <ServerConnectionInfo userName="w1n5t0n" userPassword="" groupName="monkeyjam" groupPassword=""
                               serverHost="aoo.sonobus.net" serverPort="10998" timestamp="1649791914725"
                               groupIsPublic="0"/>
@@ -52,8 +64,8 @@
                   DisableKeyShortcuts="0" PeerDisplayMode="1" lastChatWidth="250"
                   lastChatShown="0" chatFontSizeOffset="0" chatFixedWidthFont="0"
                   lastSoundboardWidth="250" lastSoundboardShown="0" linkMonDelayTimes="1"
-                  lastUsername="w1n5t0n" langOverrideCode="" lastWindowWidth="921"
-                  lastWindowHeight="1030" autoDropRateThreshNew="0.5"/>
+                  lastUsername="w1n5t0n123123123 2" langOverrideCode="" lastWindowWidth="1080"
+                  lastWindowHeight="1920" autoDropRateThreshNew="0.5"/>
       <InputChannelGroups numChanGroups="1">
         <ChannelGroup gain="1.0" chanstart="0" numchan="2" span1="-1.0" span2="1.0"
                       monreverbsend="0.0" inreverbsend="0.0" monitorlev="1.0" mondeststart="0"
@@ -79,8 +91,8 @@
   </VALUE>
   <VALUE name="audioSetup">
     <DEVICESETUP deviceType="JACK" audioOutputDeviceName="Built-in Audio Analog Stereo"
-                 audioInputDeviceName="Built-in Audio Analog Stereo Monitor" audioDeviceRate="48000.0"
-                 audioDeviceBufferSize="2048"/>
+                 audioInputDeviceName="Bitwig Studio" audioDeviceRate="48000.0"
+                 audioDeviceBufferSize="1024"/>
   </VALUE>
   <VALUE name="shouldOverrideSampleRate" val="1"/>
   <VALUE name="shouldCheckForNewVersion" val="1"/>
@@ -89,8 +101,8 @@
     <PATHLIST/>
   </VALUE>
   <VALUE name="lastRecentsSetupFolder" val=""/>
-  <VALUE name="windowX" val="974"/>
-  <VALUE name="windowY" val="25"/>
-  <VALUE name="windowW" val="921"/>
-  <VALUE name="windowH" val="1030"/>
+  <VALUE name="windowX" val="3840"/>
+  <VALUE name="windowY" val="0"/>
+  <VALUE name="windowW" val="1080"/>
+  <VALUE name="windowH" val="1920"/>
 </PROPERTIES>
