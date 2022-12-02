@@ -1,2 +1,6 @@
 #!/usr/bin/bash
 autogit autogit-notes $NOTES_AUTOGIT_DIR $NOTES_WORK_TREE &
+
+autogit autogit-visual-playground \
+    $HOME/.local/visual-playground-autogit \
+    $HOME/src/clj/visual-playground &

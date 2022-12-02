@@ -144,7 +144,7 @@ Currently using Kmonad.
 **** Prelude
 #+begin_src kbd
 (defcfg
-  input  (device-file "/dev/input/by-path/pci-0000:00:14.0-usb-0:2.1:1.0-event-kbd")
+  input  (device-file "/dev/input/by-path/pci-0000:00:14.0-usb-0:1.4:1.0-event-kbd")
   output  (uinput-sink "kmonad-input"
                         ;; To understand the importance of the following line, see the section on
                         ;; Compose-key sequences at the near-bottom of this file.
@@ -190,7 +190,7 @@ Currently using Kmonad.
 **** Prelude
 #+begin_src kbd
 (defcfg
-  input  (device-file "/dev/input/by-path/pci-0000:00:14.0-usb-0:2.2:1.0-event-kbd")
+  input  (device-file "/dev/input/by-path/pci-0000:00:14.0-usb-0:1.1:1.0-event-kbd")
   output  (uinput-sink "kmonad-input"
                         ;; To understand the importance of the following line, see the section on
                         ;; Compose-key sequences at the near-bottom of this file.
@@ -1016,6 +1016,10 @@ Just setting up some paths. ~org-directory~ must be set before Org mode loads.
 ;; TODO is this needed here? seems to not work above
 ;; (setq org-image-actual-width 800)
 #+end_src
+** Capture
+#+begin_src elisp
+(setq org-default-notes-file (concat org-directory "/default-notes.org"))
+#+end_src
 ** Agenda
 Start the week on Monday instead of Sunday.
 #+begin_src elisp
@@ -1395,6 +1399,17 @@ https://github.com/elken/doom#prettify
   :recipe (:host github
            :repo "extemporelang/extempore-emacs-mode"))
 #+end_src
+** C-like
+*** Aduino
+#+begin_src elisp :tangle packages.el
+(package! arduino)
+#+end_src
+-
+  #+begin_src elisp
+;; (add-to-list 'load-path "~/.emacs.d/vendor/arduino-mode")
+(setq auto-mode-alist (cons '("\\.\\(pde\\|ino\\)$" . arduino-mode) auto-mode-alist))
+(autoload 'arduino-mode "arduino-mode" "Arduino editing mode." t)
+  #+end_src
 ** Python
 ** Bash
 ** Tidal
@@ -1778,7 +1793,7 @@ Auto revert plain text files, which should mostly be logs and script outputs
 * TODO Key Bindings
 I should probably collect all key bindings here...
 ** TODO Emacs
-*** Files & Buffers
+*** Files, Windows & Buffers
 #+begin_src elisp
 (defun my/open-private-config ()
   (find-file "~/.config/doom/config.org"))
@@ -1788,7 +1803,8 @@ I should probably collect all key bindings here...
       :nvm "p" 'my/open-private-config)
 
 (map! :map doom-leader-map
-      :nvm "f p" 'my/open-private-config)
+      :nvm "f p" 'my/open-private-config
+      :g "w s" #'evil-window-right)
 
 (map! :nvmi "M-j" 'counsel-M-x)
 
@@ -1801,7 +1817,10 @@ I should probably collect all key bindings here...
       "n" 'next-buffer
       )
 
-(map! :g "C-o" #'save-buffer)
+(map! (:g
+       "C-o" #'save-buffer
+       ;; "SPC-w-s" #'evil-window-right
+       ))
 #+end_src
 *** Macros
 #+begin_src elisp
