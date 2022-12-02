@@ -973,6 +973,410 @@ workspace 8 output DP-1-0 eDP-1
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;(unpin! t)
 #+end_src
+<<<<<<< Updated upstream
+=======
+* Org
+** Paths
+Just setting up some paths. ~org-directory~ must be set before Org mode loads.
+#+begin_src elisp
+(setq my/notes-directory "~/notes")
+(setq my/org-directory (expand-file-name "org" my/notes-directory))
+(setq org-directory my/org-directory)
+
+(setq my/org-roam-directory
+      (expand-file-name "org-roam" my/notes-directory))
+(setq my/notes-picture-directory
+      (expand-file-name "pictures" my/org-roam-directory))
+#+end_src
+** Org Mode
+#+begin_src elisp
+(use-package! org
+  :init
+  (setq
+   ;; Add logs into :LOGBOOK: drawer instead of under the headline
+   org-log-into-drawer t
+   ;; ARCHIVING
+   org-archive-directory
+     (expand-file-name "archive" org-directory)
+   org-archive-location
+     (expand-file-name "/%s_archive.org::" org-archive-directory)
+   )
+  :custom
+   ;; Misc customisations
+   org-use-property-inheritance t
+   org-startup-folded 'content
+   org-startup-with-inline-images t
+   org-image-actual-width 300
+  )
+;; TODO is this needed here? seems to not work above
+;; (setq org-image-actual-width 800)
+#+end_src
+** Agenda
+Start the week on Monday instead of Sunday.
+#+begin_src elisp
+(setq calendar-week-start-day 1)
+#+end_src
+** Org Roam
+*** Functions
+#+begin_src elisp
+;; From https://systemcrafters.net/build-a-second-brain-in-emacs/5-org-roam-hacks/
+;; Insert a link to a node, and if it doesn't
+;; exist create it without navigating to it.
+(defun org-roam-node-insert-immediate (arg &rest args)
+  (interactive "P")
+  (let ((args (cons arg args))
+        (org-roam-capture-templates (list (append (car org-roam-capture-templates)
+                                                  '(:immediate-finish t)))))
+    (apply #'org-roam-node-insert args)))
+#+end_src
+*** Config
+#+begin_src elisp
+(use-package! org-roam
+  :init
+  (setq org-roam-v2-ack t)
+  :custom
+  (org-roam-directory
+   (expand-file-name "org-roam" my/notes-directory))
+  (org-roam-db-location
+   (expand-file-name "org-roam.db" org-roam-directory))
+  ;; (org-roam-completion-everywhere t)
+  ;; TODO not exactly sure what this does...
+  (org-roam-mode-section-functions
+   (list #'org-roam-backlinks-section
+         #'org-roam-reflinks-section
+         #'org-roam-unlinked-references-section
+         ))
+  ;; Bindings are handled in the `bindings` section below
+  ;; :bind (("C-c n l" . org-roam-buffer-toggle)
+  ;;        ("C-c n f" . org-roam-node-find)
+  ;;        ("C-c n i" . org-roam-node-insert)
+  ;;        :map org-mode-map
+  ;;        ("C-M-i" . completion-at-point)
+  ;;        :map org-roam-dailies-map
+  ;;        ("Y" . org-roam-dailies-capture-yesterday)
+  ;;        ("T" . org-roam-dailies-capture-tomorrow))
+  ;; :bind-keymap
+  ;; ("C-c n d" . org-roam-dailies-map)
+  :config
+  ;; TODO are all these necessary?
+  (require 'org-roam-dailies) ;; Ensure the keymap is available
+  (require 'org-roam-protocol)
+  ;;(org-roam-db-autosync-mode)
+  )
+
+
+(add-to-list 'org-agenda-files org-roam-directory)
+(add-to-list 'org-agenda-files
+             (expand-file-name org-roam-dailies-directory org-roam-directory))
+#+end_src
+*** Timestamps
+Minor mode for adding timestamps when files are created and modified.
+#+begin_src elisp :tangle packages.el
+(package! org-roam-timestamps)
+#+end_src
+-
+#+begin_src elisp
+(use-package! org-roam-timestamps
+  :after org-roam
+  :config (org-roam-timestamps-mode)
+  :custom
+  (org-roam-timestapms-remember-timestapms t)
+  (org-roam-timestapms-minimum-gap (* 60 5))
+  )
+#+end_src
+*** TODO Search
+#+begin_src elisp :tangle packages.el
+(package! org-roam-search
+  :recipe (:host github
+          :repo "natask/org-roam-search"
+          :branch "master"))
+
+(package! sexp-string
+  :recipe (:host github
+          :repo "natask/sexp-string"
+          :branch "master"))
+
+(package!  delve
+  :recipe (:host github
+           :repo "publicimageltd/delve"
+           :branch "main"
+           :files ("*.el")))
+(package!  delve-show
+  :recipe (:host github
+           :repo "natask/delve-show"
+           :branch "master"
+           :files ("*.el")))
+#+end_src
+-
+#+begin_src elisp
+(use-package org-roam-search
+  :after (org-roam)
+                                        ;:custom
+                                        ;(org-roam-search-default-tags '("stub"))
+  :bind
+  (:map global-map
+   (("C-c n f" . org-roam-search-node-find))
+   :map org-mode-map
+   (("C-c n i" . org-roam-search-node-insert))
+   :map doom-leader-note-map
+   (("r f" . org-roam-search-node-find)
+    ("C-c n i" . org-roam-search-node-insert))))
+#+end_src
+*** UI
+#+begin_src elisp :tangle packages.el
+(package! org-roam-ui)
+#+end_src
+-
+#+begin_src elisp
+(use-package! org-roam-ui
+    :after org-roam
+;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
+;;         a hookable mode anymore, you're advised to pick something yourself
+;;         if you don't care about startup time, use
+ ;; :hook (after-init . org-roam-ui-mode)
+ :config
+    (setq org-roam-ui-sync-theme t
+          org-roam-ui-follow t
+          org-roam-ui-update-on-save t
+          org-roam-ui-open-on-start t))
+
+#+end_src
+*** Transclusion
+#+begin_src elisp :tangle packages.el
+(package! org-transclusion)
+#+end_src
+-
+#+begin_src elisp
+(use-package! org-transclusion
+              :after org
+              :init
+              (map!
+               :map global-map
+               "<f12>"   #'org-transclusion-add
+               "C-<f12>" #'org-transclusion-remove
+               :leader
+               :prefix "n"
+               :desc "Org Transclusion Mode" "t" #'org-transclusion-mode))
+#+end_src
+*** TODO Key Bindings
+#+begin_src elisp
+(map!
+ ;; :map org-mode-map
+ "C-M-h" 'completion-at-point
+ "C-c n i" 'org-roam-node-insert
+ "C-c n u" 'org-roam-node-insert-immediate)
+
+;; For transclusion too
+#+end_src
+*** TODO Dendroam
+Dendroam is inspired by Dendron, another note taking system based on hierarchical notetaking. It aims to introduce hierarchies to Org Roam, to be used whenever appropriate, but I haven't managed to get it to work as I'd like yet.
+#+begin_src elisp
+  ;; DENDROAM stuff
+  ;; (org-roam-node-display-template "${hierarchy}:${title}")
+  ;; (org-roam-capture-templates
+  ;;  '(("d" "default" plain
+  ;;     "%?"
+  ;;     :if-new (file+head "${slug}.org"
+  ;;                        "#+title: ${hierarchy-title}\n")
+  ;;     :immediate-finish t
+  ;;     :unnarrowed t)))
+  ;; (org-roam-dailies-capture-templates
+  ;;     '(("d" "default" entry
+  ;;        "* %?"
+  ;;        :if-new (file+head "journal.daily.%<%Y.%m.%d>.org"
+  ;;                           "#+title: %<%Y-%m-%d>\n"))))
+  ;; /DENDROAM stuff
+#+end_src
+*** Misc
+I think this is needed for Org Roam UI.
+#+begin_src elisp :tangle packages.el
+(package! websocket)
+#+end_src
+-
+  #+begin_src elisp
+(use-package! websocket
+    :after org-roam)
+  #+end_src
+** TODO Capture Templates
+*** TODO Declarative Templates
+Incorporate the rest too
+https://github.com/elken/doom#prettify
+#+begin_src elisp :tangle packages.el
+(package! doct)
+#+end_src
+-
+  #+begin_src elisp
+(use-package! doct
+  :defer t
+  :commands (doct))
+ #+end_src
+** Appearance
+*** Modern
+#+begin_src elisp :tangle packages.el
+(package! org-modern)
+#+end_src
+-
+#+begin_src elisp
+(use-package! org-modern
+  :config
+  (global-org-modern-mode)
+  :custom
+  (org-modern-star '("◉" "◈" "○" "◇" "✳"))
+  )
+
+;; Choose some fonts
+;; (set-face-attribute 'default nil :family "Iosevka")
+;; (set-face-attribute 'variable-pitch nil :family "Iosevka Aile")
+;; (set-face-attribute 'org-modern-symbol nil :family "Iosevka")
+
+;; Add frame borders and window dividers
+;; (modify-all-frames-parameters
+;;  '((right-divider-width . 03)
+;;    (internal-border-width . 0)))
+
+;; (dolist (face '(window-divider
+;;                 window-divider-first-pixel
+;;                 window-divider-last-pixel))
+;;   (face-spec-reset-face face)
+;;   (set-face-foreground face (face-attribute 'default :background)))
+
+;; (set-face-background 'fringe (face-attribute 'default :background))
+
+(setq
+ ;; Edit settings
+ org-auto-align-tags nil
+ org-tags-column 0
+ org-catch-invisible-edits 'show-and-error
+ org-special-ctrl-a/e t
+ org-insert-heading-respect-content t
+
+ ;; Org styling, hide markup etc.
+ org-hide-emphasis-markers t
+ org-pretty-entities t
+ org-ellipsis "…"
+
+ ;; Agenda styling
+ org-agenda-tags-column 0
+ org-agenda-block-separator ?─
+ org-agenda-time-grid
+ '((daily today require-timed)
+   (800 1000 1200 1400 1600 1800 2000)
+   " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
+ org-agenda-current-time-string
+ "⭠ now ─────────────────────────────────────────────────")
+#+end_src
+*** Bullets
+##+begin_src elisp :tangle packages.el
+#+begin_src elisp :tangle no
+(package! org-bullets)
+#+end_src
+*** Ligatures
+#+begin_src elisp :tangle no
+(setq-hook! org-mode
+  prettify-symbols-alist '(("#+end_quote" . "”")
+                           ("#+END_QUOTE" . "”")
+                           ("#+begin_quote" . "“")
+                           ("#+BEGIN_QUOTE" . "“")
+                           ("#+end_src" . "«")
+                           ("#+END_SRC" . "«")
+                           ("#+begin_src" . "»")
+                           ("#+BEGIN_SRC" . "»")
+                           ("#+name:" . "»")
+                           ("#+NAME:" . "»")))
+#+end_src
+*** TODO Appear
+#+begin_src elisp :tangle packages.el
+(package! org-appear
+  :recipe (:host github :repo "awth13/org-appear"))
+#+end_src
+-
+#+begin_src elisp
+(use-package! org-appear
+  :after org
+  :hook (org-mode . org-appear-mode)
+  :custom
+  (org-appear-autoemphasis t)
+  (org-appear-autolinks t)
+  (org-appear-autosubmarkers t)
+  (org-appear-inside-latex t)
+  (org-appear-delay 2)
+  ;; (org-appear-trigger 'manual)
+  :config
+  ;; TODO this doesn't really work
+  ;; (add-hook 'org-mode-hook
+  ;;           (lambda ()
+  ;;             (add-hook 'evil-insert-state-entry-hook
+  ;;                       (lambda ()
+  ;;                         (org-appear-manual-start)
+  ;;                         (org-appear-set-delay 0))
+  ;;                       ;; nil
+  ;;                       ;; t
+  ;;                       )
+  ;;             (add-hook 'evil-insert-state-exit-hook
+  ;;                       (lambda ()
+  ;;                         (org-appear-manual-stop)
+  ;;                         (org-appear-set-delay org-appear-desired-delay)
+  ;;                         )
+  ;;                       ;; nil
+  ;;                       ;; t
+  ;;                       )))
+  )
+#+end_src
+*** Header Minimap
+#+begin_src elisp :tangle packages.el
+(package! org-ol-tree
+  :recipe (:host github :repo "Townk/org-ol-tree"))
+#+end_src
+-
+#+begin_src elisp
+(use-package! org-ol-tree
+  :after org
+  :commands org-ol-tree
+  :config
+  (setq org-ol-tree-ui-window-position 'left))
+
+(map! :map org-mode-map
+      :after org
+      :localleader
+      :desc "Outline" "O" #'org-ol-tree)
+#+end_src
+*** Zen
+#+begin_src elisp
+#+end_src
+** PDF
+*** Org Noter
+#+begin_src elisp
+(use-package! org-noter
+  :after (:any org pdf-view)
+  :config
+  (setq
+   ;; The WM can handle splits
+   org-noter-notes-window-location 'other-frame;'horizontal-split;; 'other-frame
+   ;; Please stop opening frames
+   org-noter-always-create-frame nil
+   ;; I want to see the whole file
+   org-noter-hide-other nil
+   ;; Everything is relative to the main notes file
+   ;; org-noter-notes-search-path (list org_notes)
+   )
+  )
+#+end_src
+** Extras
+*** Download
+#+begin_src elisp :tangle packages.el
+(package! org-download)
+#+end_src
+-
+#+begin_src elisp
+(use-package! org-download
+  :config
+  (setq org-download-image-dir my/notes-picture-directory))
+#+end_src
+*** Helm Rifle
+#+begin_src elisp :tangle packages.el
+(package! helm-org-rifle)
+#+end_src
+>>>>>>> Stashed changes
 * Languages
 ** C & C++
 ** Lisps
@@ -1999,8 +2403,13 @@ https://github.com/elken/doom#prettify
 ;; ;;(lookup-key (current-global-map) (kbd "Esc-g"))
 
 
+<<<<<<< Updated upstream
 ;; (load "/home/w1n5t0n/src/timelines-old/timelines-emacs/timelines-mode.el")
 ;; (setq timelines-path "/home/w1n5t0n/src/timelines-old/timelines-hs")
+=======
+;;(load "/home/w1n5t0n/src/timelines-old/timelines-emacs/timelines-mode.el")
+;;(setq timelines-path "/home/w1n5t0n/src/timelines-old/timelines-hs")
+>>>>>>> Stashed changes
 
 ;; (load "/home/w1n5t0n/dev/emute_6/timelines/timelines-emacs/timelines-mode.el")
 ;; (setq timelines-path "/home/w1n5t0n/dev/emute_6/timelines/timelines-hs")
