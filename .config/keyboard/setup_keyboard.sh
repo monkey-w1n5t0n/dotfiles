@@ -4,7 +4,7 @@
 setxkbmap 'us(dvorak), gr(simple)' \
   -option grp:alt_shift_toggle
 
-setxkbmap -device 21 -layout 'us,gr' \
+setxkbmap -device 23 -layout 'us,gr' \
   -option grp:alt_shift_toggle
 
 # Misc keyboard stuff

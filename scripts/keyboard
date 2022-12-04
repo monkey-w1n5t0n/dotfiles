@@ -15,10 +15,13 @@
   (let [command ["xinput" "-list"]
         regex (make-regex keyboard-name)
         output (:out (apply sh command))]
-    (->> output
-         (re-find regex)
-         second
-         Integer/parseInt)))                    ;
+    (let [code
+          (->> output
+               (re-find regex)
+               second
+               Integer/parseInt)]
+      (println (str "Code: " code))
+      code)))                    ;
 
 (defn set-keyboard-config [keyboard-name]
   (sh "setxkbmap"
