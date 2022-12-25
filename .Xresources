@@ -1,9 +1,11 @@
 #include "/home/w1n5t0n/.config/Xresources-themes/TomorrowNight.Xresources"
 
-Xft.dpi:       160
+Xft.dpi:       200
 Xft.antialias: true
 Xft.hinting:   true
 Xft.rgba:      rgb
 Xft.autohint:  false
 Xft.hintstyle: hintslight
 Xft.lcdfilter: lcddefault
+
+rofi.dpi: 200

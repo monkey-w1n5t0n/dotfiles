@@ -18,7 +18,9 @@
     (->> output
          (re-find regex)
          second
-         Integer/parseInt)))                    ;
+         Integer/parseInt
+	 ((fn [id] (println "ID:" id) id) )
+)))
 
 (defn set-keyboard-config [keyboard-name]
   (sh "setxkbmap"
@@ -32,7 +34,9 @@
 
 (let [output (set-keyboard-config kyria-name)]
   (if (= 0  (:exit output))
-    "Keyboard configured successfuly."
+    (println
+     "Keyboard configured successfuly."
+     "Remember to disable caps2esc!")
     (str "Error: " output)))
 
 

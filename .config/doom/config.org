@@ -258,6 +258,8 @@ exec --no-startup-id ~/src/scripts/restart_kmonad/twos
 
 # Redshift
 exec --no-startup-id redshift-gtk
+
+exec --no-startup-id xrandr --dpi 300 --output eDP-1
 #+end_src
 ** Aesthetics
 *** Colours
@@ -776,7 +778,7 @@ Here just for reference.
         fold                                 ; (nigh) universal code folding
         (format +onsave)                     ; automated prettiness
         ;;god               ; run Emacs commands without modifier keys
-        lispy                           ; vim for lisp, for people who don't like vim
+        ;;lispy                           ; vim for lisp, for people who don't like vim
         multiple-cursors                ; editing in many places at once
         ;; objed             ; text object editing for the innocent
         ;;parinfer            ; turn lisp into python, sort of
@@ -1402,7 +1404,7 @@ https://github.com/elken/doom#prettify
 ** C-like
 *** Aduino
 #+begin_src elisp :tangle packages.el
-(package! arduino)
+(package! arduino-mode)
 #+end_src
 -
   #+begin_src elisp
@@ -2139,8 +2141,8 @@ I should probably collect all key bindings here...
 ;; ;;(lookup-key (current-global-map) (kbd "Esc-g"))
 
 
-(load "/home/w1n5t0n/src/timelines-old/timelines-emacs/timelines-mode.el")
-(setq timelines-path "/home/w1n5t0n/src/timelines-old/timelines-hs")
+;; (load "/home/w1n5t0n/src/timelines-old/timelines-emacs/timelines-mode.el")
+;; (setq timelines-path "/home/w1n5t0n/src/timelines-old/timelines-hs")
 
 ;; (load "/home/w1n5t0n/dev/emute_6/timelines/timelines-emacs/timelines-mode.el")
 ;; (setq timelines-path "/home/w1n5t0n/dev/emute_6/timelines/timelines-hs")
