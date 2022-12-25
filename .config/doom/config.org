@@ -1917,11 +1917,12 @@ I should probably collect all key bindings here...
 #+begin_src elisp
 (use-package! use-package-chords
   :config
-  (key-chord-define evil-insert-state-map "jd" 'evil-delete-backward-word)
-  (key-chord-define evil-insert-state-map "jg" 'evil-beginning-of-visual-line)
-  (key-chord-define evil-insert-state-map "jr" 'evil-end-of-line-or-visual-line)
-  (key-chord-define evil-insert-state-map "jh" 'evil-backward-word-begin)
-  (key-chord-define evil-insert-state-map "js" (lambda ()
+  (key-chord-define evil-insert-state-map ".u" 'evil-normal-state)
+  (key-chord-define evil-insert-state-map ".d" 'evil-delete-backward-word)
+  (key-chord-define evil-insert-state-map ".g" 'evil-beginning-of-visual-line)
+  (key-chord-define evil-insert-state-map ".r" 'evil-end-of-line-or-visual-line)
+  (key-chord-define evil-insert-state-map ".h" 'evil-backward-word-begin)
+  (key-chord-define evil-insert-state-map ".s" (lambda ()
                                                  (interactive)
                                                  (progn
                                                        (evil-forward-word-end)
