@@ -1,0 +1,52 @@
+#!/usr/bin/bb
+(require '[babashka.fs :as fs]
+         )
+
+(def downloads-directory (fs/path (fs/home) "Downloads"))
+
+(def default-keymap-name "live_kyria.json")
+(def default-keymap-pattern "live_kyria*.json")
+
+(def keymap-home (fs/path (fs/home)
+                          "qmk_firmware" "keyboards" "splitkb"
+                          "kyria" "keymaps" "w1n5t0n"))
+
+(def new-keymap-file (fs/path keymap-home default-keymap-name))
+
+(defn pick-latest-keymap-file [files]
+  (if
+      (= 1 (count files)) (first files)
+      (-> (filter #(re-find #"\(\d+\)" %) files)
+          sort
+          last)))
+
+(defn latest-keymap-from-downloads []
+  (->>
+   (fs/glob downloads-directory default-keymap-pattern)
+   (map #(.toString %))
+   pick-latest-keymap-file
+   slurp
+   json/parse-string))
+
+(def transparent-code "KC_TRNS")
+
+(defn pad-layer [layer]
+  (loop [layer layer]
+   (if (= 50 (count layer))
+     layer
+     (recur (conj layer transparent-code)))))
+
+
+(defn pad-keymap-layers [keymap]
+  (update keymap "layers" #(map pad-layer %)))
+
+(defn write-new-keymap! []
+  (->> (latest-keymap-from-downloads)
+       pad-keymap-layers
+       json/generate-string
+       (spit (.toString new-keymap-file))))
+
+(defn compile-latest-keymap [keyboard-name]
+  (write-new-keymap!)
+  (shell/sh "sh" "-c" ""
+      (str "cd " (.toString keymap-home) " && qmk flash " new-keymap-file)))

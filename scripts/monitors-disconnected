@@ -1,0 +1,2 @@
+#!/usr/bin/bash
+xrandr --output HDMI-1-0 --off --output DP-1-0 --off
