@@ -1,6 +1,6 @@
 export EDITOR="emacsclient -c &"
-export BROWSER=/usr/bin/firefox
-export FILE=/usr/bin/pcmanfm
+export BROWSER="/usr/bin/firefox"
+export FILE="/usr/bin/pcmanfm"
 
 export DOOM_DIR="$HOME/.emacs.d"
 export DOOM_USER_DIR="$HOME/.config/doom"
@@ -21,8 +21,6 @@ export SRC_DIR="$HOME/src"
 export SCRIPT_DIR="$HOME/scripts"
 
 # EMACS
-export EMACS_DIR="$HOME/emacs"
-export DOOM_DIR="$CONFIG_DIR/doom"
 #PATH_prepend($EMACS_DIR/bin)
 
 # i3

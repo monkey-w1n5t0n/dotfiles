@@ -8,14 +8,10 @@ Shoutout to [[https://github.com/hlissner/][hlissner (Henrik Lissner)]], [[https
 Kenyő)]], and those who choose to spend their limited time here on Earth on Emacs forums, subreddits, and Discord servers.
 
 None of them know me, but they may recognise some snippets of code here and there in this document. Everyone needs a shoulder to stand on.
-* SYS
+* Sys
 System-wide scripts, mostly shell-related.
 ** System Startup
 Runs only once at login.
-  #+begin_src bash :tangle ~/.profile
-source $HOME/.config/shell/startup.sh
-  #+end_src
--
   #+begin_src bash :tangle ~/.config/shell/startup.sh
 export XDG_CONFIG_HOME="$HOME/.config"
 export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
@@ -27,7 +23,13 @@ $HOME/scripts/start-daemons
 
 ## Disable annoying bell
 xset -b
+
+source /usr/share/nvm/init-nvm.sh
 #+end_src
+-
+  #+begin_src bash :tangle ~/.profile
+source $HOME/.config/shell/startup.sh
+  #+end_src
 ** Shell Init
 Runs whenever a (z)shell starts.
 #+begin_src bash :tangle ~/.config/shell/init.sh
@@ -47,13 +49,14 @@ function source_config() {
 }
 
 source_config
+
 #+end_src
 ** Environment
 *** Programs
 #+begin_src bash :tangle ~/.config/shell/env.sh
 export EDITOR="emacsclient -c &"
-export BROWSER=/usr/bin/firefox
-export FILE=/usr/bin/pcmanfm
+export BROWSER="/usr/bin/firefox"
+export FILE="/usr/bin/pcmanfm"
 #+end_src
 *** Paths
 #+begin_src bash :tangle ~/.config/shell/env.sh
@@ -76,8 +79,6 @@ export SRC_DIR="$HOME/src"
 export SCRIPT_DIR="$HOME/scripts"
 
 # EMACS
-export EMACS_DIR="$HOME/emacs"
-export DOOM_DIR="$CONFIG_DIR/doom"
 #PATH_prepend($EMACS_DIR/bin)
 
 # i3
@@ -102,8 +103,8 @@ function PATH_prepend() {
 Adding stuff to the ~PATH~ variable.
 #+begin_src bash :tangle ~/.config/shell/path.sh
 export PATH="$SCRIPT_DIR":$PATH
-export PATH="$EMACS_DIR/bin":$PATH
 export PATH="$DOOM_DIR/bin":$PATH
+export PATH="$HOME/src/lib/nerd-dictation":$PATH
 #+end_src
 ** Aliases
 #+begin_src bash :tangle ~/.config/shell/alias.sh
@@ -130,6 +131,17 @@ alias cp="cp -i"                                                # Confirm before
 alias df='df -h'                                                # Human-readable sizes
 alias free='free -m'                                            # Show sizes in MB
 alias gitu='git add . && git commit && git push'
+
+# Performance related
+alias cpu-max='tuned-adm profile latency-performance'
+alias cpu-balanced='tuned-adm profile balanced'
+alias cpu-min='tuned-adm profile laptop-battery-powersave'
+#+end_src
+** TODO Monitors
+#+begin_src bash
+xrandr \
+    --output HDMI-1 --primary --mode 3440x1440 --scale 1.7x1.7 --pos 0x0 \
+    --output eDP-1 --auto --scale 1x1 --pos 0x2448
 #+end_src
 * Keyboard
 Configs related to system-wide keyboard behaviour - not just Emacs.
@@ -252,14 +264,14 @@ My config for the i3 window manager.
 exec .config/keyboard/setup_keyboard.sh
 exec --no-startup-id emacs --daemon
 exec --no-startup-id kmonad $HOME/.config/kmonad/test.kbd
-exec --no-startup-id $HOME/src/scripts/notes_autogit
+exec --no-startup-id $HOME/scripts/notes_autogit
 ## KMONAD
 exec --no-startup-id ~/src/scripts/restart_kmonad/twos
 
 # Redshift
 exec --no-startup-id redshift-gtk
 
-exec --no-startup-id xrandr --dpi 300 --output eDP-1
+exec --no-startup-id xrandr --dpi 102 --output eDP-1
 #+end_src
 ** Aesthetics
 *** Colours
@@ -268,7 +280,7 @@ set $color1  #1d1f21
 set $color2  #282a2e
 set $color3  #373b41
 set $color4  #c5c8c6
-set $color5  #969896
+set $color5  #707270
 set $color6  #cc6666
 set $color7  #de935f
 set $color8  #f0c674
@@ -292,7 +304,7 @@ set $color22 #CB4B16
 # class                   border        backgr.      text          indic.   child_border
   # client.focused          $color10-1    $color10-1   $color20      #A3BE8C
   # client.focused          $color10-1    $color4      $color20      #A3BE8C
-  client.focused          $color10-1    $color4      $color1      $color3
+  client.focused          $color10-1    $color21      $color1      $color3
   # client.focused_inactive $color3       $color3      $color1      #45494
   client.focused_inactive $color3       $color5      $color1      $color2
 
@@ -305,10 +317,10 @@ set $color22 #CB4B16
 *** Borders
 #+begin_src conf :tangle ~/.config/i3/config
 # Configure border style <normal|1pixel|pixel xx|none|pixel>
-default_border pixel 2
+default_border pixel 3
 default_floating_border normal
 
-for_window [class="^.*"] border pixel 2
+for_window [class="^.*"] border pixel 3
 
 # Hide borders
 hide_edge_borders none
@@ -413,15 +425,6 @@ set $mod Mod4
 
 # set default desktop layout (default is tiling)
 # workspace_layout tabbed <stacking|tabbed>
-
-
-
-
-
-
-
-
-
 
 # Lock screen
 bindsym $mod+9 exec --no-startup-id blurlock
@@ -536,7 +539,6 @@ bindsym $mod+Shift+d exec xdg-open /usr/share/doc/manjaro/i3_help.pdf
 bindsym $mod+Ctrl+x --release exec --no-startup-id xkill
 
 focus_follows_mouse no
-
 #+end_src
 *** Workspaces
 #+begin_src conf :tangle ~/.config/i3/config
@@ -711,11 +713,19 @@ bindsym $mod+Ctrl+Right workspace next
 # hide/unhide i3status bar
 bindsym $mod+Shift+l bar mode toggle
 #+end_src
+*** Speech Detection
+#+begin_src conf :tangle ~/.config/i3/config
+# hide/unhide i3status bar
+bindsym $mod+Shift+j exec nerd-dictation begin --vosk-model-dir=$HOME/src/lib/nerd-dictation/model &
+
+bindsym $mod+Shift+q exec nerd-dictation end
+#+end_src
+
 ** Monitors
 #+begin_src conf :tangle ~/.config/i3/config
-workspace 1 output HDMI-1-0 eDP-1
-workspace 2 output HDMI-1-0 eDP-1
-workspace 3 output HDMI-1-0 eDP-1
+workspace 1 output HDMI-1 eDP-1
+workspace 2 output HDMI-1 eDP-1
+workspace 3 output HDMI-1 eDP-1
 workspace 4 output eDP-1
 workspace 5 output eDP-1
 workspace 6 output eDP-1
@@ -778,7 +788,7 @@ Here just for reference.
         fold                                 ; (nigh) universal code folding
         (format +onsave)                     ; automated prettiness
         ;;god               ; run Emacs commands without modifier keys
-        ;;lispy                           ; vim for lisp, for people who don't like vim
+        lispy                           ; vim for lisp, for people who don't like vim
         multiple-cursors                ; editing in many places at once
         ;; objed             ; text object editing for the innocent
         ;;parinfer            ; turn lisp into python, sort of
@@ -982,6 +992,61 @@ Package entries to ~packages.el~ are inlined in the appropriate section, this is
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;(unpin! t)
 #+end_src
+* TODO Functions
+** Lists
+#+begin_src elisp
+(defun add-list-to-list (dst src)
+  "Similar to `add-to-list', but accepts a list as 2nd argument"
+  (set dst
+       (append (eval dst) src)))
+#+end_src
+** Files & Buffers
+#+begin_src elisp
+(defun load-if-exists (file)
+  (when (file-exists-p file)
+    (load-file file)))
+
+(defun my/rename-current-buffer-file ()
+  "Renames current buffer and file it is visiting."
+  (interactive)
+  (let* ((name (buffer-name))
+         (filename (buffer-file-name))
+         (basename (file-name-nondirectory filename)))
+    (if (not (and filename (file-exists-p filename)))
+        (error "Buffer '%s' is not visiting a file!" name)
+      (let ((new-name (read-file-name "New name: " (file-name-directory filename) basename nil basename)))
+        (if (get-buffer new-name)
+            (error "A buffer named '%s' already exists!" new-name)
+          (rename-file filename new-name 1)
+          (rename-buffer new-name)
+          (set-visited-file-name new-name)
+          (set-buffer-modified-p nil)
+          (message "File '%s' successfully renamed to '%s'"
+                   name (file-name-nondirectory new-name)))))))
+
+;; based on http://emacsredux.com/blog/2013/04/03/delete-file-and-buffer/
+(defun my/delete-file-and-buffer ()
+  "Kill the current buffer and deletes the file it is visiting."
+  (interactive)
+  (let ((filename (buffer-file-name)))
+    (if filename
+        (if (y-or-n-p (concat "Do you really want to delete file " filename " ?"))
+            (progn
+              (delete-file filename)
+              (message "Deleted file %s." filename)
+              (kill-buffer)))
+      (message "Not a file visiting buffer!"))))
+#+end_src
+** Notetaking (Org & Org Roam)
+*** TODO Code blocks
+*** Links
+#+begin_src elisp
+(defun my/insert-org-link-item ()
+  (interactive)
+  (progn
+    (+org/insert-item-below 1)
+    (org-cliplink)))
+#+end_src
 * Org
 ** Paths
 Just setting up some paths. ~org-directory~ must be set before Org mode loads.
@@ -1033,12 +1098,42 @@ Start the week on Monday instead of Sunday.
 ;; From https://systemcrafters.net/build-a-second-brain-in-emacs/5-org-roam-hacks/
 ;; Insert a link to a node, and if it doesn't
 ;; exist create it without navigating to it.
+
 (defun org-roam-node-insert-immediate (arg &rest args)
   (interactive "P")
   (let ((args (cons arg args))
         (org-roam-capture-templates (list (append (car org-roam-capture-templates)
                                                   '(:immediate-finish t)))))
     (apply #'org-roam-node-insert args)))
+
+
+;; (defun org-roam-node-insert-immediate (arg &rest args)
+;;   "Insert a link to an Org-roam node with the specified ARG and optional ARGS.
+;; Create the node silently if it doesn't exist."
+;;   (interactive "P")
+;;   (let* ((org-roam-capture-templates
+;;           (list (append (car org-roam-capture-templates)
+;;                         '(:immediate-finish t))))
+;;          (args (cons arg args))
+;;          (node-title (completing-read "Node title: " (org-roam--get-titles)))
+;;          (node-data (car (org-roam-db-query [:select [title file]
+;;                                              :from nodes
+;;                                              :where (like title $s1)]
+;;                                             node-title))))
+;;     (if node-data
+;;         (setq node (org-roam-node-create :file (alist-get 'file node-data)
+;;                                          :title (alist-get 'title node-data)))
+;;       (let ((org-roam-capture-templates (list (append (car org-roam-capture-templates)
+;;                                                       '(:immediate-finish t)))))
+;;         (org-roam-capture :node (org-roam-node-create :title node-title))
+;;         (setq node-data (car (org-roam-db-query [:select [title file]
+;;                                                 :from nodes
+;;                                                 :where (like title $s1)]
+;;                                                node-title)))
+;;         (setq node (org-roam-node-create :file (alist-get 'file node-data)
+;;                                          :title (alist-get 'title node-data)))))
+;;     (org-roam-node-insert arg :node node)))
+
 #+end_src
 *** Config
 #+begin_src elisp
@@ -1175,7 +1270,8 @@ Minor mode for adding timestamps when files are created and modified.
  ;; :map org-mode-map
  "C-M-h" 'completion-at-point
  "C-c n i" 'org-roam-node-insert
- "C-c n u" 'org-roam-node-insert-immediate)
+ "C-c n u" 'org-roam-node-insert-immediate
+ )
 
 ;; For transclusion too
 #+end_src
@@ -1393,6 +1489,25 @@ https://github.com/elken/doom#prettify
 #+begin_src elisp :tangle packages.el
 (package! edn)
 #+end_src
+-
+#+begin_src elisp
+;; (defvar cider-is-scad-session? nil)
+;; (defvar cider-scad-refresh-active? nil)
+
+()
+
+;; (defun cider-scad-post-eval-refresh ()
+;;   (when cider-is-scad-session?
+;;     (if (not cider-scad-refresh-active?)
+;;         (progn
+;;           ;; Activate flag
+;;           (setq cider-scad-refresh-active? t)
+;;           (cider-interactive-eval "(scad-regenerate)"))
+;;       (progn
+;;         (setq cider-scad-refresh-active? nil)))))
+
+;; (add-hook 'cider-after-eval-done-hook #'cider-scad-post-eval-refresh)
+#+end_src
 *** Emacs Lisp
 *** Common Lisp
 *** Extempore
@@ -1402,7 +1517,7 @@ https://github.com/elken/doom#prettify
            :repo "extemporelang/extempore-emacs-mode"))
 #+end_src
 ** C-like
-*** Aduino
+*** Arduino
 #+begin_src elisp :tangle packages.el
 (package! arduino-mode)
 #+end_src
@@ -1424,6 +1539,21 @@ https://github.com/elken/doom#prettify
 (use-package! tidal
   :custom
   (tidal-boot-script-path "/home/w1n5t0n/live/startup/tidal.hs"))
+
+;; REMOTE
+;; (setq *remote-tidal-ip-address* "127.0.1.1")
+;; (setq *remote-tidal-port* "8080")
+;; (setq *this-client-port* "8081")
+
+;; (setq tidal-interpreter "remote-tidal-client")
+
+;; (setq tidal-interpreter-arguments
+;;   (list *remote-tidal-ip-address*
+;;         *remote-tidal-port*
+;;         *this-client-port*))
+
+;;(load-if-exists "/home/w1n5t0n/src/emacs/osc.el")
+;; (load-if-exists "/home/w1n5t0n/src/monkey-business/remote-tidal/remote-tidal.el")
 #+end_src
 ** V
 #+begin_src elisp :tangle packages.el
@@ -1457,6 +1587,11 @@ https://github.com/elken/doom#prettify
 #+end_src
 * Emacs
 Emacs-specific and (more or less) global settings.
+** PATH
+#+begin_src elisp
+(setq exec-path (append exec-path '("~/src/monkey-business/remote-tidal")))
+
+#+end_src
 ** Appearance
 *** TODO Buffers
 Fix this nonsense.
@@ -1743,55 +1878,6 @@ Auto revert plain text files, which should mostly be logs and script outputs
 (package! mode-minder
   :recipe (:host github :repo "jdtsmith/mode-minder"))
 #+end_src
-* Functions
-** Lists
-#+begin_src elisp
-(defun add-list-to-list (dst src)
-  "Similar to `add-to-list', but accepts a list as 2nd argument"
-  (set dst
-       (append (eval dst) src)))
-#+end_src
-** Files & Buffers
-#+begin_src elisp
-(defun my/rename-current-buffer-file ()
-  "Renames current buffer and file it is visiting."
-  (interactive)
-  (let* ((name (buffer-name))
-         (filename (buffer-file-name))
-         (basename (file-name-nondirectory filename)))
-    (if (not (and filename (file-exists-p filename)))
-        (error "Buffer '%s' is not visiting a file!" name)
-      (let ((new-name (read-file-name "New name: " (file-name-directory filename) basename nil basename)))
-        (if (get-buffer new-name)
-            (error "A buffer named '%s' already exists!" new-name)
-          (rename-file filename new-name 1)
-          (rename-buffer new-name)
-          (set-visited-file-name new-name)
-          (set-buffer-modified-p nil)
-          (message "File '%s' successfully renamed to '%s'"
-                   name (file-name-nondirectory new-name)))))))
-
-;; based on http://emacsredux.com/blog/2013/04/03/delete-file-and-buffer/
-(defun my/delete-file-and-buffer ()
-  "Kill the current buffer and deletes the file it is visiting."
-  (interactive)
-  (let ((filename (buffer-file-name)))
-    (if filename
-        (if (y-or-n-p (concat "Do you really want to delete file " filename " ?"))
-            (progn
-              (delete-file filename)
-              (message "Deleted file %s." filename)
-              (kill-buffer)))
-      (message "Not a file visiting buffer!"))))
-#+end_src
-** Notetaking (Org & Org Roam)
-#+begin_src elisp
-(defun my/insert-org-link-item ()
-  (interactive)
-  (progn
-    (+org/insert-item-below 1)
-    (org-cliplink)))
-#+end_src
 * TODO Key Bindings
 I should probably collect all key bindings here...
 ** TODO Emacs
@@ -1844,10 +1930,13 @@ I should probably collect all key bindings here...
 ** Navigation
 - TODO figure out where to put ~+eval:region~, originally under ~g r~
 #+begin_src elisp
+
+
+
+
 (map!
  :map override
-
- ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  ;; LEFT - DOWN - UP - RIGHT
  :nvm "h" 'backward-char
  :nvm "t" 'evil-next-visual-line
@@ -1860,7 +1949,7 @@ I should probably collect all key bindings here...
  :nvm "S" 'evil-forward-word-end
 
 
- ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  ;; By Lines
  :nvm "D"  'evil-beginning-of-visual-line
  :nvm "gg" 'evil-beginning-of-visual-line
@@ -1871,18 +1960,18 @@ I should probably collect all key bindings here...
  :nvm "gc" 'evil-goto-first-line
  :nvm "gt" 'evil-goto-line
 
- ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  ;; Scrolls
  :nvm "G" 'evil-scroll-down
  :nvm "R" 'evil-scroll-up
 
 
- ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  ;; Go anywhere on the screen
  :nvm "a" 'evil-avy-goto-char
 
 
- ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  ;; Snipes
  ;; TODO: Distinguish between them, write some comments
  :nvm "cg" 'evil-snipe-F
@@ -1952,6 +2041,9 @@ I should probably collect all key bindings here...
  :n "r o" 'org-roam-alias-add
  :n "r O" 'org-roam-alias-add
  )
+
+(map! :map 'cider-mode-map
+      :n "SPC c ." 'cider-eval-defun-at-point)
 #+end_src
 ** Text Editing
 *** Misc
@@ -2194,6 +2286,25 @@ Read proper list of project paths from somewhere.
 ;; (map! "SPC p c" 'projectile-compile-project)
 (after! counsel
   (map! [remap projectile-compile-project] nil))
+#+end_src
+** TODO Coding
+#+begin_src elisp
+(map!
+ :map cider--debug-mode-map
+ :n "C-j c" 'evil-collection-cider-debug-continue
+ :n "C-j n" 'evil-collection-cider-debug-next
+ :n "C-j h" 'evil-collection-cider-debug-here
+ :n "C-j i" 'evil-collection-cider-debug-in
+ :n "C-j o" 'evil-collection-cider-debug-out
+ :n "C-j e" 'evil-collection-cider-debug-eval
+ :n "C-j p" 'evil-collection-cider-debug-inspect
+ :n "C-j l" 'evil-collection-cider-debug-locals
+ :n "C-j j" 'evil-collection-cider-debug-inject
+ :n "C-j s" 'evil-collection-cider-debug-stacktrace
+ :n "C-j t" 'evil-collection-cider-debug-trace
+ :n "C-j q" 'evil-collection-cider-debug-quit
+ )
+
 #+end_src
 
 ** TODO Notes

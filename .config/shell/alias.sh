@@ -21,3 +21,8 @@ alias cp="cp -i"                                                # Confirm before
 alias df='df -h'                                                # Human-readable sizes
 alias free='free -m'                                            # Show sizes in MB
 alias gitu='git add . && git commit && git push'
+
+# Performance related
+alias cpu-max='tuned-adm profile latency-performance'
+alias cpu-balanced='tuned-adm profile balanced'
+alias cpu-min='tuned-adm profile laptop-battery-powersave'

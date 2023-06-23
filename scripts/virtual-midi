@@ -1,2 +1,2 @@
 #!/usr/bin/sh
-sudo modprobe snd_virmidi && a2jmidid
+sudo modprobe snd-virmidi enable=1 midi_devs=1 && a2jmidid

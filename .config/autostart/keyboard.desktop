@@ -1,5 +1,0 @@
-[Desktop Entry]
-Name=Keyboard
-Exec=$KEYBOARD_CONFIG
-Terminal=false
-Type=Application

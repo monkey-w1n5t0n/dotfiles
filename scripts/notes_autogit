@@ -1,3 +1,2 @@
 #!/usr/bin/sh
-# TODO use ENV variables
-autogit $HOME/.local/notes-autocommit-bare-repo $HOME/notes
+autogit "Notes" $NOTES_AUTOGIT_DIR $NOTES_WORK_TREE

@@ -2,5 +2,5 @@
 pkill -f autogit
 start-autogits
 
-pkill -f kmonad
-kmonad-twos
+# pkill -f kmonad
+# kmonad-twos

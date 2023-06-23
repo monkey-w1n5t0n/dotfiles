@@ -1,5 +1,0 @@
-{:level :error,
- :timestamp 1647480021260,
- :date #inst "2022-03-17T01:20:21.260-00:00",
- :msg
- "Exception in dependency handler: :overtone.sc.machinery.server.connection/connect-jack-ports\n"}

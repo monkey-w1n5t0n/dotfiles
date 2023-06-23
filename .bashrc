@@ -4,8 +4,6 @@
 
 [[ $- != *i* ]] && return
 
-#source $HOME/.bash_aliases
-
 colors() {
 	local fgc bgc vals seq0
 
@@ -78,6 +76,9 @@ if ${use_color} ; then
 	fi
 
 	alias ls='ls --color=auto'
+	alias grep='grep --colour=auto'
+	alias egrep='egrep --colour=auto'
+	alias fgrep='fgrep --colour=auto'
 else
 	if [[ ${EUID} == 0 ]] ; then
 		# show root@ when we don't have colors
@@ -89,11 +90,11 @@ fi
 
 unset use_color safe_term match_lhs sh
 
-alias cp="cp -i"                          # confirm before overwriting something
-alias df='df -h'                          # human-readable sizes
-alias free='free -m'                      # show sizes in MB
-alias np='nano -w PKGBUILD'
-alias more=less
+#alias cp="cp -i"                          # confirm before overwriting something
+#alias df='df -h'                          # human-readable sizes
+#alias free='free -m'                      # show sizes in MB
+#alias np='nano -w PKGBUILD'
+#alias more=less
 
 xhost +local:root > /dev/null 2>&1
 
@@ -134,5 +135,3 @@ ex ()
     echo "'$1' is not a valid file"
   fi
 }
-
-

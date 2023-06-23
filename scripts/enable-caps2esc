@@ -1,2 +1,2 @@
 #!/usr/bin/env sh
-sudo systemctl enable --now udevmon && ~/.config/keyboard/setup_keyboard.sh
+sudo systemctl start --now udevmon && ~/.config/keyboard/setup_keyboard.sh
