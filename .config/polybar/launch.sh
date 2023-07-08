@@ -11,10 +11,18 @@
 
 sleep .5
 
-if ! pgrep -x polybar; then
-	polybar bar1 &
+# if ! pgrep -x polybar; then
+# 	polybar bar1 &
+# else
+# 	pkill -USR1 polybar
+# fi
+
+if type "xrandr"; then
+  for m in $(xrandr --query | grep " connected" | cut -d" " -f1); do
+    MONITOR=$m polybar --reload bar1 &
+  done
 else
-	pkill -USR1 polybar
+  polybar --reload bar1 &
 fi
 
 echo "Bars launched..."

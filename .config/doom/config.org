@@ -59,7 +59,7 @@ Runs whenever a zshell starts. Starts up ~oh-my-zsh~ and then hands off to main 
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-export ZSH="$HOME/.config/oh-my-zsh"
+rt ZSH="$HOME/.config/oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -166,8 +166,8 @@ export FILE="/usr/bin/pcmanfm"
 #+end_src
 *** Paths
 #+begin_src bash :tangle ~/.config/shell/env.sh
-export DOOM_DIR="$HOME/.emacs.d"
-export DOOM_USER_DIR="$HOME/.config/doom"
+export DOOM_DIR="$CONFIG_DIR/emacs"
+export DOOM_USER_DIR="$CONFIG_DIR/doom"
 
 export DOTFILES_GIT_DIR="$HOME/.local/dotfiles-git"
 
@@ -1143,6 +1143,16 @@ Package entries to ~packages.el~ are inlined in the appropriate section, this is
               (kill-buffer)))
       (message "Not a file visiting buffer!"))))
 #+end_src
+*** Rsync
+#+begin_src elisp :tangle packages.el
+(package! dired-rsync)
+#+end_src
+-
+#+begin_src elisp
+;; (use-package! dired-rsync
+;;   :bind (:map dired-mode-map
+;;               ("C-c C-r" . dired-rsync))
+#+end_src
 ** Notetaking (Org & Org Roam)
 *** TODO Code blocks
 *** Links
@@ -1363,12 +1373,13 @@ Minor mode for adding timestamps when files are created and modified.
               :after org
               :init
               (map!
-               :map global-map
-               "<f12>"   #'org-transclusion-add
-               "C-<f12>" #'org-transclusion-remove
-               :leader
-               :prefix "n"
-               :desc "Org Transclusion Mode" "t" #'org-transclusion-mode))
+               :map org-mode-map
+               ;; "SPC m l e" #'org-transclusion-add
+               ;; "SPC m l E"   #'org-transclusion-remove
+               ;; :leader
+               ;; :prefix "n"
+               ;; :desc "Org Transclusion Mode" "t" #'org-transclusion-mode
+               ))
 #+end_src
 *** TODO Key Bindings
 #+begin_src elisp

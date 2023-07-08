@@ -8,7 +8,7 @@
 (def default-log-file-name "autogit_log.txt")
 
 ;; Amount of time that needs to pass from last edit for Autogit to commit
-(def default-time-to-wait (* 5 60 1000))
+(def default-time-to-wait (* 4 60 1000))
 ;; TODO read this from CLI args
 (def time-to-wait default-time-to-wait)
 
@@ -163,15 +163,19 @@
                        (reset! *last-change-time (now))
                        (recur))))]
     (loop []
-      (when (and @*new-changes?
+      (when (and @*new-changes? ;; NOTE if this blocked then there wouldn't be a need for sleep
                  (should-commit? @*last-change-time))
         (commit-and-log! git-dir work-tree log-file)
         (reset! *new-changes? false))
-      (Thread/sleep (if @*new-changes?
-                      (how-long-to-sleep? @*last-change-time)
-                      time-to-wait))
+      ;; NOTE this crashes without the `long` :(
+      (let [sleep-amt (long (if @*new-changes?
+                              (how-long-to-sleep? @*last-change-time)
+                              time-to-wait))]
+        (Thread/sleep sleep-amt))
       (recur))))
 
+(comment
+  )
 
 ;;;;; TODO Using scheduled executors
 ;; (defn main-loop [git-dir work-tree log-file]
@@ -188,7 +192,7 @@
 ;;         (recur))
 ;;       (recur (now) true))))
 
-
+(def log-start-header (str "============== Starting Autogit..."))
 
 ;; TODO use name somehow?
 (defn -main [& args]
@@ -198,12 +202,11 @@
       (print-usage-and-exit!))
     (let [[name git-dir work-tree log-file] args
           log-file (or log-file
-                       (str git-dir "/" default-log-file-name))
-          log-start-header (str "============== Starting Autogit...")]
+                       (str git-dir "/" default-log-file-name))]
       ;; Starting...
       (log log-file log-start-header)
       (main-loop git-dir work-tree log-file)))
   ;; [Exit #3]
-  (System/exit 0))
+  (System/exit 1))
 
 (-main *command-line-args*)
