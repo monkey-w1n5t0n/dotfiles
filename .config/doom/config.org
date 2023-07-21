@@ -21,6 +21,8 @@ $HOME/scripts/start-daemons
 ## Disable annoying bell
 xset -b
 
+/usr/lib/geoclue-2.0/demos/agent & redshift-gtk &
+
 # source /usr/share/nvm/init-nvm.sh
 #+end_src
 -
@@ -162,10 +164,13 @@ source "$HOME/.config/shell/init.sh"
 #+begin_src bash :tangle ~/.config/shell/env.sh
 export EDITOR="emacsclient -ca '' &"
 export BROWSER="/usr/bin/firefox"
-export FILE="/usr/bin/pcmanfm"
+export FILE="/usr/bin/nemo"
 #+end_src
 *** Paths
 #+begin_src bash :tangle ~/.config/shell/env.sh
+export SYS_CONFIG_DIR="$CONFIG_DIR/sys"
+export PACKAGE_CONFIG_DIR="$SYS_CONFIG_DIR/packages"
+
 export DOOM_DIR="$CONFIG_DIR/emacs"
 export DOOM_USER_DIR="$CONFIG_DIR/doom"
 
@@ -192,6 +197,9 @@ export I3_CONFIG="$CONFIG_DIR/i3/config"
 # SXHKD
 export SXHKD_CONFIG="$CONFIG_DIR/sxhkd/sxhkdrc"
 #+end_src
+
+#+RESULTS:
+
 *** Misc Vars
 #+begin_src bash :tangle ~/.config/shell/env.sh
 export QT_QPA_PLATFORMTHEME="qt5ct"
@@ -438,6 +446,10 @@ hide_edge_borders none
 # is used in the bar {} block below.
 font xft:URWGothic-Book 11
 #+end_src
+*** Floating Windows
+#+begin_src conf :tangle ~/.config/i3/config
+for_window [title=".*FLOATING.*"] floating enable
+#+end_src
 *** Font(s)
 #+begin_src conf :tangle ~/.config/i3/config
 # Font for window titles. Will also be used by the bar unless a different font
@@ -512,7 +524,6 @@ bindsym $mod+Ctrl+m exec pavucontrol
 #bindsym $mod+Ctrl+m exec pavucontrol
 # bindsym $mod+Ctrl+m exec pavucontrol
 #+end_src
-
 ** Brightness Controls
 #+begin_src conf :tangle ~/.config/i3/config
 # Screen brightness controls
@@ -524,7 +535,7 @@ bindsym XF86MonBrightnessDown exec "xbacklight -dec 3; notify-send 'brightness d
 # Default terminal:
 set $terminal alacritty
 set $editor emacsclient -c -a '' # alias for emacsclient
-set $file pcmanfm
+set $file nemo
 # Set mod key (Mod1=<Alt>, Mod4=<Super>)
 set $mod Mod4
 
@@ -894,7 +905,7 @@ Here just for reference.
         fold                                 ; (nigh) universal code folding
         (format +onsave)                     ; automated prettiness
         ;;god               ; run Emacs commands without modifier keys
-        lispy                           ; vim for lisp, for people who don't like vim
+        ;lispy                           ; vim for lisp, for people who don't like vim
         multiple-cursors                ; editing in many places at once
         ;; objed             ; text object editing for the innocent
         ;;parinfer            ; turn lisp into python, sort of
@@ -1163,7 +1174,27 @@ Package entries to ~packages.el~ are inlined in the appropriate section, this is
     (+org/insert-item-below 1)
     (org-cliplink)))
 #+end_src
+*** Dates
+#+begin_src elisp
+  (defun insert-current-date () (interactive)
+    (insert (shell-command-to-string "echo -n $(date +%Y-%m-%d)")))
+#+end_src
 * Org
+** TODO
+*** Link images
+*** PROJ Capture Templates
+**** TODO Declarative Templates
+Incorporate the rest too
+https://github.com/elken/doom#prettify
+#+begin_src elisp :tangle packages.el
+(package! doct)
+#+end_src
+-
+  #+begin_src elisp
+(use-package! doct
+  :defer t
+  :commands (doct))
+ #+end_src
 ** Paths
 Just setting up some paths. ~org-directory~ must be set before Org mode loads.
 #+begin_src elisp
@@ -1421,19 +1452,6 @@ I think this is needed for Org Roam UI.
 (use-package! websocket
     :after org-roam)
   #+end_src
-** TODO Capture Templates
-*** TODO Declarative Templates
-Incorporate the rest too
-https://github.com/elken/doom#prettify
-#+begin_src elisp :tangle packages.el
-(package! doct)
-#+end_src
--
-  #+begin_src elisp
-(use-package! doct
-  :defer t
-  :commands (doct))
- #+end_src
 ** Appearance
 *** Modern
 #+begin_src elisp :tangle packages.el
@@ -1599,6 +1617,23 @@ https://github.com/elken/doom#prettify
 *** Helm Rifle
 #+begin_src elisp :tangle packages.el
 (package! helm-org-rifle)
+#+end_src
+** QL
+#+begin_src elisp :tangle packages.el
+(package! org-ql)
+;; (package! org-ql-view)
+#+end_src
+-
+#+begin_src elisp :tangle config.el
+;; TODO org-ql config here
+#+end_src
+** Syncing
+#+begin_src elisp :tangle packages.el
+(package! crdt)
+#+end_src
+-
+#+begin_src elisp :tangle config.el
+;(use-package! crdt)
 #+end_src
 * Languages
 ** Lisps
@@ -1999,6 +2034,8 @@ Auto revert plain text files, which should mostly be logs and script outputs
 #+end_src
 * TODO Key Bindings
 I should probably collect all key bindings here...
+** Issues
+*** org-shiftmeta right doesn't work well because shift-meta changes language
 ** TODO Emacs
 *** Files, Windows & Buffers
 #+begin_src elisp
@@ -2055,6 +2092,10 @@ I should probably collect all key bindings here...
 
 (map!
  :map override
+
+
+:nvm "C-u" 'hs-toggle-hiding
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  ;; LEFT - DOWN - UP - RIGHT
  :nvm "h" 'backward-char
