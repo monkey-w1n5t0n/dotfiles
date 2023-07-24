@@ -1,18 +1,14 @@
-#!/usr/bin/env bb
-(require '[babashka.fs :as fs])
+#!/usr/bin/env sh
+PKGLIST_DIR="$PACKAGE_CONFIG_DIR/$1"
+# ensure directory exists
+# mkdir -p $OUTPUT_PATH
 
-(def d (fs/path
-        (System/getenv "CONFIG_DIR")
-        "sys"))
 
-(fs/create-dirs d)
-
-(->>
- (shell/sh "pacman" "-Qqen")
- :out
- (spit (.toString (fs/path d "pkglist-native.txt"))))
-
-(->>
- (shell/sh "pacman" "-Qqem")
- :out
- (spit (.toString (fs/path d "pkglist-foreign.txt"))))
+# arch
+ARCH="$PKGLIST_DIR/arch_packages.txt"
+sudo pacman -Syu - < $ARCH
+# aur
+YAY="$PKGLIST_DIR/aur_packages.txt"
+yay -Syu - < $YAY
+# TODO flatpak
+# TODO snap
