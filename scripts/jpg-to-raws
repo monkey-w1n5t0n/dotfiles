@@ -1,0 +1,116 @@
+#!/usr/bin/env bb
+
+(require '[babashka.fs :as fs])
+
+(defn lower-case-ext [file]
+  (-> file fs/extension .toLowerCase))
+
+(defn copy-raw-files [jpg-dirs raw-dir target-dir]
+  (let [jpg-files (mapcat fs/glob jpg-dirs ["*.jpg"])
+        raw-files (map #(-> % fs/file-name (fs/split-ext) first) (fs/glob raw-dir ["*.RAF"]))
+        not-found (atom [])]
+    (doseq [jpg-file jpg-files]
+      (let [base-name (-> jpg-file fs/file-name (fs/split-ext) first)]
+        (if (contains? raw-files base-name)
+          (fs/copy (fs/file raw-dir (str base-name ".RAF")) target-dir)
+          (swap! not-found conj (str base-name ".jpg")))))
+    (spit (fs/file target-dir "not_found.txt") (str/join "\n" @not-found))))
+
+(defn -main [& args]
+  (let [[jpg-dirs raw-dir target-dir] (reverse args)]
+    (copy-raw-files jpg-dirs raw-dir target-dir)))
+
+
+
+
+
+(require '[clojure.java.io :as io]
+         '[clojure.string :as str]
+         '[babashka.fs :as fs])
+
+(def target-dir
+  (fs/path
+   "/run/media/w1n5t0n/w1n5t0nSSD/Photography/Keepers"))
+
+(def jpg-dirs
+  [(fs/path
+    "/home/w1n5t0n/Pictures/fuji/2023 Vietnam/keepers")
+   (fs/path
+    "/home/w1n5t0n/Pictures/fuji/2023 Korea/keepers")])
+
+(def raw-dirs
+  [(fs/path "/run/media/w1n5t0n/w1n5t0nSSD/Photography/RAWs")])
+
+(def raw-ext "RAF")
+
+(defn dir->jpgs [dir]
+  (fs/glob dir "*.JPG"))
+
+(count (fs/glob (first jpg-dirs) "**.JPG"))
+
+(doseq [jpg-dir (first jpg-dirs)]
+  (doseq [jpg (dir->jpgs jpg-dir)]
+    (let [name (-> jpg fs/file-name fs/strip-ext)
+          ;; _ (println name)
+          raw-name (str name "." raw-ext)
+          ;; raw (mapcat #(fs/glob % (str "**" name ".{raf,RAF}"))
+          ;;             raw-dirs)
+          raw (fs/glob (first raw-dirs)
+                       (str "**" name ".RAF"))
+          ]
+      (if raw
+        ;; (println (str "File: " name " has a RAW."))
+        (fs/copy raw target-dir)
+        (println (str "File: " name " DOESN'T have a RAW."))))))
+
+(let [all-jpgs (mapcat #(fs/glob % "**.JPG") jpg-dirs)
+      photo-names (map (comp fs/file-name fs/strip-ext) all-jpgs)
+      raw-names (map #(str % "." raw-ext) photo-names)]
+  (doseq [jpg all-jpgs]))
+
+(->> jpg-dirs
+
+     (map) fs/file-name
+     ;; fs/strip-ext
+     ;; ;; (#(str % ".RAF"))
+     ;; (#(str "**" % ".{raf,RAF}"))
+     ;; (#(fs/glob (first raw-dirs) %))
+     )
+
+
+(fs/glob (first raw-dirs) (str "**" "DSCF2560**"))
+
+;; ;; second-to-last argument is the RAW directory
+;; (def raw-dir (second (reverse args)))
+
+;; ;; every other argument is a JPG directory
+;; (def jpg-dirs (drop-last 2 args))
+
+;; (def not-found-file (io/file target-dir "not_found.txt"))
+
+;; ;; helper function to find RAW match for a given jpg file
+;; (defn find-raw-match [jpg-file]
+;;   (let [raw-file-name (str/replace (fs/file-name jpg-file) ".JPG" ".RAF")]
+;;     (->> (fs/glob (fs/file raw-dir "*.RAF"))
+;;          (filter #(= (str/lower-case (fs/file-name %)) (str/lower-case raw-file-name)))
+;;          first)))
+
+;; ;; helper function to copy RAW file to target directory
+;; (defn copy-raw [raw-file]
+;;   (fs/copy raw-file (fs/file target-dir (fs/file-name raw-file))))
+
+;; ;; helper function to add jpg file to not found list
+;; (defn add-to-not-found [jpg-file]
+;;   (with-open [out-file (io/writer not-found-file :append true)]
+;;     (.write out-file (str (fs/file-name jpg-file) "\n"))))
+
+;; (defn process-jpg-dir [dir]
+;;   (let [jpg-files (fs/glob (fs/file dir "*.JPG"))]
+;;     (doseq [jpg-file jpg-files]
+;;       (let [raw-match (find-raw-match jpg-file)]
+;;         (if (fs/exists? raw-match)
+;;           (copy-raw raw-match)
+;;           (add-to-not-found jpg-file))))))
+
+;; (doseq [dir jpg-dirs]
+;;   (process-jpg-dir dir))

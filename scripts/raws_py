@@ -1,0 +1,43 @@
+#!/bin/python
+
+import argparse
+import os
+import shutil
+
+def get_files_with_ext(directory, extensions):
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            if file.lower().endswith(extensions):
+                yield os.path.join(root, file)
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--jpgs', nargs='+')
+    parser.add_argument('--raws', nargs='+')
+    parser.add_argument('--dest')
+    args = parser.parse_args()
+
+    missing = []
+
+    for jpg_dir in args.jpgs:
+        for jpg_path in get_files_with_ext(jpg_dir, ('.jpg', '.JPG')):
+            jpg_filename = os.path.splitext(os.path.basename(jpg_path))[0]
+            raw_file_found = False
+            for raw_dir in args.raws:
+                for raw_path in get_files_with_ext(raw_dir, ('.raf', '.RAF')):
+                    raw_filename = os.path.splitext(os.path.basename(raw_path))[0]
+                    if jpg_filename == raw_filename:
+                        shutil.copy(raw_path, args.dest)
+                        raw_file_found = True
+                        break
+                if raw_file_found:
+                    break
+            if not raw_file_found:
+                missing.append(jpg_filename)
+
+    with open(os.path.join(args.dest, 'missing.txt'), 'w') as f:
+        for filename in missing:
+            f.write(f'{filename}\n')
+
+if __name__ == '__main__':
+    main()

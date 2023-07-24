@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+
+killall polybar
+$HOME/.config/screenlayout.sh && i3-msg restart
+
+nitrogen --set-zoom-fill --save --head=0 /home/w1n5t0n/Pictures/wallpapers/art-1659886227865-9464.jpg
+nitrogen --set-zoom-fill --save --head=1 /home/w1n5t0n/Pictures/wallpapers/art-1659886227865-9464.jpg
+
+$HOME/scripts/keyboard
+$HOME/scripts/disable-caps2esc
+#source .config/keyboard/setup_keyboard.sh

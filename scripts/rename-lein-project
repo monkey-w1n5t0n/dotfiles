@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# Check if the script is being run with the correct number of arguments
+if [ "$#" -ne 2 ]; then
+    echo "Usage: rename-project.sh OLD_NAME NEW_NAME"
+    exit 1
+fi
+
+old_name=$1
+new_name=$2
+
+# Change the directory name
+mv "$old_name" "$new_name"
+
+# Change the namespace in all of the source files
+find "$new_name" -name '*.clj' -exec sed -i "s/:$old_name/:$new_name/g" {} +
+
+# Change the project name in the project.clj file
+sed -i "s/:name \"$old_name\"/:name \"$new_name\"/g" "$new_name/project.clj"
+
+echo "Successfully renamed project from $old_name to $new_name"

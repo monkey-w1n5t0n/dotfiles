@@ -2,6 +2,7 @@ export EDITOR="emacsclient -ca '' &"
 export BROWSER="/usr/bin/firefox"
 export FILE="/usr/bin/nemo"
 
+# SYS
 export SYS_CONFIG_DIR="$CONFIG_DIR/sys"
 export PACKAGE_CONFIG_DIR="$SYS_CONFIG_DIR/packages"
 

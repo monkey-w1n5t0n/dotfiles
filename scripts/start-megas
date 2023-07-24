@@ -1,0 +1,1 @@
+cd $HOME/sync/MEGA/w1n5t0n && HOME=$(pwd) megasync

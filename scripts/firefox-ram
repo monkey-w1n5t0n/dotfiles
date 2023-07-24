@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Get all the firefox PIDs
+pids=$(pgrep firefox)
+
+total_memory=0
+
+# Iterate over each PID and sum up the memory
+for pid in $pids
+do
+    mem=$(pmap $pid | tail -n 1 | awk '/total/ {print $2}')
+    total_memory=$(($total_memory + ${mem%K}))
+done
+
+# Convert to MB for readability
+total_memory_MB=$(($total_memory / 1024))
+
+# Convert to GB for readability
+total_memory_GB=$(($total_memory / 1024 / 1024))
+
+echo "Total Memory used by all Firefox processes: $total_memory_MB MB"
+echo "Total Memory used by all Firefox processes: $total_memory_GB GB"

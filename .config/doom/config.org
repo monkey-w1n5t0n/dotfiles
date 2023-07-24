@@ -168,6 +168,7 @@ export FILE="/usr/bin/nemo"
 #+end_src
 *** Paths
 #+begin_src bash :tangle ~/.config/shell/env.sh
+# SYS
 export SYS_CONFIG_DIR="$CONFIG_DIR/sys"
 export PACKAGE_CONFIG_DIR="$SYS_CONFIG_DIR/packages"
 
@@ -932,6 +933,7 @@ Here just for reference.
         ;;grammar           ; tasing grammar mistake every you make
 
         :tools
+        tree-sitter
         ;;ansible
         debugger                  ; FIXME stepping through code, to help you add bugs
         direnv
@@ -960,7 +962,7 @@ Here just for reference.
         :lang
         ;;agda              ; types of types of types of types...
         (cc +lsp)             ; C/C++/Obj-C madness
-        clojure               ; java with a lisp
+        (clojure +lsp)               ; java with a lisp
         common-lisp           ; if you've seen one lisp, you've seen them all
         ;;coq               ; proofs-as-programs
         ;;crystal           ; ruby at the speed of c
@@ -1640,13 +1642,13 @@ I think this is needed for Org Roam UI.
 *** Clojure
 #+begin_src elisp :tangle packages.el
 (package! edn)
+(package! lsp-ui)
 #+end_src
 -
 #+begin_src elisp
 ;; (defvar cider-is-scad-session? nil)
 ;; (defvar cider-scad-refresh-active? nil)
 
-()
 
 ;; (defun cider-scad-post-eval-refresh ()
 ;;   (when cider-is-scad-session?

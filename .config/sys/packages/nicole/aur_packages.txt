@@ -1,5 +1,6 @@
 babashka-bin
 bitwig-studio
+clj-kondo-bin
 cura-resources-materials
 cython2
 debtap

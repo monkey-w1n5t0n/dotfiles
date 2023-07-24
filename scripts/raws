@@ -1,0 +1,46 @@
+#!/usr/bin/env bb
+
+(require '[clojure.java.io :as io]
+         '[clojure.string :as str])
+
+(defn get-raw-files [dirs]
+  (for [dir dirs
+        :let [dir (io/file dir)]
+        file (file-seq dir)
+        :when (and (.isFile file) (str/ends-with? (.getName file) ".RAF"))]
+    file))
+
+(defn get-jpg-files [dir]
+  (let [dir (io/file dir)]
+    (for [file (file-seq dir)
+          :when (and (.isFile file) (str/ends-with? (.getName file) ".jpg"))]
+      file)))
+
+(defn copy-raw-files [source-dir raw-dirs target-dir]
+  (let [jpg-files (get-jpg-files source-dir)
+        raw-files (mapcat get-raw-files raw-dirs)
+        jpg-names (set (map #(.getName %) jpg-files))
+        raw-names (set (map #(.getName %) raw-files))
+        common-names (set/intersection jpg-names raw-names)
+        raw-files-to-copy (filter #(common-names (.getName %)) raw-files)]
+    (doseq [file raw-files-to-copy]
+      (io/copy file (io/file target-dir (.getName file))))
+    raw-files-to-copy))
+
+(defn main [& args]
+  (let [source-dir (first args)
+        target-dir (last args)
+        raw-dirs (drop 1 (drop-last args))
+        copied-files (copy-raw-files source-dir raw-dirs target-dir)
+        copied-file-names (set (map #(.getName %) copied-files))
+        copied-file-size (reduce + (map #(.length %) copied-files))
+        target-dir-files (get-raw-files [target-dir])]
+    (println "JPGs without corresponding RAW files:")
+    (doseq [file (get-jpg-files source-dir)
+            :when (not (copied-file-names (.getName file)))]
+      (println (.getName file)))
+    (println "\nTotal number of RAW files copied:" (count copied-files))
+    (println "Total size of copied RAW files:" (str (/ copied-file-size 1024 1024) " MB"))
+    (println "New number of RAW files in target directory:" (count target-dir-files))))
+
+(main *command-line-args*)

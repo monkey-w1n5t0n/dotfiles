@@ -1,0 +1,9 @@
+#!/usr/bin/bb
+(require '[clojure.java.io :as io]
+         '[datahike.core :as dh])
+
+(def db-path (io/file (System/getProperty "user.home") "ola.data"))
+
+(if (not (.exists db-path))
+  (dh/create-database db-path)
+  (println "Database already exists at" db-path))

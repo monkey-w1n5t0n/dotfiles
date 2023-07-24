@@ -1,0 +1,13 @@
+#!/usr/bin/env sh
+OUTPUT_PATH="$PACKAGE_CONFIG_DIR/$(hostname)"
+# ensure directory exists
+mkdir -p $OUTPUT_PATH
+
+# arch
+comm -23 <(pacman -Qeq | sort) <(pacman -Qmq | sort) > "$OUTPUT_PATH/arch_packages.txt"
+# aur
+pacman -Qmq > "$OUTPUT_PATH/aur_packages.txt"
+# flatpak
+flatpak list --columns=application > "$OUTPUT_PATH/flatpak_packages.txt"
+# snap
+snap list > "$OUTPUT_PATH/snap_packages.txt"

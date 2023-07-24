@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# Get the names of all connected monitors
+MONITORS=$(xrandr | grep " connected" | awk '{print $1}')
+
+# Loop through each monitor and print its name and maximum resolution
+for MONITOR in $MONITORS
+do
+  RESOLUTION=$(xrandr --query | grep -A 1 $MONITOR | tail -n 1 | awk '{print $1}')
+  echo "$MONITOR: $RESOLUTION"
+done
