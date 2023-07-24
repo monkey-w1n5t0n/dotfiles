@@ -1,0 +1,4 @@
+#!/usr/bin/sh
+xrandr --output eDP-1 --left-of HDMI-1-0 --mode 1920x1080 \
+    --output HDMI-1-0 --primary --auto \
+    --output DP-1-0 --right-of HDMI-1-0 --auto --rotate left
