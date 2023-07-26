@@ -3,7 +3,6 @@ PKGLIST_DIR="$PACKAGE_CONFIG_DIR/$1"
 # ensure directory exists
 # mkdir -p $OUTPUT_PATH
 
-
 # arch
 ARCH="$PKGLIST_DIR/arch_packages.txt"
 sudo pacman -Syu - < $ARCH

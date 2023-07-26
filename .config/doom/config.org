@@ -881,7 +881,7 @@ Here just for reference.
         :ui
         doom                       ; what makes DOOM look the way it does
         (emoji +unicode)           ; 🙂
-        fill-column                ; a `fill-column' indicator
+        ;fill-column                ; a `fill-column' indicator
         hl-todo                    ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
         hydra
         indent-guides          ; highlighted indent columns
@@ -906,7 +906,7 @@ Here just for reference.
         fold                                 ; (nigh) universal code folding
         (format +onsave)                     ; automated prettiness
         ;;god               ; run Emacs commands without modifier keys
-        ;lispy                           ; vim for lisp, for people who don't like vim
+        lispy                           ; vim for lisp, for people who don't like vim
         multiple-cursors                ; editing in many places at once
         ;; objed             ; text object editing for the innocent
         ;;parinfer            ; turn lisp into python, sort of
@@ -1639,6 +1639,45 @@ I think this is needed for Org Roam UI.
 #+end_src
 * Languages
 ** Lisps
+*** Lispy Key Bindings
+#+begin_src elisp :tangle config.el
+(map! :map lispy-mode-map-special
+      "h" #'special-lispy-left
+      "H" #'special-lispy-beginning-of-defun
+
+      "t" #'special-lispy-down
+      ;; "T" #'special-lispy-...
+
+      "n" #'special-lispy-up
+      "N" #'special-lispy-rais
+
+      "s" #'special-lispy-right
+      "S" #'special-lispy-right
+
+      "d" #'special-lispy-different
+
+      "M-t" #'special-lispy-move-down
+      "M-n" #'special-lispy-move-up
+
+      "m" #'special-lispy-mark-list
+
+      "c" #'special-lispy-flow
+
+      "b" #'special-lispy-back
+
+      "e" #'special-lispy-eval
+      "E" #'special-lispy-eval-and-insert
+
+      "j" #'special-lispy-slurp
+      "k" #'special-lispy-barf
+
+
+      "g" #'special-lispy-goto-local
+      "G" #'special-lispy-goto
+
+      "y" #'special-lispy-new-copy)
+
+#+end_src
 *** Clojure
 #+begin_src elisp :tangle packages.el
 (package! edn)
