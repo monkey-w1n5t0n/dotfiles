@@ -49,6 +49,7 @@ ecryptfs-utils
 efibootmgr
 emacs-nativecomp
 f2fs-tools
+fd
 file
 filelight
 filesystem
@@ -66,6 +67,7 @@ gnome-break-timer
 gnome-disk-utility
 gnome-keyring
 gnome-system-monitor
+go
 gparted
 grep
 grsync
@@ -90,6 +92,7 @@ inxi
 iproute2
 iputils
 jfsutils
+julia
 kclock
 kcm-wacomtablet
 kvantum-manjaro
@@ -109,6 +112,7 @@ linux515-nvidia
 linux63-rt
 linux63-rt-nvidia
 logrotate
+luarocks
 lvm2
 lxappearance
 lxinput
@@ -127,6 +131,7 @@ manjaro-settings-manager
 manjaro-system
 manjaro-zsh-config
 man-pages
+maven
 mdadm
 memtest86+
 mesa-demos
@@ -145,6 +150,7 @@ nautilus
 ncdu
 nemo
 neofetch
+neovim
 netctl
 networkmanager
 network-manager-applet
@@ -154,6 +160,7 @@ networkmanager-pptp
 networkmanager-vpnc
 nfs-utils
 nnn
+npm
 nss-mdns
 ntfs-3g
 ntp
@@ -189,8 +196,10 @@ qt5ct
 ranger
 realtime-privileges
 reiserfsprogs
+ripgrep
 rofi
 rsync
+rust
 sbxkb
 screenfetch
 sed
@@ -218,11 +227,14 @@ texlive-basic
 thunar
 timeshift
 timeshift-autosnap-manjaro
+tldr
+tmux
 tree
 ttf-dejavu
 ufw
 unrar
 upower
+usbip
 usbutils
 util-linux
 valgrind
