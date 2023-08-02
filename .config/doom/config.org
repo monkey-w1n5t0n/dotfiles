@@ -205,7 +205,7 @@ export SXHKD_CONFIG="$CONFIG_DIR/sxhkd/sxhkdrc"
 export QT_QPA_PLATFORMTHEME="qt5ct"
 export GTK2_RC_FILES="$HOME/.gtkrc-2.0"
 
-export JAVA_HOME="/usr/lib/jvm/java-18-openjdk"
+export JAVA_HOME="/usr/lib/jvm/java-20-openjdk"
 #+end_src
 ** Functions
 #+begin_src bash :tangle ~/.config/shell/functions.sh
@@ -880,7 +880,7 @@ Here just for reference.
         :ui
         doom                       ; what makes DOOM look the way it does
         (emoji +unicode)           ; 🙂
-        fill-column                ; a `fill-column' indicator
+        ;fill-column                ; a `fill-column' indicator
         hl-todo                    ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
         hydra
         indent-guides          ; highlighted indent columns
@@ -890,7 +890,7 @@ Here just for reference.
         ;;neotree           ; a project drawer, like NERDTree for vim
         ophints                    ; highlight the region an operation acts on
         (popup +defaults)          ; tame sudden yet inevitable temporary windows
-        ;;tabs              ; a tab bar for Emacs
+        tabs              ; a tab bar for Emacs
         treemacs                   ; a project drawer, like neotree but cooler
         unicode                    ; extended unicode support for various languages
         vc-gutter                  ; vcs diff in the fringe
@@ -1111,6 +1111,10 @@ Package entries to ~packages.el~ are inlined in the appropriate section, this is
 ;(unpin! t)
 #+end_src
 * TODO Functions
+** First
+#+begin_src elisp
+(defmacro comment (&args))
+#+end_src
 ** Lists
 #+begin_src elisp
 (defun add-list-to-list (dst src)
@@ -1154,6 +1158,26 @@ Package entries to ~packages.el~ are inlined in the appropriate section, this is
               (message "Deleted file %s." filename)
               (kill-buffer)))
       (message "Not a file visiting buffer!"))))
+
+
+
+(defun directory-files-with-autosave (directory)
+  "Return a list of files in DIRECTORY that have autosave data."
+  (let ((autosave-files '())
+        (directory-files (cdr (cdr (directory-files directory t)))))
+    (dolist (file directory-files autosave-files)
+      (with-current-buffer (find-file-noselect file)
+        (when (file-exists-p buffer-auto-save-file-name)
+          (push file autosave-files))
+        )
+      )))
+
+
+(comment
+
+ (directory-files-with-autosave "~/notes/org-roam")
+
+ )
 #+end_src
 *** Rsync
 #+begin_src elisp :tangle packages.el
@@ -1638,6 +1662,45 @@ I think this is needed for Org Roam UI.
 #+end_src
 * Languages
 ** Lisps
+*** Lispy Key Bindings
+#+begin_src elisp :tangle config.el
+(map! :map lispy-mode-map-special
+      "h" #'special-lispy-left
+      "H" #'special-lispy-beginning-of-defun
+
+      "t" #'special-lispy-down
+      ;; "T" #'special-lispy-...
+
+      "n" #'special-lispy-up
+      "N" #'special-lispy-raise
+
+      "s" #'special-lispy-right
+      "S" #'special-lispy-right
+
+      "d" #'special-lispy-different
+
+      "M-t" #'special-lispy-move-down
+      "M-n" #'special-lispy-move-up
+
+      "m" #'special-lispy-mark-list
+
+      "c" #'special-lispy-flow
+
+      "b" #'special-lispy-back
+
+      "e" #'special-lispy-eval
+      "E" #'special-lispy-eval-and-insert
+
+      "j" #'special-lispy-slurp
+      "k" #'special-lispy-barf
+
+
+      "g" #'special-lispy-goto-local
+      "G" #'special-lispy-goto
+
+      "y" #'special-lispy-new-copy)
+
+#+end_src
 *** Clojure
 #+begin_src elisp :tangle packages.el
 (package! edn)
@@ -1680,6 +1743,12 @@ I think this is needed for Org Roam UI.
                    finally
                    (message (cider-sexp-at-point))))))))
 
+(map! :map cider-mode-map
+      :n "." #'cider-eval-defun-at-point
+      :n "," #'evil-repeat
+      )
+;; (defvar cider-is-scad-session? nil)
+;; (defvar cider-scad-refresh-active? nil)
 
 ;; test
 ;; (comment
@@ -2476,6 +2545,10 @@ Read proper list of project paths from somewhere.
 ;; (map! "SPC p c" 'projectile-compile-project)
 (after! counsel
   (map! [remap projectile-compile-project] nil))
+
+(use-package! projectile
+  :config
+  (setq projectile-project-search-path '("~/src/" "~/scripts/")))
 #+end_src
 ** TODO Coding
 #+begin_src elisp
@@ -2505,6 +2578,8 @@ Read proper list of project paths from somewhere.
 #+end_src
 * TODO Projects
 #+begin_src elisp
+(setq projectile-create-missing-test-files 't)
+
 (use-package! projectile
   :config
   (setq projectile-project-search-path '("~/dev" "~/src" "~/live" "~/scripts"))

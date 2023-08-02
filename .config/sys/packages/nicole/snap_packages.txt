@@ -6,5 +6,5 @@ deckboard          2.1.3                       13     latest/stable  rfbabeheer 
 gnome-3-28-1804    3.28.0-19-g98f9e67.98f9e67  198    latest/stable  canonical**    -
 gnome-42-2204      0+git.ff35a85               120    latest/stable  canonical**    -
 gtk-common-themes  0.1-81-g442e511             1535   latest/stable  canonical**    -
-signal-desktop     6.20.0                      505    latest/stable  snapcrafters*  -
+signal-desktop     6.26.0                      506    latest/stable  snapcrafters*  -
 snapd              2.59.5                      19457  latest/stable  canonical**    snapd
