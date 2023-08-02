@@ -11,6 +11,3 @@ function source_config() {
 }
 
 source_config
-
-
-source /usr/share/nvm/init-nvm.sh

@@ -23,7 +23,7 @@ xset -b
 
 /usr/lib/geoclue-2.0/demos/agent & redshift-gtk &
 
-# source /usr/share/nvm/init-nvm.sh
+source /usr/share/nvm/init-nvm.sh
 #+end_src
 -
   #+begin_src bash :tangle ~/.profile
@@ -52,7 +52,6 @@ function source_config() {
 source_config
 
 
-source /usr/share/nvm/init-nvm.sh
 #+end_src
 *** .zshrc
 Runs whenever a zshell starts. Starts up ~oh-my-zsh~ and then hands off to main init script (see above).
@@ -386,7 +385,7 @@ exec --no-startup-id ~/src/scripts/restart_kmonad/twos
 # Redshift
 exec --no-startup-id redshift-gtk
 
-exec --no-startup-id xrandr --dpi 102 --output eDP-1
+exec --no-startup-id xrandr --dpi 192 --output eDP-1
 #+end_src
 ** Aesthetics
 *** Colours
@@ -906,7 +905,7 @@ Here just for reference.
         fold                                 ; (nigh) universal code folding
         (format +onsave)                     ; automated prettiness
         ;;god               ; run Emacs commands without modifier keys
-        ;lispy                           ; vim for lisp, for people who don't like vim
+        lispy                           ; vim for lisp, for people who don't like vim
         multiple-cursors                ; editing in many places at once
         ;; objed             ; text object editing for the innocent
         ;;parinfer            ; turn lisp into python, sort of
@@ -1645,22 +1644,51 @@ I think this is needed for Org Roam UI.
 (package! lsp-ui)
 #+end_src
 -
+**** TODO Evalling inside top-level comments
 #+begin_src elisp
-;; (defvar cider-is-scad-session? nil)
-;; (defvar cider-scad-refresh-active? nil)
+
+;(require 'cl-loop)
+(defun my/next-open-paren ()
+  (interactive)
+  (if (re-search-forward "\\((\\|\\[\\|{\\)" nil t)
+      (goto-char (match-beginning 0))
+    (message "No open parenthesis found.")))
+
+(defun my/cider-eval-defun-at-point-or-in-comment
+    (&optional debug-it)
+  (interactive)
+  (save-excursion
+    (let* ((original-pos (point))
+           (toplevel-sexp-bounds (cider-defun-at-point 'bounds))
+           (toplevel-comment? (progn (goto-char (car toplevel-sexp-bounds))
+                                     (looking-at "(comment"))))
+      (if (not toplevel-comment?)
+          (progn
+            (message "Not a comment!")
+            (cider-eval-defun-at-point))
+        (progn
+          (message "Yes a comment!")
+          (cl-loop while
+                   (let ((current-sexp-bounds) (cider-sexp-at-point 'bounds))
+                     (message current-sexp-bounds)
+                     (not (<= (first current-sexp-bounds)
+                              original-pos
+                              (second current-sexp-bounds))))
+                   do
+                   (evil-forward-char)
+                   (my/next-open-paren)
+                   finally
+                   (message (cider-sexp-at-point))))))))
 
 
-;; (defun cider-scad-post-eval-refresh ()
-;;   (when cider-is-scad-session?
-;;     (if (not cider-scad-refresh-active?)
-;;         (progn
-;;           ;; Activate flag
-;;           (setq cider-scad-refresh-active? t)
-;;           (cider-interactive-eval "(scad-regenerate)"))
-;;       (progn
-;;         (setq cider-scad-refresh-active? nil)))))
+;; test
+;; (comment
+;;  (foo 1 2 3)
+;;  (bar 2 3 4)
+;;  (baz 4 3 2 4 2 (hello 123))
+;;  (* 1 2 3 ))
 
-;; (add-hook 'cider-after-eval-done-hook #'cider-scad-post-eval-refresh)
+
 #+end_src
 *** Emacs Lisp
 *** Common Lisp
