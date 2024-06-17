@@ -32,7 +32,15 @@ export I3_CONFIG="$CONFIG_DIR/i3/config"
 # SXHKD
 export SXHKD_CONFIG="$CONFIG_DIR/sxhkd/sxhkdrc"
 
+
+export W1N5T0N_HDD_DIR="/run/media/w1n5t0n/w1n5t0nHDD"
+export W1N5T0N_HDD_BACKUP_DIR="$W1N5T0N_HDD_DIR/Backups"
+export W1N5T0N_HDD_CURRENT_BACKUP_DIR="$W1N5T0N_HDD_DIR/Backups/$(hostname)"
+export W1N5T0N_HDD_HOME_BACKUP_DIR="$W1N5T0N_HDD_CURRENT_BACKUP_DIR/home"
+export W1N5T0N_HDD_ROOT_BACKUP_DIR="$W1N5T0N_HDD_CURRENT_BACKUP_DIR/root"
+
 export QT_QPA_PLATFORMTHEME="qt5ct"
 export GTK2_RC_FILES="$HOME/.gtkrc-2.0"
 
 export JAVA_HOME="/usr/lib/jvm/java-20-openjdk"
+#export JAVA_HOME="/usr/lib/jvm/java-18-openjdk"

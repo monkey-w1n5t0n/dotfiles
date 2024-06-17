@@ -23,6 +23,18 @@ xset -b
 
 /usr/lib/geoclue-2.0/demos/agent & redshift-gtk &
 
+
+# Start the SSH agent if it is not running
+if ! pgrep -u "$USER" ssh-agent > /dev/null; then
+    ssh-agent > "$XDG_RUNTIME_DIR/ssh-agent.env"
+fi
+
+# Load the environment variables for the SSH agent
+if [[ "$SSH_AGENT_PID" == "" ]]; then
+    eval "$(<"$XDG_RUNTIME_DIR/ssh-agent.env")"
+fi
+
+
 # source /usr/share/nvm/init-nvm.sh
 #+end_src
 -
@@ -197,6 +209,13 @@ export SCRIPT_DIR="$HOME/scripts"
 export I3_CONFIG="$CONFIG_DIR/i3/config"
 # SXHKD
 export SXHKD_CONFIG="$CONFIG_DIR/sxhkd/sxhkdrc"
+
+
+export W1N5T0N_HDD_DIR="/run/media/w1n5t0n/w1n5t0nHDD"
+export W1N5T0N_HDD_BACKUP_DIR="$W1N5T0N_HDD_DIR/Backups"
+export W1N5T0N_HDD_CURRENT_BACKUP_DIR="$W1N5T0N_HDD_DIR/Backups/$(hostname)"
+export W1N5T0N_HDD_HOME_BACKUP_DIR="$W1N5T0N_HDD_CURRENT_BACKUP_DIR/home"
+export W1N5T0N_HDD_ROOT_BACKUP_DIR="$W1N5T0N_HDD_CURRENT_BACKUP_DIR/root"
 #+end_src
 
 #+RESULTS:
@@ -207,6 +226,7 @@ export QT_QPA_PLATFORMTHEME="qt5ct"
 export GTK2_RC_FILES="$HOME/.gtkrc-2.0"
 
 export JAVA_HOME="/usr/lib/jvm/java-20-openjdk"
+#export JAVA_HOME="/usr/lib/jvm/java-18-openjdk"
 #+end_src
 ** Functions
 #+begin_src bash :tangle ~/.config/shell/functions.sh
@@ -876,7 +896,8 @@ Here just for reference.
 (doom!
         :completion
         company                                ; the ultimate code completion backend
-        (ivy +fuzzy +icons +prescient)                                    ; a search engine for love and life
+        ;; (ivy +fuzzy +icons +prescient)                                    ; a search engine for love and life
+        (ivy +icons)                                    ; a search engine for love and life
 
         :ui
         doom                       ; what makes DOOM look the way it does
@@ -1686,6 +1707,7 @@ I think this is needed for Org Roam UI.
       "m" #'special-lispy-mark-list
 
       "c" #'special-lispy-flow
+      "C" #'special-lispy-clone
 
       "b" #'special-lispy-back
 
@@ -1846,7 +1868,8 @@ Fix this nonsense.
 #+end_src
 *** Frame
 #+begin_src
-
+(set-frame-parameter nil 'alpha-background 90)
+(add-to-list 'default-frame-alist '(alpha . 90))
 #+end_src
 *** Theme
 #+begin_src elisp
@@ -2117,7 +2140,22 @@ I should probably collect all key bindings here...
 
 (map! :map doom-leader-map
       :nvm "f p" 'my/open-private-config
-      :g "w s" #'evil-window-right)
+      ;; :g "w s" #'evil-window-right
+      )
+
+;; window navigation
+(map! :map doom-leader-map
+      "w h" #'evil-window-left
+      "w t" #'evil-window-down
+      "w n" #'evil-window-up
+      "w s" #'evil-window-right
+
+      ;; WASD variation
+      "w o" #'evil-window-left
+      "w e" #'evil-window-down
+      "w ." #'evil-window-up
+      "w u" #'evil-window-right
+      )
 
 (map! :nvmi "M-j" 'counsel-M-x)
 
