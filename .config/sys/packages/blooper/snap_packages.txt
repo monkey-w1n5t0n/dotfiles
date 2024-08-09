@@ -1,0 +1,12 @@
+Name                Version                     Rev    Tracking       Publisher    Notes
+bare                1.0                         5      latest/stable  canonical**  base
+core                16-2.61.4-20240607          17200  latest/stable  canonical**  core
+core18              20240612                    2829   latest/stable  canonical**  base
+core22              20240419                    1439   latest/stable  canonical**  base
+gnome-3-28-1804     3.28.0-19-g98f9e67.98f9e67  198    latest/stable  canonical**  -
+gtk-common-themes   0.1-81-g442e511             1535   latest/stable  canonical**  -
+gtk2-common-themes  0.1                         13     latest/stable  canonical**  -
+p7zip-desktop       16.02.2                     220    latest/stable  ernytech     -
+rpi-imager          1.8.5                       630    latest/stable  waveform     -
+sabaki              0.52.2                      1      latest/stable  hadim        -
+snapd               2.63                        21759  latest/stable  canonical**  snapd
