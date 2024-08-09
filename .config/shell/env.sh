@@ -1,3 +1,5 @@
+
+
 export EDITOR="emacsclient -ca '' &"
 export BROWSER="/usr/bin/firefox"
 export FILE="/usr/bin/nemo"
@@ -36,3 +38,12 @@ export QT_QPA_PLATFORMTHEME="qt5ct"
 export GTK2_RC_FILES="$HOME/.gtkrc-2.0"
 
 export JAVA_HOME="/usr/lib/jvm/java-20-openjdk"
+
+dreamclublab_env="$HOME/src/jobs/ian/OSC_PIBOT/scripts/env"
+if [ -f $dreamclublab_env ]; then
+    source $dreamclublab_env
+fi
+
+export MY_IP="192.168.1.212"
+export MY_ID="192.168.1.212"
+export MY_ROBOT_NAME="iRobotCreate3"

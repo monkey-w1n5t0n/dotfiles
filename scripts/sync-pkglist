@@ -5,9 +5,9 @@ PKGLIST_DIR="$PACKAGE_CONFIG_DIR/$1"
 
 # arch
 ARCH="$PKGLIST_DIR/arch_packages.txt"
-sudo pacman -Syu --needed - < $ARCH
+sudo pacman -Syu - < $ARCH
 # aur
 YAY="$PKGLIST_DIR/aur_packages.txt"
-yay -Syu --needed - < $YAY
+yay -Syu - < $YAY
 # TODO flatpak
 # TODO snap

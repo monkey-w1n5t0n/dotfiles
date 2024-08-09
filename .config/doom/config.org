@@ -34,33 +34,29 @@ export ZDOTDIR="$CONFIG_DIR/zsh"
 source "$CONFIG_SHELL_DIR/startup.sh"
   #+end_src
 ** Shell Init
-*** Main
-Gets called by ~.zshrc~ (see bellow).
-#+begin_src bash :tangle ~/.config/shell/init.sh
-export FUNCTIONS_CONFIG="$CONFIG_SHELL_DIR/functions.sh"
-export PATH_CONFIG="$CONFIG_SHELL_DIR/path.sh"
-export ENV_CONFIG="$CONFIG_SHELL_DIR/env.sh"
-export ALIAS_CONFIG="$CONFIG_SHELL_DIR/alias.sh"
-
-function source_config() {
-   source $FUNCTIONS_CONFIG
-   source $PATH_CONFIG
-   source $ENV_CONFIG
-   source $ALIAS_CONFIG
-}
-
-source_config
-
-
-#+end_src
+In order they're called:
 *** .zshrc
 Runs whenever a zshell starts. Starts up ~oh-my-zsh~ and then hands off to main init script (see above).
 #+begin_src bash :tangle ~/.zshrc
-# If you come from bash you might have to change your $PATH.
+#preexec() {if [ "$(id -u)" -ne 0 ]; then echo "$(date "+%Y-%m-%d.%H:%M:%S") $(pwd) $ $3" >> $HOME/.local/.logs/zsh-history-$(date "+%Y-%m-%d").log; fi}
+
+LOG_DIR="$HOME/.local/logs"
+mkdir -p $LOG_DIR
+
+preexec() {
+  if [ "$(id -u)" -ne 0 ]; then
+    mkdir -p $LOG_DIR
+    echo "$(date "+%Y-%m-%d.%H:%M:%S") $(pwd) $ $1" >> $LOG_DIR/zsh-history-$(date "+%Y-%m-%d").log
+  fi
+}
+
+
+
+        # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-rt ZSH="$HOME/.config/oh-my-zsh"
+ZSH="$HOME/.config/oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -158,7 +154,32 @@ source "$HOME/.config/shell/init.sh"
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 #+end_src
+*** Main
+Gets called by ~.zshrc~ (see bellow).
+#+begin_src bash :tangle ~/.config/shell/init.sh
+export FUNCTIONS_CONFIG="$CONFIG_SHELL_DIR/functions.sh"
+export PATH_CONFIG="$CONFIG_SHELL_DIR/path.sh"
+export ENV_CONFIG="$CONFIG_SHELL_DIR/env.sh"
+export ALIAS_CONFIG="$CONFIG_SHELL_DIR/alias.sh"
+export PRIVATE_CONFIG="$HOME/.local"
+
+function source_config() {
+   source $FUNCTIONS_CONFIG
+   source $PATH_CONFIG
+   source $ENV_CONFIG
+   source $ALIAS_CONFIG
+
+   if [ -f "$PRIVATE_CONFIG" ]; then
+    source "$PRIVATE_CONFIG"
+   fi
+}
+
+source_config
+#+end_src
 ** Environment
+*** System
+#+begin_src bash :tangle ~/.config/shell/env.sh
+#+end_src
 *** Programs
 #+begin_src bash :tangle ~/.config/shell/env.sh
 export EDITOR="emacsclient -ca '' &"
@@ -207,6 +228,18 @@ export GTK2_RC_FILES="$HOME/.gtkrc-2.0"
 
 export JAVA_HOME="/usr/lib/jvm/java-20-openjdk"
 #+end_src
+*** Projects
+**** TODO [[id:6f757c71-c904-407d-b2ad-8ac1e74715ad][Job/Dream Club Lab]]
+#+begin_src bash :tangle ~/.config/shell/env.sh
+dreamclublab_env="$HOME/src/jobs/ian/OSC_PIBOT/scripts/env"
+if [ -f $dreamclublab_env ]; then
+    source $dreamclublab_env
+fi
+
+export MY_IP="192.168.1.212"
+export MY_ID="192.168.1.212"
+export MY_ROBOT_NAME="iRobotCreate3"
+#+end_src
 ** Functions
 #+begin_src bash :tangle ~/.config/shell/functions.sh
 function PATH_prepend() {
@@ -219,6 +252,7 @@ Adding stuff to the ~PATH~ variable.
 export PATH="$SCRIPT_DIR":$PATH
 export PATH="$DOOM_DIR/bin":$PATH
 export PATH="$HOME/src/lib/nerd-dictation":$PATH
+export PATH="$HOME/src/lib/oscer/build/Linux64":$PATH
 #+end_src
 ** Aliases
 #+begin_src bash :tangle ~/.config/shell/alias.sh
@@ -386,6 +420,8 @@ exec --no-startup-id ~/src/scripts/restart_kmonad/twos
 exec --no-startup-id redshift-gtk
 
 exec --no-startup-id xrandr --dpi 192 --output eDP-1
+
+exec --no-startup-id $HOME/scripts/keylog
 #+end_src
 ** Aesthetics
 *** Colours
@@ -431,7 +467,7 @@ set $color22 #CB4B16
 *** Borders
 #+begin_src conf :tangle ~/.config/i3/config
 # Configure border style <normal|1pixel|pixel xx|none|pixel>
-default_border pixel 3
+default_border pixel 10
 default_floating_border normal
 
 for_window [class="^.*"] border pixel 3
@@ -751,11 +787,14 @@ mode "resize" {
         bindsym Shift+n resize shrink height 10 px or 10 ppt
         bindsym Shift+s resize grow width 10 px or 10 ppt
 
+        bindsym Shift+r exec $HOME/scripts/reset_window_size.sh
+
         # exit resize mode: Enter or Escape
         bindsym Return mode "default"
         bindsym Escape mode "default"
 }
-        #+end_src
+#+end_src
+***** TODO fix resize, doesn't work
 **** Focus & Moving
 #+begin_src conf :tangle ~/.config/i3/config
 # change focus
@@ -1159,6 +1198,12 @@ Package entries to ~packages.el~ are inlined in the appropriate section, this is
               (kill-buffer)))
       (message "Not a file visiting buffer!"))))
 
+(defun my/kill-other-buffers ()
+    "Kill all other buffers."
+    (interactive)
+    (mapc 'kill-buffer
+          (delq (current-buffer)
+                (remove-if-not 'buffer-file-name (buffer-list)))))
 
 
 (defun directory-files-with-autosave (directory)
@@ -1204,6 +1249,30 @@ Package entries to ~packages.el~ are inlined in the appropriate section, this is
   (defun insert-current-date () (interactive)
     (insert (shell-command-to-string "echo -n $(date +%Y-%m-%d)")))
 #+end_src
+*** Nodes
+From https://www.reddit.com/r/emacs/comments/15vaj8d/orgbabel_snippet_to_list_orgroam_nodes/
+#+BEGIN_SRC elisp
+(defun sort-files-chronologically-newest-first (dir)
+  "Sort files in directory DIR chronologically with newest files first based on modification time."
+  (let ((files (directory-files dir nil "^[^.].*"))
+        (ignored-files '("\\.$" "\\.\\.$" ".*~$"))
+        (full-path (lambda (dir file) (concat dir "/" file))))
+    (setq files (cl-remove-if (lambda (file)
+                                (cl-some (lambda (pattern)
+                                           (string-match-p pattern file))
+                                         ignored-files))
+                              files))
+    (setq files (sort files (lambda (a b)
+                              (time-less-p (nth 5 (file-attributes (funcall full-path dir b)))
+                                           (nth 5 (file-attributes (funcall full-path dir a)))))))
+    (mapcar (lambda (file)
+              (format "[[file:%s][%s]]" (funcall full-path dir file) file))
+            files)))
+
+;; Example usage
+;; (let ((dir "/path/to/org-roam-files"))
+;;  (sort-files-chronologically-newest-first dir))
+#+END_SRC
 * Org
 ** TODO
 *** Link images
@@ -1611,6 +1680,13 @@ I think this is needed for Org Roam UI.
 #+begin_src elisp
 #+end_src
 ** PDF
+*** pdf-tools
+#+begin_src elisp :tangle packages.el
+(package! pdf-tools)
+#+end_src
+-
+ #+begin_src elisp
+ #+end_src
 *** Org Noter
 #+begin_src elisp
 (use-package! org-noter
@@ -1707,6 +1783,24 @@ I think this is needed for Org Roam UI.
 (package! lsp-ui)
 #+end_src
 -
+#+begin_src elisp
+(setq cider-lein-parameters "with-profile dev repl :headless")
+
+;; REMOTE
+;; (setq *remote-tidal-ip-address* "127.0.1.1")
+;; (setq *remote-tidal-port* "8080")
+;; (setq *this-client-port* "8081")
+
+;; (setq tidal-interpreter "remote-tidal-client")
+
+;; (setq tidal-interpreter-arguments
+;;   (list *remote-tidal-ip-address*
+;;         *remote-tidal-port*
+;;         *this-client-port*))
+
+;;(load-if-exists "/home/w1n5t0n/src/emacs/osc.el")
+;; (load-if-exists "/home/w1n5t0n/src/monkey-business/remote-tidal/remote-tidal.el")
+#+end_src
 **** TODO Evalling inside top-level comments
 #+begin_src elisp
 
@@ -1775,9 +1869,19 @@ I think this is needed for Org Roam UI.
 -
   #+begin_src elisp
 ;; (add-to-list 'load-path "~/.emacs.d/vendor/arduino-mode")
-(setq auto-mode-alist (cons '("\\.\\(pde\\|ino\\)$" . arduino-mode) auto-mode-alist))
-(autoload 'arduino-mode "arduino-mode" "Arduino editing mode." t)
+;;(setq auto-mode-alist (cons '("\\.\\(pde\\|ino\\)$" . arduino-mode) auto-mode-alist))
+;;(autoload 'arduino-mode "arduino-mode" "Arduino editing mode." t)
   #+end_src
+*** clang-format
+
+#+begin_src elisp :tangle packages.el
+(package! clang-format
+  :recipe (:host github :repo "sonatard/clang-format"))
+#+end_src
+-
+#+begin_src elisp
+(add-to-list 'auto-mode-alist '("\\.ino\\'" . c-or-c++-mode))
+#+end_src
 ** Python
 ** Bash
 ** Tidal
@@ -1805,6 +1909,10 @@ I think this is needed for Org Roam UI.
 
 ;;(load-if-exists "/home/w1n5t0n/src/emacs/osc.el")
 ;; (load-if-exists "/home/w1n5t0n/src/monkey-business/remote-tidal/remote-tidal.el")
+#+end_src
+** Remote-Tidal
+#+begin_src elisp :tangle no
+(load-file "~/src/livecoding/remote-tidal/remote-tidal.el")
 #+end_src
 ** V
 #+begin_src elisp :tangle packages.el
@@ -1837,6 +1945,13 @@ I think this is needed for Org Roam UI.
 (package! kbd-mode
   :recipe (:host github
            :repo "kmonad/kbd-mode"))
+#+end_src
+*** Meson
+#+begin_src elisp :tangle packages.el
+(package! meson-mode
+  :recipe (:host github :repo "wentasah/meson-mode"
+           ;:files ("gitconfig-mode.el")
+           ))
 #+end_src
 * Emacs
 Emacs-specific and (more or less) global settings.
@@ -2131,6 +2246,41 @@ Auto revert plain text files, which should mostly be logs and script outputs
 (package! mode-minder
   :recipe (:host github :repo "jdtsmith/mode-minder"))
 #+end_src
+** ChatGPT
+#+begin_src elisp :tangle packages.el
+(package! gptel
+  :recipe (:host github :repo "karthink/gptel"))
+#+end_src
+-
+ #+begin_src elisp
+(setq gptel-api-key (getenv "OPENAI_API_KEY"))
+  #+end_src
+** Tramp
+#+begin_src elisp
+(setq tramp-default-method "ssh")
+#+end_src
+** nrepl
+#+begin_src elisp
+(setq nrepl-use-ssh-fallback-for-remote-hosts 't)
+#+end_src
+** Copilot
+#+begin_src elisp :tangle packages.el
+(package! editorconfig)
+
+(package! copilot
+  :recipe (:host github :repo "zerolfx/copilot.el" :files ("*.el" "dist")))
+#+end_src
+-
+#+begin_src elisp
+;; accept completion from copilot and fallback to company
+(use-package! copilot
+  :hook (prog-mode . copilot-mode)
+  :bind (:map copilot-completion-map
+              ("<tab>" . 'copilot-accept-completion)
+              ("TAB" . 'copilot-accept-completion)
+              ("C-TAB" . 'copilot-accept-completion-by-word)
+              ("C-<tab>" . 'copilot-accept-completion-by-word)))
+#+end_src
 * TODO Key Bindings
 I should probably collect all key bindings here...
 ** Issues
@@ -2187,59 +2337,64 @@ I should probably collect all key bindings here...
 #+begin_src elisp
 
 
-
+(map! :map 'override
+ :nvm "s" 'forward-char
+ :nvm "S" 'evil-forward-word-end
+)
 
 (map!
- :map override
+ :map (evil-normal-state-map
+       evil-visual-state-map
+       evil-motion-state-map)
 
-
-:nvm "C-u" 'hs-toggle-hiding
+ "C-u" 'hs-toggle-hiding
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  ;; LEFT - DOWN - UP - RIGHT
- :nvm "h" 'backward-char
- :nvm "t" 'evil-next-visual-line
- :nvm "n" 'evil-previous-visual-line
- :nvm "s" 'forward-char
+ "h" 'backward-char
+ "t" 'evil-next-visual-line
+ "n" 'evil-previous-visual-line
 
- :nvm "H" 'evil-backward-word-begin
- :nvm "T" 'evil-forward-paragraph
- :nvm "N" 'evil-backward-paragraph
- :nvm "S" 'evil-forward-word-end
+
+ "H" 'evil-backward-word-begin
+ "T" 'evil-forward-paragraph
+ "N" 'evil-backward-paragraph
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  ;; By Lines
- :nvm "D"  'evil-beginning-of-visual-line
- :nvm "gg" 'evil-beginning-of-visual-line
- :nvm "_"  'evil-end-of-visual-line
- :nvm "gr" 'evil-end-of-visual-line
+ "D"  'evil-beginning-of-visual-line
+ "gg" 'evil-beginning-of-visual-line
+ "_"  'evil-end-of-visual-line
+ "gr" 'evil-end-of-visual-line
 
  ;; Top and Bottom
- :nvm "gc" 'evil-goto-first-line
- :nvm "gt" 'evil-goto-line
+ "gc" 'evil-goto-first-line
+ "gt" 'evil-goto-line
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  ;; Scrolls
- :nvm "G" 'evil-scroll-down
- :nvm "R" 'evil-scroll-up
+ "G" 'evil-scroll-down
+ "R" 'evil-scroll-up
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  ;; Go anywhere on the screen
- :nvm "a" 'evil-avy-goto-char
+ "a" 'evil-avy-goto-char
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  ;; Snipes
  ;; TODO: Distinguish between them, write some comments
- :nvm "cg" 'evil-snipe-F
- :nvm "cG" 'evil-snipe-T
- :nvm "cr" 'evil-snipe-f
- :nvm "cR" 'evil-snipe-t
- :nvm "cc" 'evil-snipe-repeat
+ "cg" 'evil-snipe-T ; NON-inclusive
+ "cG" 'evil-snipe-F ; inclusive
+ "cr" 'evil-snipe-t ; NON-inclusive
+ "cR" 'evil-snipe-f ; ninclusive
 
+ "cc" 'evil-snipe-repeat
  )
+
+
 
 ;; FIXME: why does this mess up the normal map?
 ;; (map! :map evil-snipe-local-mode-map
@@ -2554,18 +2709,18 @@ Read proper list of project paths from somewhere.
 #+begin_src elisp
 (map!
  :map cider--debug-mode-map
- :n "C-j c" 'evil-collection-cider-debug-continue
- :n "C-j n" 'evil-collection-cider-debug-next
- :n "C-j h" 'evil-collection-cider-debug-here
- :n "C-j i" 'evil-collection-cider-debug-in
- :n "C-j o" 'evil-collection-cider-debug-out
- :n "C-j e" 'evil-collection-cider-debug-eval
- :n "C-j p" 'evil-collection-cider-debug-inspect
- :n "C-j l" 'evil-collection-cider-debug-locals
- :n "C-j j" 'evil-collection-cider-debug-inject
- :n "C-j s" 'evil-collection-cider-debug-stacktrace
- :n "C-j t" 'evil-collection-cider-debug-trace
- :n "C-j q" 'evil-collection-cider-debug-quit
+ :n "c" 'evil-collection-cider-debug-continue
+ :n "n" 'evil-collection-cider-debug-next
+ :n "h" 'evil-collection-cider-debug-here
+ :n "i" 'evil-collection-cider-debug-in
+ :n "o" 'evil-collection-cider-debug-out
+ :n "e" 'evil-collection-cider-debug-eval
+ :n "p" 'evil-collection-cider-debug-inspect
+ :n "l" 'evil-collection-cider-debug-locals
+ :n "j" 'evil-collection-cider-debug-inject
+ :n "s" 'evil-collection-cider-debug-stacktrace
+ :n "t" 'evil-collection-cider-debug-trace
+ :n "q" 'evil-collection-cider-debug-quit
  )
 
 #+end_src
