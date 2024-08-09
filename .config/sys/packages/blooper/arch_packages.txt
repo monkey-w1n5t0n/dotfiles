@@ -143,7 +143,6 @@ lib32-gnutls
 lib32-libva-vdpau-driver
 lib32-mesa-demos
 lib32-mesa-vdpau
-lib32-nvidia-utils
 lib32-vulkan-intel
 lib32-vulkan-radeon
 libpamac-flatpak-plugin
@@ -153,14 +152,6 @@ libva-mesa-driver
 libva-vdpau-driver
 licenses
 lightdm-slick-greeter
-linux515
-linux515-nvidia
-linux61
-linux66
-linux66-nvidia
-linux66-rt
-linux66-rt-nvidia
-linux66-virtualbox-host-modules
 lldb
 logrotate
 lvm2
@@ -221,13 +212,10 @@ npm
 nss-mdns
 ntfs-3g
 ntp
-nvidia-prime
-nvidia-utils
 nvm
 obsidian
 obs-studio
 okular
-opencl-nvidia
 openresolv
 openscad
 openssh
