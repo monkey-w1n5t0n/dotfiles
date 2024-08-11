@@ -1,9 +1,9 @@
 ####git=/usr/bin/git
 
-alias notes="$git \
+alias notes="git \
     --git-dir=$NOTES_GIT_DIR \
     --work-tree=$NOTES_WORK_TREE"
-alias notes_ac="$git \
+alias notes_ac="git \
     --git-dir=$NOTES_AUTOGIT_DIR \
     --work-tree=$NOTES_WORK_TREE"
 alias n=notes

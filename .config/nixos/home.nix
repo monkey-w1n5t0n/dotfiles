@@ -1,13 +1,17 @@
 { config, pkgs, ... }:
 
 {
+  # home.file.".config/git".enable = false;
+
   home.username = "w1n5t0n";
   home.homeDirectory = "/home/w1n5t0n";
 
-  home.stateVersion = "24.05";
+  xresources.properties = {
+    "Xcursor.size" = 16;
+    "Xft.dpi" = 172;
+  };
 
-  # Enable backup of existing files
-  # home.backupFileExtension = "hm_backup";
+  home.stateVersion = "24.05";
 
   home.packages = with pkgs; [
     # Communication
@@ -17,38 +21,58 @@
     zoom
 
     # Web browsers
+    firefox
+    brave
     chromium
+    # nyxt
 
     # Development tools
     gitkraken
     virtualbox
     vscodium
-    sbcl
-    clojure
-    babashka
     bbin
     openscad
     openscad-lsp
     vscode-extensions.antyos.openscad
+    pkg-config
+    ## languages
+    sbcl
+    clojure
+    racket
+    babashka
+    go
 
     # System utilities
     baobab
     czkawka
     filelight
-    gparted
     localsend
+    gparted
     timeshift
     cpustat
     visualvm
     monitor
     stacer
     keepassxc
+    neofetch
+    ripgrep
+    jq
+    yq-go
+    eza
+    fzf
+
+    # archives
+    zip
+    xz
+    unzip
+    p7zip
 
     # File management
     nemo
     dolphin
     nautilus
     pcmanfm
+    nnn # terminal file browser
 
     # Media
     vlc
@@ -107,6 +131,42 @@
     # dina-font
     # proggyfonts
 
+    # misc
+    cowsay
+    file
+    which
+    tree
+    gnused
+    gnutar
+    gawk
+    zstd
+    gnupg
+
+    # nix related
+    #
+    # it provides the command `nom` works just like `nix`
+    # with more details log output
+    nix-output-monitor
+
+    # productivity
+    hugo # static site generator
+    glow # markdown previewer in terminal
+
+    btop # replacement of htop/nmon
+    iotop # io monitoring
+    iftop # network monitoring
+
+    # system call monitoring
+    strace # system call monitoring
+    ltrace # library call monitoring
+    lsof # list open files
+
+    # system tools
+    sysstat
+    # lm_sensors # for `sensors` command
+    ethtool
+    pciutils # lspci
+    usbutils # lsusb
   ];
 
   # Git configuration
@@ -138,6 +198,20 @@
     };
 
     # Other zsh configurations...
+  };
+
+  programs.alacritty = {
+    enable = true;
+    # custom settings
+    settings = {
+      env.TERM = "xterm-256color";
+      font = {
+        size = 12;
+        draw_bold_text_with_bright_colors = true;
+      };
+      scrolling.multiplier = 5;
+      selection.save_to_clipboard = true;
+    };
   };
 
   home.sessionVariables = {
@@ -213,5 +287,6 @@
   # };
 
   fonts.fontconfig.enable = true;
-
+  # Let home Manager install and manage itself.
+  programs.home-manager.enable = true;
 }

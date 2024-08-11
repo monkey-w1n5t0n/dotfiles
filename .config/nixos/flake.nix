@@ -38,6 +38,9 @@
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.users.w1n5t0n = import ./home.nix;
+              # home-manager.extraSpecialArgs = {
+              #   inherit inputs;
+              # };
             }
           ];
         };

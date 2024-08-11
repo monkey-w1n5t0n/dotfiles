@@ -62,7 +62,8 @@
       rofi
       i3status
       i3lock
-      polybar
+      polybarFull
+      # polybar-pulseaudio-control
       arandr
     ];
   };
@@ -97,6 +98,7 @@
   environment.systemPackages = with pkgs; [
     # System utilities
     wget
+    curl
     killall
     blueman
     tlp
@@ -108,6 +110,8 @@
     # tuned TODO
 
     # Development tools
+    gcc
+    clang
     gnumake
     cmake
     emacs
@@ -125,7 +129,7 @@
     # Other utilities
     xorg.xbacklight
     alacritty
-    p7zip
+    # p7zip
   ];
 
   # Program Configuration
@@ -187,6 +191,7 @@
     enable = true;
     powerOnBoot = true;
   };
+
   powerManagement.enable = true;
 
   # XDG Portal Configuration
@@ -196,27 +201,5 @@
     config.common.default = "*";
   };
 
-  # Home Manager Configuration
-  # home-manager.users.w1n5t0n =
-  #   { pkgs, ... }:
-  #   {
-  #     home.stateVersion = "24.05";
-  #     # Add this line to automatically backup conflicting files
-  #     home.activation.backupExistingFiles = {
-  #       after = [ "linkGeneration" ];
-  #       before = [ "writeBoundary" ];
-  #       data = lib.mkDefault "hm_backup"; # This sets the backup extension
-  #     };
-  #   };
-  #
-  # Home Manager Configuration
-
-  home-manager.backupFileExtension = "hm_backup";
-
-  # home-manager.users.w1n5t0n =
-  #   { pkgs, ... }:
-  #   {
-  #     home.stateVersion = "24.05";
-  #     # Add this line to automatically backup conflicting files
-  #   };
+  home-manager.backupFileExtension = "hm_backup"; # Add this line
 }
