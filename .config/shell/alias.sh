@@ -1,4 +1,4 @@
-git=/usr/bin/git
+####git=/usr/bin/git
 
 alias notes="$git \
     --git-dir=$NOTES_GIT_DIR \
@@ -9,7 +9,7 @@ alias notes_ac="$git \
 alias n=notes
 alias na=notes_ac
 
-alias dotfiles="$git --git-dir=$DOTFILES_GIT_DIR --work-tree=$HOME"
+alias dotfiles="git --git-dir=$DOTFILES_GIT_DIR --work-tree=$HOME"
 alias dot=dotfiles
 
 # TODO not working?
@@ -26,3 +26,8 @@ alias gitu='git add . && git commit && git push'
 alias cpu-max='tuned-adm profile latency-performance'
 alias cpu-balanced='tuned-adm profile balanced'
 alias cpu-min='tuned-adm profile laptop-battery-powersave'
+
+alias nixswitch='sudo nixos-rebuild switch --flake ~/.config/nixos#blooper'
+
+alias nixbuild='sudo nixos-rebuild build --flake ~/.config/nixos#blooper'
+alias nixtest='sudo nixos-rebuild test --flake ~/.config/nixos#blooper'

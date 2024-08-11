@@ -21,9 +21,9 @@ $HOME/scripts/start-daemons
 ## Disable annoying bell
 xset -b
 
-/usr/lib/geoclue-2.0/demos/agent & redshift-gtk &
+####/usr/lib/geoclue-2.0/demos/agent & redshift-gtk &
 
-source /usr/share/nvm/init-nvm.sh
+####source /usr/share/nvm/init-nvm.sh
 #+end_src
 -
   #+begin_src bash :tangle ~/.profile
@@ -31,7 +31,7 @@ export CONFIG_DIR="$HOME/.config"
 export CONFIG_SHELL_DIR="$CONFIG_DIR/shell"
 export ZDOTDIR="$CONFIG_DIR/zsh"
 
-source "$CONFIG_SHELL_DIR/startup.sh"
+####source "$CONFIG_SHELL_DIR/startup.sh"
   #+end_src
 ** Shell Init
 In order they're called:
@@ -41,7 +41,7 @@ Runs whenever a zshell starts. Starts up ~oh-my-zsh~ and then hands off to main 
 #preexec() {if [ "$(id -u)" -ne 0 ]; then echo "$(date "+%Y-%m-%d.%H:%M:%S") $(pwd) $ $3" >> $HOME/.local/.logs/zsh-history-$(date "+%Y-%m-%d").log; fi}
 
 LOG_DIR="$HOME/.local/logs"
-mkdir -p $LOG_DIR
+####mkdir -p $LOG_DIR
 
 preexec() {
   if [ "$(id -u)" -ne 0 ]; then
@@ -56,13 +56,13 @@ preexec() {
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-ZSH="$HOME/.config/oh-my-zsh"
+####ZSH="$HOME/.config/oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="robbyrussell"
+####ZSH_THEME="robbyrussell"
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -124,10 +124,10 @@ ZSH_THEME="robbyrussell"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git)
+####plugins=(git)
 
-source $ZSH/oh-my-zsh.sh
-source "$HOME/.config/shell/init.sh"
+####source $ZSH/oh-my-zsh.sh
+####source "$HOME/.config/shell/init.sh"
 # User configuration
 
 # export MANPATH="/usr/local/man:$MANPATH"
@@ -174,7 +174,7 @@ function source_config() {
    fi
 }
 
-source_config
+####source_config
 #+end_src
 ** Environment
 *** System
@@ -223,10 +223,10 @@ export SXHKD_CONFIG="$CONFIG_DIR/sxhkd/sxhkdrc"
 
 *** Misc Vars
 #+begin_src bash :tangle ~/.config/shell/env.sh
-export QT_QPA_PLATFORMTHEME="qt5ct"
-export GTK2_RC_FILES="$HOME/.gtkrc-2.0"
+####export QT_QPA_PLATFORMTHEME="qt5ct"
+####export GTK2_RC_FILES="$HOME/.gtkrc-2.0"
 
-export JAVA_HOME="/usr/lib/jvm/java-20-openjdk"
+####export JAVA_HOME="/usr/lib/jvm/java-20-openjdk"
 #+end_src
 *** Projects
 **** TODO [[id:6f757c71-c904-407d-b2ad-8ac1e74715ad][Job/Dream Club Lab]]
@@ -249,14 +249,14 @@ function PATH_prepend() {
 ** PATH
 Adding stuff to the ~PATH~ variable.
 #+begin_src bash :tangle ~/.config/shell/path.sh
-export PATH="$SCRIPT_DIR":$PATH
-export PATH="$DOOM_DIR/bin":$PATH
-export PATH="$HOME/src/lib/nerd-dictation":$PATH
-export PATH="$HOME/src/lib/oscer/build/Linux64":$PATH
+####export PATH="$SCRIPT_DIR":$PATH
+####export PATH="$DOOM_DIR/bin":$PATH
+####export PATH="$HOME/src/lib/nerd-dictation":$PATH
+####export PATH="$HOME/src/lib/oscer/build/Linux64":$PATH
 #+end_src
 ** Aliases
 #+begin_src bash :tangle ~/.config/shell/alias.sh
-git=/usr/bin/git
+####git=/usr/bin/git
 
 alias notes="$git \
     --git-dir=$NOTES_GIT_DIR \
@@ -285,8 +285,15 @@ alias cpu-max='tuned-adm profile latency-performance'
 alias cpu-balanced='tuned-adm profile balanced'
 alias cpu-min='tuned-adm profile laptop-battery-powersave'
 #+end_src
+*** Nix
+#+begin_src bash :tangle ~/.config/shell/alias.sh
+alias nixswitch='sudo nixos-rebuild switch --flake ~/.config/nixos#blooper'
+
+alias nixbuild='sudo nixos-rebuild build --flake ~/.config/nixos#blooper'
+alias nixtest='sudo nixos-rebuild test --flake ~/.config/nixos#blooper'
+#+end_src
 ** TODO Monitors
-#+begin_src bash
+#+begin_src bash :tangle no
 xrandr \
     --output HDMI-1 --primary --mode 3440x1440 --scale 1.7x1.7 --pos 0x0 \
     --output eDP-1 --auto --scale 1x1 --pos 0x2448
@@ -409,19 +416,19 @@ My config for the i3 window manager.
 #+end_src
 ** Startup
 #+begin_src conf :tangle ~/.config/i3/config
-exec .config/keyboard/setup_keyboard.sh
-exec --no-startup-id emacs --daemon
-exec --no-startup-id kmonad $HOME/.config/kmonad/test.kbd
-exec --no-startup-id $HOME/scripts/notes_autogit
+####exec .config/keyboard/setup_keyboard.sh
+####exec --no-startup-id emacs --daemon
+####exec --no-startup-id kmonad $HOME/.config/kmonad/test.kbd
+####exec --no-startup-id $HOME/scripts/notes_autogit
 ## KMONAD
-exec --no-startup-id ~/src/scripts/restart_kmonad/twos
+####exec --no-startup-id ~/src/scripts/restart_kmonad/twos
 
 # Redshift
-exec --no-startup-id redshift-gtk
+####exec --no-startup-id redshift-gtk
 
-exec --no-startup-id xrandr --dpi 192 --output eDP-1
+####exec --no-startup-id xrandr --dpi 192 --output eDP-1
 
-exec --no-startup-id $HOME/scripts/keylog
+####exec --no-startup-id $HOME/scripts/keylog
 #+end_src
 ** Aesthetics
 *** Colours
@@ -2280,6 +2287,13 @@ Auto revert plain text files, which should mostly be logs and script outputs
               ("TAB" . 'copilot-accept-completion)
               ("C-TAB" . 'copilot-accept-completion-by-word)
               ("C-<tab>" . 'copilot-accept-completion-by-word)))
+#+end_src
+** Sudo-edit
+#+begin_src elisp :tangle packages.el
+(package! sudo-edit)
+#+end_src
+-
+#+begin_src elisp
 #+end_src
 * TODO Key Bindings
 I should probably collect all key bindings here...
