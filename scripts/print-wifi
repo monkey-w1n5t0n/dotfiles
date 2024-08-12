@@ -1,0 +1,11 @@
+#!sh
+
+# Get the SSID of the current Wi-Fi connection
+SSID=$(nmcli -t -f active,ssid dev wifi | grep '^yes' | cut -d':' -f2)
+
+# Get the password of the current Wi-Fi connection
+PASSWORD=$(nmcli -s -g 802-11-wireless-security.psk connection show "$SSID")
+
+# Print the SSID and password
+echo "SSID: $SSID"
+echo "Password: $PASSWORD"
