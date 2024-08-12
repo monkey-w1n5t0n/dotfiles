@@ -34,10 +34,10 @@ export I3_CONFIG="$CONFIG_DIR/i3/config"
 # SXHKD
 export SXHKD_CONFIG="$CONFIG_DIR/sxhkd/sxhkdrc"
 
-export QT_QPA_PLATFORMTHEME="qt5ct"
-export GTK2_RC_FILES="$HOME/.gtkrc-2.0"
+####export QT_QPA_PLATFORMTHEME="qt5ct"
+####export GTK2_RC_FILES="$HOME/.gtkrc-2.0"
 
-export JAVA_HOME="/usr/lib/jvm/java-20-openjdk"
+####export JAVA_HOME="/usr/lib/jvm/java-20-openjdk"
 
 dreamclublab_env="$HOME/src/jobs/ian/OSC_PIBOT/scripts/env"
 if [ -f $dreamclublab_env ]; then

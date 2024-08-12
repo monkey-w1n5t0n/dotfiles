@@ -1,4 +1,4 @@
-#!/usr/bin/sh
+#!sh
 
 # Languages
 setxkbmap 'us(dvorak), gr' \

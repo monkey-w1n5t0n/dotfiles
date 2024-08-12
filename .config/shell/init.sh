@@ -15,4 +15,4 @@ function source_config() {
    fi
 }
 
-source_config
+####source_config

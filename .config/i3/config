@@ -1,16 +1,16 @@
-exec .config/keyboard/setup_keyboard.sh
-exec --no-startup-id emacs --daemon
-exec --no-startup-id kmonad $HOME/.config/kmonad/test.kbd
-exec --no-startup-id $HOME/scripts/notes_autogit
+####exec .config/keyboard/setup_keyboard.sh
+####exec --no-startup-id emacs --daemon
+####exec --no-startup-id kmonad $HOME/.config/kmonad/test.kbd
+####exec --no-startup-id $HOME/scripts/notes_autogit
 ## KMONAD
-exec --no-startup-id ~/src/scripts/restart_kmonad/twos
+####exec --no-startup-id ~/src/scripts/restart_kmonad/twos
 
 # Redshift
-exec --no-startup-id redshift-gtk
+####exec --no-startup-id redshift-gtk
 
-exec --no-startup-id xrandr --dpi 192 --output eDP-1
+####exec --no-startup-id xrandr --dpi 192 --output eDP-1
 
-exec --no-startup-id $HOME/scripts/keylog
+####exec --no-startup-id $HOME/scripts/keylog
 
 set $color1  #1d1f21
 set $color2  #282a2e
