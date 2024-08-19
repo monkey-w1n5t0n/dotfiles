@@ -7,21 +7,21 @@
 let
   homeManagerConfig = import ./home.nix { inherit config pkgs lib; };
   # screen & keyboard management
-  disable-script = pkgs.writeScript "disable-eDP2.sh" ''
-    ${pkgs.xorg.xrandr}/bin/xrandr --output eDP-2 --off
-  '';
   enable-script = pkgs.writeScript "enable-eDP2.sh" ''
     ${pkgs.xorg.xrandr}/bin/xrandr --output eDP-2 --below eDP-1 --auto
+  '';
+  disable-script = pkgs.writeScript "disable-eDP2.sh" ''
+    ${pkgs.xorg.xrandr}/bin/xrandr --output eDP-2 --off
   '';
 in
 {
   # System Configuration
   system.stateVersion = "24.05";
-  nix.gc = {
-    automatic = true;
-    dates = "weekly";
-    options = "--delete-older-than 7d";
-  };
+  # nix.gc = {
+  #   automatic = true;
+  #   dates = "weekly";
+  #   options = "--delete-older-than 7d";
+  # };
 
   # Enable flakes
   nix.settings.experimental-features = [
@@ -74,20 +74,72 @@ in
     LC_TIME = "en_GB.UTF-8";
   };
 
-  # X11 and Window Manager Configuration
+  # Console Configuration
+  console.keyMap = "dvorak";
+
   # X11 and Window Manager Configuration
   services.xserver = {
     enable = true;
+
+    # keyboard
+    autoRepeatDelay = 200;
+    autoRepeatInterval = 35;
     xkb = {
       layout = "us";
       variant = "dvorak";
       # options = "caps:ctrl_modifier,caps:escape";
     };
-    desktopManager.xterm.enable = false;
+
+    # displayManager.gdm.enable = true;
+
+    desktopManager = {
+      xterm.enable = false;
+
+      # gnome = {
+      #   enable = true;
+      #   extraGSettingsOverrides = ''
+      #     [org.gnome.mutter]
+      #     dynamic-workspaces=false
+      #     workspaces-only-on-primary=false
+      #   '';
+      # };
+    };
+
+    # i3
+    windowManager.i3 = {
+      enable = true;
+      package = pkgs.i3-gaps;
+      extraPackages = with pkgs; [
+        dmenu
+        rofi
+        i3status
+        i3lock
+        polybarFull
+        # polybar-pulseaudio-control
+        arandr
+      ];
+    };
   };
 
-  services.xserver.autoRepeatDelay = 200;
-  services.xserver.autoRepeatInterval = 35; # Convert to milliseconds
+  # environment.etc."xsessions/gnome-i3.desktop" = {
+  #   text = ''
+  #     [Desktop Entry]
+  #     Name=GNOME + i3
+  #     Comment=This session logs you into GNOME with i3 as the window manager
+  #     Exec=${pkgs.runtimeShell} -l -c "env GNOME_SHELL_SESSION_MODE=classic gnome-session --session=gnome-classic & sleep 1 && ${pkgs.i3-gaps}/bin/i3"
+  #     TryExec=${pkgs.i3}/bin/i3
+  #     Type=Application
+  #     DesktopNames=GNOME
+  #     X-GDM-SessionRegisters=true
+  #   '';
+  #   mode = "0644";
+  # };
+
+  services.displayManager.defaultSession = "none+i3";
+  programs.dconf.enable = true;
+
+  # conflicts with tlp
+  services.power-profiles-daemon.enable = false;
 
   # services.interception-tools = {
   #   enable = true;
@@ -98,25 +150,6 @@ in
   #           EV_KEY: [KEY_CAPSLOCK, KEY_ESC]
   #   '';
   # };
-
-  services.displayManager.defaultSession = "none+i3";
-  services.xserver.windowManager.i3 = {
-    enable = true;
-    package = pkgs.i3-gaps;
-    extraPackages = with pkgs; [
-      dmenu
-      rofi
-      i3status
-      i3lock
-      polybarFull
-      # polybar-pulseaudio-control
-      arandr
-    ];
-  };
-  programs.dconf.enable = true;
-
-  # Console Configuration
-  console.keyMap = "dvorak";
 
   # Sound Configuration
   hardware.pulseaudio.enable = false;
@@ -137,23 +170,25 @@ in
     extraGroups = [
       "networkmanager"
       "wheel"
-      "power"
-      "vboxusers"
-      "realtime"
+      # "power"
+      # "vboxusers"
+      # "realtime"
       "video"
       "input"
       "disk"
       "audio"
       "dialout"
-      "lock"
-      "network"
-      "sys"
-      "uucp"
+      # "lock"
+      # "network"
+      # "sys"
+      # "uucp"
     ];
   };
 
   # System Packages
   environment.systemPackages = with pkgs; [
+    gnome.gnome-session
+
     # System utilities
     wget
     curl
@@ -254,6 +289,7 @@ in
   powerManagement.enable = true;
 
   # XDG Portal Configuration
+
   xdg.portal = {
     enable = true;
     extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
@@ -277,10 +313,10 @@ in
   };
 
   # manage 2nd screen when keyboard is disconnected
-  services.udev.extraRules = ''
-    ACTION=="add",    ATTRS{idVendor}=="0b05", ATTRS{idProduct}=="1b2c", ENV{DISPLAY}=":0", ENV{XAUTHORITY}="/home/mfenniak/.Xauthority", RUN+="${pkgs.bash}/bin/bash ${disable-script}"
-    ACTION=="remove", ATTRS{idVendor}=="0b05", ATTRS{idProduct}=="1b2c", ENV{DISPLAY}=":0", ENV{XAUTHORITY}="/home/mfenniak/.Xauthority", RUN+="${pkgs.bash}/bin/bash ${enable-script}"
-  '';
+  # services.udev.extraRules = ''
+  #   ACTION=="add",    ATTRS{idVendor}=="0b05", ATTRS{idProduct}=="1b2c", ENV{DISPLAY}=":0", ENV{XAUTHORITY}="/home/mfenniak/.Xauthority", RUN+="${pkgs.bash}/bin/bash ${disable-script}"
+  #   ACTION=="remove", ATTRS{idVendor}=="0b05", ATTRS{idProduct}=="1b2c", ENV{DISPLAY}=":0", ENV{XAUTHORITY}="/home/mfenniak/.Xauthority", RUN+="${pkgs.bash}/bin/bash ${enable-script}"
+  # '';
 
   # load VPU (Vector Processing Unit) firmware
   hardware.firmware = [
@@ -302,30 +338,49 @@ in
   ];
 
   # set the screen brightnesses in the initrd (50 for top, 0 for bottom)
-  boot.initrd = {
-    kernelModules = [ "i915" ]; # Early KMS
-    systemd.services.initrd-brightness = {
-      unitConfig.DefaultDependencies = false;
-      wantedBy = [ "initrd.target" ];
-      requires = [
-        ''sys-devices-pci0000:00-0000:00:02.0-drm-card1-card1\x2deDP\x2d1-intel_backlight.device''
-        ''sys-devices-pci0000:00-0000:00:02.0-drm-card1-card1\x2deDP\x2d2-card1\x2deDP\x2d2\x2dbacklight.device''
-      ];
-      before = [ "plymouth-start.service" ];
-      after = [
-        ''sys-devices-pci0000:00-0000:00:02.0-drm-card1-card1\x2deDP\x2d1-intel_backlight.device''
-        ''sys-devices-pci0000:00-0000:00:02.0-drm-card1-card1\x2deDP\x2d2-card1\x2deDP\x2d2\x2dbacklight.device''
-      ];
-      script = ''
-        echo 50 > '/sys/devices/pci0000:00/0000:00:02.0/drm/card1/card1-eDP-1/intel_backlight/brightness'
-        echo  0 > '/sys/devices/pci0000:00/0000:00:02.0/drm/card1/card1-eDP-2/card1-eDP-2-backlight/brightness'
-      '';
-    };
-  };
+  # boot.initrd = {
+  #   kernelModules = [ "i915" ]; # Early KMS
+  #   systemd.services.initrd-brightness = {
+  #     unitConfig.DefaultDependencies = false;
+  #     wantedBy = [ "initrd.target" ];
+  #     requires = [
+  #       ''sys-devices-pci0000:00-0000:00:02.0-drm-card1-card1\x2deDP\x2d1-intel_backlight.device''
+  #       ''sys-devices-pci0000:00-0000:00:02.0-drm-card1-card1\x2deDP\x2d2-card1\x2deDP\x2d2\x2dbacklight.device''
+  #     ];
+  #     before = [ "plymouth-start.service" ];
+  #     after = [
+  #       ''sys-devices-pci0000:00-0000:00:02.0-drm-card1-card1\x2deDP\x2d1-intel_backlight.device''
+  #       ''sys-devices-pci0000:00-0000:00:02.0-drm-card1-card1\x2deDP\x2d2-card1\x2deDP\x2d2\x2dbacklight.device''
+  #     ];
+  #     script = ''
+  #       echo 50 > '/sys/devices/pci0000:00/0000:00:02.0/drm/card1/card1-eDP-1/intel_backlight/brightness'
+  #       echo  0 > '/sys/devices/pci0000:00/0000:00:02.0/drm/card1/card1-eDP-2/card1-eDP-2-backlight/brightness'
+  #     '';
+  #   };
+  # };
 
   # Stop killing wifi when moving the keyboard
   boot.blacklistedKernelModules = [
-    "asus_nb_wmi" # Kills the Wi-Fi any time I connect the keyboard
+    # "asus_nb_wmi" # Kills the Wi-Fi any time I connect the keyboard
   ];
+
+  ### Kyria setup
+  # Ensure the script is copied to the Nix store
+  environment.etc."kyria-keyboard-script".source = /home/w1n5t0n/scripts/keyboard;
+
+  # Create a systemd service
+  systemd.services.kyria-keyboard-setup = {
+    description = "Kyria Keyboard Setup Service";
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.zsh}/bin/zsh /etc/kyria-keyboard-script";
+      RemainAfterExit = "yes";
+    };
+  };
+
+  # Create a udev rule to trigger the service
+  services.udev.extraRules = ''
+    ACTION=="add", SUBSYSTEM=="input", ATTRS{id/product}=="6060", ATTRS{id/vendor}=="4653", TAG+="systemd", ENV{SYSTEMD_WANTS}="kyria-keyboard-setup.service"
+  '';
 
 }
