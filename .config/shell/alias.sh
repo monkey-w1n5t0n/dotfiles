@@ -28,6 +28,5 @@ alias cpu-balanced='tuned-adm profile balanced'
 alias cpu-min='tuned-adm profile laptop-battery-powersave'
 
 alias nixswitch='sudo nixos-rebuild switch --flake ~/.config/nixos#blooper'
-
 alias nixbuild='sudo nixos-rebuild build --flake ~/.config/nixos#blooper'
 alias nixtest='sudo nixos-rebuild test --flake ~/.config/nixos#blooper'
