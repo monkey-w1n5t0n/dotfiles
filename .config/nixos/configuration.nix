@@ -223,6 +223,7 @@ in
     # Other utilities
     xorg.xbacklight
     alacritty
+    nushellFull
     # p7zip
   ];
 
@@ -365,22 +366,23 @@ in
   ];
 
   ### Kyria setup
+  ### FIXME doesn't work
   # Ensure the script is copied to the Nix store
-  environment.etc."kyria-keyboard-script".source = /home/w1n5t0n/scripts/keyboard;
+  # environment.etc."kyria-keyboard-script".source = /home/w1n5t0n/scripts/keyboard;
 
-  # Create a systemd service
-  systemd.services.kyria-keyboard-setup = {
-    description = "Kyria Keyboard Setup Service";
-    serviceConfig = {
-      Type = "oneshot";
-      ExecStart = "${pkgs.zsh}/bin/zsh /etc/kyria-keyboard-script";
-      RemainAfterExit = "yes";
-    };
-  };
+  # # Create a systemd service
+  # systemd.services.kyria-keyboard-setup = {
+  #   description = "Kyria Keyboard Setup Service";
+  #   serviceConfig = {
+  #     Type = "oneshot";
+  #     ExecStart = "${pkgs.zsh}/bin/zsh /etc/kyria-keyboard-script";
+  #     RemainAfterExit = "yes";
+  #   };
+  # };
 
-  # Create a udev rule to trigger the service
-  services.udev.extraRules = ''
-    ACTION=="add", SUBSYSTEM=="input", ATTRS{id/product}=="6060", ATTRS{id/vendor}=="4653", TAG+="systemd", ENV{SYSTEMD_WANTS}="kyria-keyboard-setup.service"
-  '';
+  # # Create a udev rule to trigger the service
+  # services.udev.extraRules = ''
+  #   ACTION=="add", SUBSYSTEM=="input", ATTRS{id/product}=="6060", ATTRS{id/vendor}=="4653", TAG+="systemd", ENV{SYSTEMD_WANTS}="kyria-keyboard-setup.service"
+  # '';
 
 }

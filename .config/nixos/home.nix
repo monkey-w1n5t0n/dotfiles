@@ -61,6 +61,9 @@
     eza
     fzf
     feh
+    bitwarden-desktop
+    bitwarden-cli
+    bitwarden-menu
 
     # archives
     zip
@@ -170,6 +173,13 @@
     usbutils # lsusb
     #
     cura
+
+    # wine-staging
+    wineWowPackages.stagingFull
+    # winetricks (all versions)
+    winetricks
+    yabridge
+    yabridgectl
   ];
 
   #   # Git configuration
