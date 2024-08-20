@@ -42,6 +42,13 @@
     babashka
     go
 
+    #storage & backup
+    pcloud
+    megasync
+    # megacmd
+    syncthing
+    syncthingtray
+
     # System utilities
     baobab
     czkawka

@@ -10,37 +10,34 @@
     enable = true;
     backend = "glx";
     settings = {
-      blur = true;
-      blurExclude = [ ];
-      inactiveDim = "0.5";
-      noDNDShadow = false;
-      noDockShadow = true;
-      # shadow-radius = 20
-      # '';
-      # shadow-radius = 20
+      # blur = true;
+      # blur-size = 20;
+      # blurExclude = [ ];
+      # inactiveDim = "0.5";
+      # noDNDShadow = false;
+      # noDockShadow = true;
       corner-radius = 10;
-      blur-size = 20;
       rounded-corners-exclude = [
         "window_type = 'dock'"
         "class_g = 'i3-frame'"
       ];
-      # '';
     };
-    fade = true;
-    activeOpacity = 1.0;
+    # fade = true;
+    # activeOpacity = 1.0;
     # inactiveOpacity = 0.85;
-    menuOpacity = 1.0;
-    opacityRules = [
-      "0:_NET_WM_STATE@[0]:32a = '_NET_WM_STATE_HIDDEN'" # Hide tabbed windows
-    ];
+    # menuOpacity = 1.0;
+    # opacityRules = [
+    #   "0:_NET_WM_STATE@[0]:32a = '_NET_WM_STATE_HIDDEN'" # Hide tabbed windows
+    # ];
     shadow = true;
+    # shadow-radius = 20;
     shadowExclude = [ ];
     shadowOffsets = [
       (-10)
       (-10)
     ];
     shadowOpacity = 0.8;
-    vSync = true;
+    # vSync = true;
   };
 
   xsession.windowManager.i3.config.startup = [
