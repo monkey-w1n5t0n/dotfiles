@@ -225,6 +225,8 @@ in
     xorg.xbacklight
     alacritty
     nushellFull
+    redshift
+    xflux-gui
     # p7zip
   ];
 
