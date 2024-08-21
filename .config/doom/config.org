@@ -2038,6 +2038,32 @@ Auto revert plain text files, which should mostly be logs and script outputs
 -
 #+begin_src elisp
 #+end_src
+** Magit
+*** Dotfiles bare repo
+  #+begin_src elisp
+(defun in-git-repo? (path)
+  (let ((current-path (expand-file-name path))
+        (found nil))
+    (while (and (not found)
+                (not (string= current-path "/")))
+      (if (or (file-exists-p (concat current-path "/.git"))
+              (file-directory-p (concat current-path "/.git")))
+          (setq found t)
+        (setq current-path (file-name-directory (directory-file-name current-path)))))
+    found))
+
+(defun ~/magit-process-environment (env)
+  "Set GIT_DIR=$DOTFILES_GIT_DIR and GIT_WORK_TREE=$HOME when not in a git repo (no matter how many layers deep).
+https://github.com/magit/magit/issues/460 (@cpitclaudel)."
+  (when (not (in-git-repo? (file-name-as-directory
+                        (expand-file-name default-directory))))
+    (push (format "GIT_WORK_TREE=%s" (getenv "HOME")) env)
+    (push (format "GIT_DIR=%s" (getenv "DOTFILES_GIT_DIR")) env))
+  env)
+
+(advice-add 'magit-process-environment
+            :filter-return #'~/magit-process-environment)
+  #+end_src
 * TODO Key Bindings
 I should probably collect all key bindings here...
 ** Issues
