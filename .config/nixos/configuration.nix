@@ -386,4 +386,10 @@ in
   #   ACTION=="add", SUBSYSTEM=="input", ATTRS{id/product}=="6060", ATTRS{id/vendor}=="4653", TAG+="systemd", ENV{SYSTEMD_WANTS}="kyria-keyboard-setup.service"
   # '';
 
+  fonts.packages = with pkgs; [
+    hermit
+    source-code-pro
+    terminus_font
+  ];
+
 }
