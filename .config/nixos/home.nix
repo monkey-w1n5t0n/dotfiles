@@ -41,6 +41,8 @@
     racket
     babashka
     go
+    meson
+    ninja
 
     #storage & backup
     pcloud

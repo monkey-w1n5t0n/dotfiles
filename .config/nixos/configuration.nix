@@ -210,6 +210,7 @@ in
     cmake
     emacs
     nodejs
+    clang-tools
 
     # Audio tools
     pavucontrol

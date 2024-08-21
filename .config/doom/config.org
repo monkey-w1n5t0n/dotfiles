@@ -1619,6 +1619,10 @@ I think this is needed for Org Roam UI.
 #+begin_src elisp
 (add-to-list 'auto-mode-alist '("\\.ino\\'" . c-or-c++-mode))
 #+end_src
+*** clangd
+#+begin_src elisp
+(setq lsp-clangd-binary-path "/run/current-system/sw/bin/clangd")
+#+end_src
 ** Python
 ** Bash
 ** Tidal
@@ -1696,6 +1700,9 @@ Emacs-specific and (more or less) global settings.
 #+begin_src elisp
 (setq exec-path (append exec-path '("~/src/monkey-business/remote-tidal")))
 
+;; Add NixOS stuff
+(setenv "PATH" (concat (getenv "PATH") ":/run/current-system/sw/bin"))
+(setq exec-path (append exec-path '("/run/current-system/sw/bin")))
 #+end_src
 ** Appearance
 *** TODO Buffers
