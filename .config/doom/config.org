@@ -201,6 +201,11 @@ hide_edge_borders none
 # is used in the bar {} block below.
 font xft:URWGothic-Book 11
 #+end_src
+*** Rounded corners
+#+begin_src conf :tangle ~/.config/i3/config
+# Configure border style <normal|1pixel|pixel xx|none|pixel>
+border_radius 5
+#+end_src
 *** Floating Windows
 #+begin_src conf :tangle ~/.config/i3/config
 for_window [title=".*FLOATING.*"] floating enable
