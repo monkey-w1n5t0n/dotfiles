@@ -1,5 +1,9 @@
 { config, pkgs, ... }:
 
+let
+  jdk = pkgs.jdk17;
+  custom-lein = pkgs.leiningen.override { jdk = jdk; };
+in
 {
   # imports = [ ./visual/picom.nix ];
 
@@ -26,23 +30,39 @@
     chromium
     # nyxt
 
-    # Development tools
+    # Dev
+    ## TOOLS
     gitkraken
     virtualbox
     vscodium
-    bbin
     openscad
     openscad-lsp
     vscode-extensions.antyos.openscad
     pkg-config
-    ## languages
+    ## LANG
+    bbin
+    jdk
     sbcl
-    clojure
     racket
     babashka
     go
     meson
     ninja
+
+    ## Clojure
+    clojure
+    custom-lein
+    clojure-lsp
+
+    ## TIMELINES
+    glfw
+    libGL
+    xorg.libX11
+    xorg.libXxf86vm
+    xorg.libXcursor
+    xorg.libXrandr
+    xorg.libXi
+    libpulseaudio
 
     #storage & backup
     pcloud
@@ -117,7 +137,8 @@
 
     # Other utilities
     arduino-ide
-    kdeconnect
+    # kdeconnect
+    kdePackages.kdeconnect-kde
     kdePackages.isoimagewriter
     redshift
     wineWowPackages.stagingFull
@@ -128,19 +149,19 @@
     nixfmt-rfc-style
 
     # FONTS
-    noto-fonts
-    noto-fonts-cjk
-    noto-fonts-emoji
-    liberation_ttf
-    fira-code
-    fira-code-symbols
-    (nerdfonts.override {
-      fonts = [
-        "FiraCode"
-        "DroidSansMono"
-      ];
-    })
-    mplus-outline-fonts.githubRelease
+    # noto-fonts
+    # noto-fonts-cjk
+    # noto-fonts-emoji
+    # liberation_ttf
+    # fira-code
+    # fira-code-symbols
+    # (nerdfonts.override {
+    #   fonts = [
+    #     "FiraCode"
+    #     "DroidSansMono"
+    #   ];
+    # })
+    # mplus-outline-fonts.githubRelease
     # dina-font
     # proggyfonts
 
@@ -276,4 +297,5 @@
 
   #   # Let home Manager install and manage itself.
   programs.home-manager.enable = true;
+
 }
