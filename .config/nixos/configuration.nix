@@ -13,6 +13,11 @@ let
   disable-script = pkgs.writeScript "disable-eDP2.sh" ''
     ${pkgs.xorg.xrandr}/bin/xrandr --output eDP-2 --off
   '';
+
+  jdk = pkgs.jdk17;
+
+  # Create a custom leiningen wrapper with the JDK we want
+  customLein = pkgs.leiningen.override { jdk = jdk; };
 in
 {
   # System Configuration
@@ -227,7 +232,24 @@ in
     nushellFull
     redshift
     xflux-gui
+
+    nix-index # for nix-locate
     # p7zip
+
+    xcape
+
+    # timelines
+    customLein
+    clojure
+    jdk
+    glfw
+    libGL
+    xorg.libX11
+    xorg.libXxf86vm
+    xorg.libXcursor
+    xorg.libXrandr
+    xorg.libXi
+    libpulseaudio
   ];
 
   # Program Configuration
@@ -388,10 +410,60 @@ in
   #   ACTION=="add", SUBSYSTEM=="input", ATTRS{id/product}=="6060", ATTRS{id/vendor}=="4653", TAG+="systemd", ENV{SYSTEMD_WANTS}="kyria-keyboard-setup.service"
   # '';
 
+  # fonts.packages = with pkgs; [
+  #   hermit
+  #   source-code-pro
+  #   terminus_font
+  # ];
+
   fonts.packages = with pkgs; [
-    hermit
-    source-code-pro
-    terminus_font
+    noto-fonts
+    noto-fonts-cjk
+    noto-fonts-emoji
+    liberation_ttf
+    fira-code
+    fira-code-symbols
+    mplus-outline-fonts.githubRelease
+    dina-font
+    proggyfonts
+
+    (nerdfonts.override {
+      fonts = [
+        "FiraCode"
+        "DroidSansMono"
+      ];
+    })
+
+    font-awesome
+
+    # xorg.fontfixed
+    unifont
+    siji
+
   ];
 
+  # # Linker paths for timelines
+  # environment.variables = {
+  #   LD_LIBRARY_PATH = lib.makeLibraryPath [
+  #     pkgs.libGL
+  #     pkgs.libpulseaudio
+  #     pkgs.glfw
+  #   ];
+  # };
+
+  # Modify LD_LIBRARY_PATH
+  environment.extraInit = ''
+    export LD_LIBRARY_PATH=${
+      lib.makeLibraryPath [
+        pkgs.libGL
+        pkgs.libpulseaudio
+        pkgs.glfw
+      ]
+    }:$LD_LIBRARY_PATH
+  '';
+
+  # Add a script to run xcape on startup
+  services.xserver.displayManager.sessionCommands = ''
+    ${pkgs.xcape}/bin/xcape -e 'Control_L=Escape' -t 100'
+  '';
 }
