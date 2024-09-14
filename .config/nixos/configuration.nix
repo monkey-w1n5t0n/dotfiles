@@ -93,6 +93,7 @@ in
       layout = "us";
       variant = "dvorak";
       # options = "caps:ctrl_modifier,caps:escape";
+      options = "ctrl:nocaps";
     };
 
     # displayManager.gdm.enable = true;
@@ -125,6 +126,11 @@ in
       ];
     };
   };
+
+  # Add a script to run xcape on startup
+  # services.xserver.displayManager.sessionCommands = ''
+  #   ${pkgs.xcape}/bin/xcape -e 'Control_L=Escape'
+  # '';
 
   # environment.etc."xsessions/gnome-i3.desktop" = {
   #   text = ''
@@ -209,6 +215,7 @@ in
     # tuned TODO
 
     # Development tools
+
     gcc
     clang
     gnumake
@@ -216,6 +223,7 @@ in
     emacs
     nodejs
     clang-tools
+    libtool
 
     # Audio tools
     pavucontrol
