@@ -394,9 +394,9 @@ in
   # };
 
   # Stop killing wifi when moving the keyboard
-  boot.blacklistedKernelModules = [
-    # "asus_nb_wmi" # Kills the Wi-Fi any time I connect the keyboard
-  ];
+  # boot.blacklistedKernelModules = [
+  #   "asus_nb_wmi" # Kills the Wi-Fi any time I connect the keyboard
+  # ];
 
   ### Kyria setup
   ### FIXME doesn't work
