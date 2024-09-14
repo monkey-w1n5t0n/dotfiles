@@ -1530,6 +1530,9 @@ I think this is needed for Org Roam UI.
 #+begin_src elisp
 (setq cider-lein-parameters "with-profile dev repl :headless")
 
+(setq lsp-clojure-custom-server-command
+      '("bash" "-c" "/etc/profiles/per-user/w1n5t0n/bin/clojure-lsp"))
+
 ;; REMOTE
 ;; (setq *remote-tidal-ip-address* "127.0.1.1")
 ;; (setq *remote-tidal-port* "8080")
